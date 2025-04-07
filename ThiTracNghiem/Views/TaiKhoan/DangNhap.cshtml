@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng nhập - ThiTracNghiem</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/dangnhap.css" asp-append-version="true" />
+</head>
+
+<body>
+    <div class="login-container">
+        <form class="login-form" asp-action="DangNhap" method="post">
+            <h2>Đăng nhập</h2>
+            <div>
+                <label>Tên tài khoản</label>
+                <input name="tenTaiKhoan" />
+            </div>
+            <div>
+                <label>Mật khẩu</label>
+                <input name="matKhau" type="password" />
+            </div>
+            <button type="submit">Đăng nhập</button>
+        </form>
+    </div>
+
+    @if (ViewBag.Loi != null)
+    {
+        <p class="error-message" style="color:red;">@ViewBag.Loi</p>
+    }
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
+</html>
