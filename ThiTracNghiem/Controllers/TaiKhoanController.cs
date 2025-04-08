@@ -20,10 +20,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // GET: TaiKhoan
-        public async Task<IActionResult> Index()
-        {
-            return View(await _context.TaiKhoans.ToListAsync());
-        }
+       
 
         // GET: TaiKhoan/Details/5
         public async Task<IActionResult> Details(string id)
@@ -220,7 +217,14 @@ namespace ThiTracNghiem.Controllers
             HttpContext.Session.SetString("UserName", user.TenTaiKhoan);
             HttpContext.Session.SetString("VaiTro", user.VaiTro);
 
-            return RedirectToAction("Index", "Home");
+            if (user.VaiTro.ToLower() == "admin")
+            {
+                return RedirectToAction("Dashboard", "Admin"); // Chỗ này lát mình làm controller Admin riêng
+            }
+            else
+            {
+                    return RedirectToAction("Index", "Home"); // Giao diện người dùng bình thường
+            }
         }
 
         public IActionResult DangXuat()

@@ -1,5 +1,6 @@
 using ThiTracNghiem.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,7 +41,51 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
+using (var scope = app.Services.CreateScope())
+{
+    var services = scope.ServiceProvider;
+    
+}
+
 app.Run();
 
+// async Task CreateRoles(IServiceProvider serviceProvider)
+// {
+//     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+//     var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
+
+//     string[] roleNames = { "Admin", "User" };
+//     IdentityResult roleResult;
+
+//     foreach (var roleName in roleNames)
+//     {
+//         var roleExist = await roleManager.RoleExistsAsync(roleName);
+//         if (!roleExist)
+//         {
+//             roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
+//         }
+//     }
+
+//     // Tạo tài khoản Admin mặc định
+//     var adminUser = new IdentityUser
+//     {
+//         UserName = "admin@gmail.com",
+//         Email = "admin@gmail.com",
+//         EmailConfirmed = true
+//     };
+
+//     string adminPassword = "Admin@123";
+
+//     var user = await userManager.FindByEmailAsync(adminUser.Email);
+
+//     if (user == null)
+//     {
+//         var createPowerUser = await userManager.CreateAsync(adminUser, adminPassword);
+//         if (createPowerUser.Succeeded)
+//         {
+//             await userManager.AddToRoleAsync(adminUser, "Admin");
+//         }
+//     }
+// }
 
 

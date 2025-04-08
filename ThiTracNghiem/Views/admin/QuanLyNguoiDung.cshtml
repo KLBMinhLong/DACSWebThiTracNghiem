@@ -1,0 +1,33 @@
+@model IEnumerable<ThiTracNghiem.Models.TaiKhoan>
+
+@{
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Quản lý người dùng</h2>
+
+<table border="1">
+    <thead>
+        <tr>
+            <th>Tên tài khoản</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Trạng thái</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.TenTaiKhoan</td>
+                <td>@user.Email</td>
+                <td>@user.VaiTro</td>
+                <td>@(user.TrangThaiKhoa ? "Khóa" : "Hoạt động")</td>
+            </tr>
+        }
+    </tbody>
+    <p>
+    <a asp-controller="Admin" asp-action="CreateUser" class="btn btn-success">Thêm tài khoản mới</a>
+    </p>
+
+</table>
