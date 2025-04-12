@@ -1,0 +1,65 @@
+@model ThiTracNghiem.Models.TaiKhoan
+
+@{
+    ViewData["Title"] = "Chỉnh sửa người dùng";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="d-flex justify-content-center mt-5">
+    <div class="w-50">
+
+        <h2 class="mb-4 fw-bold text-center text-primary">Chỉnh sửa người dùng</h2>
+
+        <form asp-action="EditUser">
+            <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+
+            <div class="mb-3">
+                <label asp-for="TenTaiKhoan" class="form-label fw-bold"></label>
+                <input asp-for="TenTaiKhoan" class="form-control" readonly />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-bold"></label>
+                <input asp-for="Email" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="GioiTinh" class="form-label fw-bold"></label>
+                <select asp-for="GioiTinh" class="form-select">
+                    <option value="">-- Chọn giới tính --</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="SoDienThoai" class="form-label fw-bold"></label>
+                <input asp-for="SoDienThoai" class="form-control" />
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="VaiTro" class="form-label fw-bold"></label>
+                <select asp-for="VaiTro" class="form-select">
+                    <option value="user">User</option>
+                    <option value="admin">Admin</option>
+                </select>
+            </div>
+
+            <div class="form-check mb-3">
+                <input class="form-check-input" asp-for="TrangThaiKhoa" />
+                <label class="form-check-label fw-bold" asp-for="TrangThaiKhoa"></label>
+            </div>
+
+            <div class="d-grid gap-2 mb-3">
+                <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                <a asp-action="QuanLyNguoiDung" class="btn btn-secondary">Quay về danh sách</a>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
