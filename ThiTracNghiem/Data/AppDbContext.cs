@@ -11,5 +11,8 @@ namespace ThiTracNghiem.Data
         }
 
         public DbSet<TaiKhoan> TaiKhoans { get; set; }
+        public DbSet<ChuDe> ChuDes { get; set; }
+        public DbSet<CauHoi> CauHois { get; set; }
+
     }
 }

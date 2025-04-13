@@ -1,0 +1,72 @@
+@model IEnumerable<CauHoi>
+
+@{
+    ViewData["Title"] = "Danh sách câu hỏi";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Danh sách câu hỏi</h1>
+
+<p>
+    <a asp-action="Create">Tạo câu hỏi mới</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.NoiDung)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DapAnA)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DapAnB)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DapAnC)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DapAnD)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DapAnDung)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ChuDe)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.NoiDung)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DapAnA)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DapAnB)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DapAnC)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DapAnD)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DapAnDung)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ChuDe.TenChuDe)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id">Chỉnh sửa</a> |
+                <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
+                <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
