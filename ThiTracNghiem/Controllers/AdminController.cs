@@ -24,7 +24,7 @@ namespace ThiTracNghiem.Controllers
             return View();
         }
 
-        // ✅ Action mới để quản lý user
+        //  Action để quản lý user
         public async Task<IActionResult> QuanLyNguoiDung()
         {
             var role = HttpContext.Session.GetString("VaiTro");
