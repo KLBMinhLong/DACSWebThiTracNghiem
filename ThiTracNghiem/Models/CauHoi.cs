@@ -6,23 +6,23 @@ public class CauHoi
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Nội dung câu hỏi không được để trống")]
-    public string NoiDung { get; set; }
+    public string NoiDung { get; set; } = "";
 
     [Required]
-    public string DapAnA { get; set; }
+    public string DapAnA { get; set; } = "";
 
     [Required]
-    public string DapAnB { get; set; }
+    public string DapAnB { get; set; } = "";
 
     [Required]
-    public string DapAnC { get; set; }
+    public string DapAnC { get; set; } = "";
 
     [Required]
-    public string DapAnD { get; set; }
+    public string DapAnD { get; set; } = "";
 
     [Required]
     [RegularExpression("^[ABCD]$", ErrorMessage = "Chỉ được chọn A, B, C hoặc D")]
-    public string DapAnDung { get; set; }
+    public string DapAnDung { get; set; } = "";
 
     // Khóa ngoại
     [Required(ErrorMessage = "Phải chọn chủ đề")]

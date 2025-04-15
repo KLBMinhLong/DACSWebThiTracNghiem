@@ -6,6 +6,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
+using ClosedXML.Excel;
+
 
 namespace ThiTracNghiem
 {
@@ -19,11 +21,26 @@ namespace ThiTracNghiem
         }
 
         // GET: CauHoi
-        public async Task<IActionResult> Index()
+       public async Task<IActionResult> Index(int? chuDeId)
         {
-            var appDbContext = _context.CauHois.Include(c => c.ChuDe);
-            return View(await appDbContext.ToListAsync());
+            var cauHoiQuery = _context.CauHois.Include(c => c.ChuDe).AsQueryable();
+
+            if (chuDeId.HasValue && chuDeId > 0)
+            {
+                cauHoiQuery = cauHoiQuery.Where(c => c.ChuDeId == chuDeId);
+            }
+
+            ViewBag.ChuDes = await _context.ChuDes.ToListAsync(); // gửi danh sách chủ đề
+            ViewBag.ChuDeId = chuDeId; // giữ lại chủ đề đã chọn
+
+            return View(await cauHoiQuery.ToListAsync());
         }
+
+//              var appDbContext = _context.CauHois.Include(c => c.ChuDe);
+            
+//              // Thêm dòng này để lấy danh sách chủ đề trong file exel
+//             ViewBag.ChuDes = await _context.ChuDes.ToListAsync();
+//             return View(await appDbContext.ToListAsync());
 
         // GET: CauHoi/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -160,5 +177,55 @@ namespace ThiTracNghiem
         {
             return _context.CauHois.Any(e => e.Id == id);
         }
+        // them file exel
+        [HttpPost]
+        public IActionResult ImportExcel(IFormFile file, int ChuDeId)
+        {
+            if (file == null || file.Length <= 0)
+            {
+                TempData["ErrorMessage"] = "Vui lòng chọn file Excel hợp lệ.";
+                return RedirectToAction("Index");
+            }
+
+            if (!Path.GetExtension(file.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
+            {
+                TempData["ErrorMessage"] = "Chỉ hỗ trợ định dạng file .xlsx";
+                return RedirectToAction("Index");
+            }
+
+            using (var stream = new MemoryStream())
+            {
+                file.CopyTo(stream);
+                using (var workbook = new XLWorkbook(stream))
+                {
+                    var worksheet = workbook.Worksheet(1);
+                    var rows = worksheet.RangeUsed()?.RowsUsed();
+
+                        if (rows != null)
+                        {
+                            foreach (var row in rows.Skip(1))
+                            {
+                            var cauHoi = new CauHoi
+                        {
+                            NoiDung = row.Cell(1).GetValue<string>(),
+                            DapAnA = row.Cell(2).GetValue<string>(),
+                            DapAnB = row.Cell(3).GetValue<string>(),
+                            DapAnC = row.Cell(4).GetValue<string>(),
+                            DapAnD = row.Cell(5).GetValue<string>(),
+                            DapAnDung = row.Cell(6).GetValue<string>(),
+                            ChuDeId = ChuDeId
+                        };
+
+                        _context.CauHois.Add(cauHoi);
+                            }
+                        }
+                    _context.SaveChanges();
+                    TempData["SuccessMessage"] = "Import câu hỏi thành công!";
+                }
+            }
+
+            return RedirectToAction("Index");
+        }
+
     }
 }
