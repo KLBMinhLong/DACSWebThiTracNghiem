@@ -1,0 +1,43 @@
+@model DeThiCreateViewModel
+@{
+    ViewData["Title"] = "Tạo đề thi";
+    var cauHois = ViewBag.CauHois as List<CauHoi> ?? new List<CauHoi>();
+}
+
+<h2>Tạo đề thi</h2>
+
+<form asp-action="Create" method="post">
+    <div class="form-group">
+        <label asp-for="TenDeThi"></label>
+        <input asp-for="TenDeThi" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ThoiGianLamBai"></label>
+        <input asp-for="ThoiGianLamBai" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="ChuDeId">Chủ đề</label>
+        <select asp-for="ChuDeId" class="form-control" asp-items="ViewBag.ChuDeId"
+                onchange="this.form.submit();">
+            <option value="">-- Chọn chủ đề --</option>
+        </select>
+    </div>
+
+    @if (cauHois.Any())
+    {
+        <h4 class="mt-4">Chọn câu hỏi</h4>
+        <div class="form-group">
+            @foreach (var c in cauHois)
+            {
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" name="CauHoiIds" value="@c.Id" />
+                    <label class="form-check-label">@c.NoiDung</label>
+                </div>
+            }
+        </div>
+    }
+
+    <button type="submit" class="btn btn-primary mt-3">Tạo đề thi</button>
+</form>

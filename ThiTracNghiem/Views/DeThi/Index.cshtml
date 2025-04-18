@@ -1,0 +1,37 @@
+@model IEnumerable<DeThi>
+<h2>Danh sách đề thi</h2>
+
+<a asp-action="Create" class="btn btn-success mb-3">+ Tạo đề thi mới</a>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Tên đề thi</th>
+            <th>Chủ đề</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th>Ngày tạo</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var d in Model)
+        {
+            <tr>
+                <td>@d.TenDeThi</td>
+                <td>@d.ChuDe?.TenChuDe</td>
+                <td>@d.ThoiGianLamBai phút</td>
+                <td>@(d.TrangThaiMo ? "Mở" : "Đóng")</td>
+                <td>@d.NgayTao.ToString("dd/MM/yyyy")</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@d.Id" class="btn btn-sm btn-info">Xem</a>
+                    <a asp-action="Edit" asp-route-id="@d.Id" class="btn btn-sm btn-warning">Sửa</a>
+                    <form asp-action="Delete" asp-route-id="@d.Id" method="post" style="display:inline;"
+                        onsubmit="return confirm('Xoá đề thi này?');">
+                        <button type="submit" class="btn btn-sm btn-danger">Xoá</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

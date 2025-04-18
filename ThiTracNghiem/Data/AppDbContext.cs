@@ -13,6 +13,8 @@ namespace ThiTracNghiem.Data
         public DbSet<TaiKhoan> TaiKhoans { get; set; }
         public DbSet<ChuDe> ChuDes { get; set; }
         public DbSet<CauHoi> CauHois { get; set; }
+        public DbSet<DeThi> DeThis { get; set; }
+        public DbSet<ChiTietDeThi> ChiTietDeThis { get; set; }
 
     }
 }
