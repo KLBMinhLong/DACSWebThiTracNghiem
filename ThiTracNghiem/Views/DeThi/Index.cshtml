@@ -1,4 +1,10 @@
 @model IEnumerable<DeThi>
+
+@{
+    ViewData["Title"] = "Danh sách đề thi";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
 <h2>Danh sách đề thi</h2>
 
 <a asp-action="Create" class="btn btn-success mb-3">+ Tạo đề thi mới</a>
