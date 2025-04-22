@@ -61,7 +61,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("ChuDeId");
 
-                    b.ToTable("CauHois");
+                    b.ToTable("CauHois", (string)null);
                 });
 
             modelBuilder.Entity("ChiTietDeThi", b =>
@@ -84,7 +84,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("DeThiId");
 
-                    b.ToTable("ChiTietDeThis");
+                    b.ToTable("ChiTietDeThis", (string)null);
                 });
 
             modelBuilder.Entity("ChuDe", b =>
@@ -101,7 +101,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChuDes");
+                    b.ToTable("ChuDes", (string)null);
                 });
 
             modelBuilder.Entity("DeThi", b =>
@@ -132,7 +132,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("ChuDeId");
 
-                    b.ToTable("DeThis");
+                    b.ToTable("DeThis", (string)null);
                 });
 
             modelBuilder.Entity("ThiTracNghiem.Models.TaiKhoan", b =>
@@ -174,7 +174,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasKey("TenTaiKhoan");
 
-                    b.ToTable("TaiKhoans");
+                    b.ToTable("TaiKhoans", (string)null);
                 });
 
             modelBuilder.Entity("CauHoi", b =>

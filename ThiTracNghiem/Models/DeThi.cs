@@ -6,7 +6,7 @@ public class DeThi
     public int Id { get; set; }
 
     [Required(ErrorMessage = "Tên đề thi không được để trống")]
-    public string TenDeThi { get; set; }
+    public string TenDeThi { get; set; } = "";
 
     [Range(1, 300, ErrorMessage = "Thời gian làm bài phải từ 1 đến 300 phút")]
     public int ThoiGianLamBai { get; set; }
@@ -21,5 +21,6 @@ public class DeThi
     [ForeignKey("ChuDeId")]
     public ChuDe? ChuDe { get; set; }
 
+    // public ICollection<ChiTietDeThi> ChiTietDeThis { get; set; } = new List<ChiTietDeThi>();
     public ICollection<ChiTietDeThi>? ChiTietCauHoi { get; set; }
 }

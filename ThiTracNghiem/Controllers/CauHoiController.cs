@@ -21,20 +21,38 @@ namespace ThiTracNghiem
         }
 
         // GET: CauHoi
-       public async Task<IActionResult> Index(int? chuDeId)
+    public async Task<IActionResult> Index(int? chuDeId, int page = 1, int pageSize = 10)
         {
-            var cauHoiQuery = _context.CauHois.Include(c => c.ChuDe).AsQueryable();
+            var cauHoiQuery = _context.CauHois
+                .Include(c => c.ChuDe)
+                .AsQueryable();
 
+            // Nếu có lọc chủ đề
             if (chuDeId.HasValue && chuDeId > 0)
             {
                 cauHoiQuery = cauHoiQuery.Where(c => c.ChuDeId == chuDeId);
             }
 
-            ViewBag.ChuDes = await _context.ChuDes.ToListAsync(); // gửi danh sách chủ đề
-            ViewBag.ChuDeId = chuDeId; // giữ lại chủ đề đã chọn
+            int totalItems = await cauHoiQuery.CountAsync();
 
-            return View(await cauHoiQuery.ToListAsync());
+            var items = await cauHoiQuery
+                .OrderBy(c => c.Id) // giữ thứ tự mặc định
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.ChuDes = await _context.ChuDes.ToListAsync();
+            ViewBag.ChuDeId = chuDeId;
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(items);
         }
+
+
+
+        // GET: CauHoi/Index
+
 
 //              var appDbContext = _context.CauHois.Include(c => c.ChuDe);
             
