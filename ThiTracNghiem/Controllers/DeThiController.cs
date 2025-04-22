@@ -13,11 +13,19 @@ public class DeThiController : Controller
         _context = context;
     }
 
-    public IActionResult Index()
+    public IActionResult Index(string searchString)
     {
-        var list = _context.DeThis.Include(d => d.ChuDe).ToList();
-        return View(list);
+        var query = _context.DeThis.Include(d => d.ChuDe).AsQueryable();
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(d => d.TenDeThi.Contains(searchString));
+        }
+
+        ViewBag.CurrentFilter = searchString; // để giữ lại giá trị input khi submit
+        return View(query.ToList());
     }
+
 
     [HttpGet]
     public IActionResult Create()
