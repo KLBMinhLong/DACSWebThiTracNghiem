@@ -49,9 +49,9 @@ public class DeThiController : Controller
         {
             TenDeThi = model.TenDeThi,
             ThoiGianLamBai = model.ThoiGianLamBai,
+            TrangThaiMo = model.TrangThaiMo,
             ChuDeId = model.ChuDeId,
-            NgayTao = DateTime.Now,
-            TrangThaiMo = true
+            NgayTao = DateTime.Now
         };
 
         _context.DeThis.Add(deThi);
@@ -96,6 +96,7 @@ public class DeThiController : Controller
             TenDeThi = deThi.TenDeThi,
             ThoiGianLamBai = deThi.ThoiGianLamBai,
             ChuDeId = deThi.ChuDeId,
+            TrangThaiMo = deThi.TrangThaiMo,
             CauHoiIds = deThi.ChiTietCauHoi.Select(c => c.CauHoiId).ToList()
         };
 
@@ -125,6 +126,7 @@ public class DeThiController : Controller
         // Cập nhật đề thi
         deThi.TenDeThi = model.TenDeThi;
         deThi.ThoiGianLamBai = model.ThoiGianLamBai;
+        deThi.TrangThaiMo = model.TrangThaiMo;
         deThi.ChuDeId = model.ChuDeId;
 
         // Xoá câu hỏi cũ
