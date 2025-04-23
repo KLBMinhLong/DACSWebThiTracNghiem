@@ -21,6 +21,8 @@ public class DeThi
     [ForeignKey("ChuDeId")]
     public ChuDe? ChuDe { get; set; }
 
+    public int SoLuongCauHoi { get; set; } // Số lượng câu cần lấy khi làm bài
+
     // public ICollection<ChiTietDeThi> ChiTietDeThis { get; set; } = new List<ChiTietDeThi>();
     public ICollection<ChiTietDeThi>? ChiTietCauHoi { get; set; }
 }

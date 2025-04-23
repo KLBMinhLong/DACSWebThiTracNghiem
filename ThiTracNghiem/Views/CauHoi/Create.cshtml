@@ -11,12 +11,21 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
                 <label asp-for="NoiDung" class="control-label"></label>
                 <input asp-for="NoiDung" class="form-control" />
                 <span asp-validation-for="NoiDung" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label>Hình ảnh minh họa (tùy chọn)</label>
+                <input type="file" name="HinhAnhFile" class="form-control" accept="image/*" />
+            </div>
+
+            <div class="form-group">
+                <label>Audio (tùy chọn, mp3/wav)</label>
+                <input type="file" name="AudioFile" class="form-control" accept="audio/*" />
             </div>
             <div class="form-group">
                 <label asp-for="DapAnA" class="control-label"></label>

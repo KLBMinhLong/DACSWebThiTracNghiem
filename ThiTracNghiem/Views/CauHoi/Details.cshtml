@@ -1,61 +1,63 @@
 @model CauHoi
 
 @{
-    ViewData["Title"] = "Chi tiết ";
+    ViewData["Title"] = "Chi tiết câu hỏi";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Chi tiết câu hỏi</h1>
 
 <div>
-    <h4>CauHoi</h4>
+    <h4>Câu hỏi</h4>
     <hr />
     <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoiDung)
+        <dt class="col-sm-2">
+            Nội dung
         </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoiDung)
+        <dd class="col-sm-10">
+            @Model.NoiDung
         </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnA)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnA)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnB)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnB)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnC)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnC)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnD)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnD)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnDung)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnDung)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ChuDe)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ChuDe.TenChuDe)
-        </dd>
+
+        @if (!string.IsNullOrEmpty(Model.HinhAnhUrl))
+        {
+            <dt class="col-sm-2">Hình ảnh</dt>
+            <dd class="col-sm-10">
+                <img src="@Model.HinhAnhUrl" alt="Ảnh minh họa" class="img-fluid rounded border" style="max-width: 400px;" />
+            </dd>
+        }
+
+        @if (!string.IsNullOrEmpty(Model.AudioUrl))
+        {
+            <dt class="col-sm-2">Audio</dt>
+            <dd class="col-sm-10">
+                <audio controls>
+                    <source src="@Model.AudioUrl" type="audio/mpeg" />
+                    Trình duyệt không hỗ trợ audio.
+                </audio>
+            </dd>
+        }
+
+        <dt class="col-sm-2">Đáp án A</dt>
+        <dd class="col-sm-10">@Model.DapAnA</dd>
+
+        <dt class="col-sm-2">Đáp án B</dt>
+        <dd class="col-sm-10">@Model.DapAnB</dd>
+
+        <dt class="col-sm-2">Đáp án C</dt>
+        <dd class="col-sm-10">@Model.DapAnC</dd>
+
+        <dt class="col-sm-2">Đáp án D</dt>
+        <dd class="col-sm-10">@Model.DapAnD</dd>
+
+        <dt class="col-sm-2">Đáp án đúng</dt>
+        <dd class="col-sm-10">@Model.DapAnDung</dd>
+
+        <dt class="col-sm-2">Chủ đề</dt>
+        <dd class="col-sm-10">@Model.ChuDe?.TenChuDe</dd>
     </dl>
 </div>
+
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Sửa</a> |
-    <a asp-action="Index">Trở lại danh sách</a>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
+    <a asp-action="Index" class="btn btn-secondary ml-2">Trở lại danh sách</a>
 </div>
