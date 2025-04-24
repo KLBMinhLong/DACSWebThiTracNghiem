@@ -21,7 +21,7 @@ namespace ThiTracNghiem
         }
 
         // GET: CauHoi
-    public async Task<IActionResult> Index(int? chuDeId, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(int? chuDeId, int page = 1, int pageSize = 10)
         {
             var cauHoiQuery = _context.CauHois
                 .Include(c => c.ChuDe)
@@ -54,11 +54,11 @@ namespace ThiTracNghiem
         // GET: CauHoi/Index
 
 
-//              var appDbContext = _context.CauHois.Include(c => c.ChuDe);
-            
-//              // Thêm dòng này để lấy danh sách chủ đề trong file exel
-//             ViewBag.ChuDes = await _context.ChuDes.ToListAsync();
-//             return View(await appDbContext.ToListAsync());
+        //              var appDbContext = _context.CauHois.Include(c => c.ChuDe);
+
+        //              // Thêm dòng này để lấy danh sách chủ đề trong file exel
+        //             ViewBag.ChuDes = await _context.ChuDes.ToListAsync();
+        //             return View(await appDbContext.ToListAsync());
 
         // GET: CauHoi/Details/5
         public async Task<IActionResult> Details(int? id)
@@ -91,10 +91,30 @@ namespace ThiTracNghiem
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CauHoi cauHoi)
+        public async Task<IActionResult> Create(CauHoi cauHoi, IFormFile HinhAnhFile, IFormFile AudioFile)
         {
             if (ModelState.IsValid)
             {
+
+                // Ảnh
+                if (HinhAnhFile != null && HinhAnhFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(HinhAnhFile.FileName);
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images", fileName);
+                    using var stream = new FileStream(path, FileMode.Create);
+                    await HinhAnhFile.CopyToAsync(stream);
+                    cauHoi.HinhAnhUrl = "/uploads/images/" + fileName;
+                }
+
+                // Audio
+                if (AudioFile != null && AudioFile.Length > 0)
+                {
+                    var fileName = Guid.NewGuid() + Path.GetExtension(AudioFile.FileName);
+                    var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "audio", fileName);
+                    using var stream = new FileStream(path, FileMode.Create);
+                    await AudioFile.CopyToAsync(stream);
+                    cauHoi.AudioUrl = "/uploads/audio/" + fileName;
+                }
                 _context.Add(cauHoi);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -219,24 +239,24 @@ namespace ThiTracNghiem
                     var worksheet = workbook.Worksheet(1);
                     var rows = worksheet.RangeUsed()?.RowsUsed();
 
-                        if (rows != null)
+                    if (rows != null)
+                    {
+                        foreach (var row in rows.Skip(1))
                         {
-                            foreach (var row in rows.Skip(1))
-                            {
                             var cauHoi = new CauHoi
-                        {
-                            NoiDung = row.Cell(1).GetValue<string>(),
-                            DapAnA = row.Cell(2).GetValue<string>(),
-                            DapAnB = row.Cell(3).GetValue<string>(),
-                            DapAnC = row.Cell(4).GetValue<string>(),
-                            DapAnD = row.Cell(5).GetValue<string>(),
-                            DapAnDung = row.Cell(6).GetValue<string>(),
-                            ChuDeId = ChuDeId
-                        };
+                            {
+                                NoiDung = row.Cell(1).GetValue<string>(),
+                                DapAnA = row.Cell(2).GetValue<string>(),
+                                DapAnB = row.Cell(3).GetValue<string>(),
+                                DapAnC = row.Cell(4).GetValue<string>(),
+                                DapAnD = row.Cell(5).GetValue<string>(),
+                                DapAnDung = row.Cell(6).GetValue<string>(),
+                                ChuDeId = ChuDeId
+                            };
 
-                        _context.CauHois.Add(cauHoi);
-                            }
+                            _context.CauHois.Add(cauHoi);
                         }
+                    }
                     _context.SaveChanges();
                     TempData["SuccessMessage"] = "Import câu hỏi thành công!";
                 }

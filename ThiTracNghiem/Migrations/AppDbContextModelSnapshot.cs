@@ -30,6 +30,9 @@ namespace ThiTracNghiem.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("AudioUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("ChuDeId")
                         .HasColumnType("int");
 
@@ -53,6 +56,9 @@ namespace ThiTracNghiem.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("HinhAnhUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("NoiDung")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -61,7 +67,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("ChuDeId");
 
-                    b.ToTable("CauHois", (string)null);
+                    b.ToTable("CauHois");
                 });
 
             modelBuilder.Entity("ChiTietDeThi", b =>
@@ -84,7 +90,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("DeThiId");
 
-                    b.ToTable("ChiTietDeThis", (string)null);
+                    b.ToTable("ChiTietDeThis");
                 });
 
             modelBuilder.Entity("ChuDe", b =>
@@ -101,7 +107,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChuDes", (string)null);
+                    b.ToTable("ChuDes");
                 });
 
             modelBuilder.Entity("DeThi", b =>
@@ -118,6 +124,9 @@ namespace ThiTracNghiem.Migrations
                     b.Property<DateTime>("NgayTao")
                         .HasColumnType("datetime2");
 
+                    b.Property<int>("SoLuongCauHoi")
+                        .HasColumnType("int");
+
                     b.Property<string>("TenDeThi")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -132,7 +141,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("ChuDeId");
 
-                    b.ToTable("DeThis", (string)null);
+                    b.ToTable("DeThis");
                 });
 
             modelBuilder.Entity("ThiTracNghiem.Models.TaiKhoan", b =>
@@ -174,7 +183,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasKey("TenTaiKhoan");
 
-                    b.ToTable("TaiKhoans", (string)null);
+                    b.ToTable("TaiKhoans");
                 });
 
             modelBuilder.Entity("CauHoi", b =>

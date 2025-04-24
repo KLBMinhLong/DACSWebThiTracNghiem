@@ -9,6 +9,8 @@ public class DeThiCreateViewModel
     [Range(1, 300)]
     public int ThoiGianLamBai { get; set; }
 
+    public bool TrangThaiMo { get; set; } = true;
+    
     [Required]
     public int ChuDeId { get; set; }
 
