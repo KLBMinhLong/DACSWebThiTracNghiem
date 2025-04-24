@@ -89,14 +89,13 @@ namespace ThiTracNghiem
         // POST: CauHoi/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
+       [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(CauHoi cauHoi, IFormFile HinhAnhFile, IFormFile AudioFile)
+        public async Task<IActionResult> Create(CauHoi cauHoi, IFormFile? HinhAnhFile, IFormFile? AudioFile)
         {
             if (ModelState.IsValid)
             {
-
-                // Ảnh
+                // Xử lý ảnh
                 if (HinhAnhFile != null && HinhAnhFile.Length > 0)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(HinhAnhFile.FileName);
@@ -105,8 +104,12 @@ namespace ThiTracNghiem
                     await HinhAnhFile.CopyToAsync(stream);
                     cauHoi.HinhAnhUrl = "/uploads/images/" + fileName;
                 }
+                else
+                {
+                    cauHoi.HinhAnhUrl = null;
+                }
 
-                // Audio
+                // Xử lý audio
                 if (AudioFile != null && AudioFile.Length > 0)
                 {
                     var fileName = Guid.NewGuid() + Path.GetExtension(AudioFile.FileName);
@@ -115,6 +118,11 @@ namespace ThiTracNghiem
                     await AudioFile.CopyToAsync(stream);
                     cauHoi.AudioUrl = "/uploads/audio/" + fileName;
                 }
+                else
+                {
+                    cauHoi.AudioUrl = null;
+                }
+
                 _context.Add(cauHoi);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -123,6 +131,7 @@ namespace ThiTracNghiem
             ViewData["ChuDeId"] = new SelectList(_context.ChuDes, "Id", "TenChuDe", cauHoi.ChuDeId);
             return View(cauHoi);
         }
+
 
         // GET: CauHoi/Edit/5
         public async Task<IActionResult> Edit(int? id)

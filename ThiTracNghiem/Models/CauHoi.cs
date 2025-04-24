@@ -8,8 +8,8 @@ public class CauHoi
     [Required(ErrorMessage = "Nội dung câu hỏi không được để trống")]
     public string NoiDung { get; set; } = "";
 
-    public string? HinhAnhUrl { get; set; }     // đường dẫn ảnh minh họa
-    public string? AudioUrl { get; set; }       // đường dẫn file âm thanh
+    public string? HinhAnhUrl { get; set; } = null!;    // đường dẫn ảnh minh họa
+    public string? AudioUrl { get; set; } = null!;    // đường dẫn file âm thanh
 
     [Required]
     public string DapAnA { get; set; } = "";

@@ -25,6 +25,7 @@
             <th>Thời gian</th>
             <th>Trạng thái</th>
             <th>Ngày tạo</th>
+            <th>Số câu hỏi</th>
             <th></th>
         </tr>
     </thead>
@@ -37,6 +38,7 @@
                 <td>@d.ThoiGianLamBai phút</td>
                 <td>@(d.TrangThaiMo ? "Mở" : "Đóng")</td>
                 <td>@d.NgayTao.ToString("dd/MM/yyyy")</td>
+                <td>@d.SoLuongCauHoi</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@d.Id" class="btn btn-sm btn-info">Xem</a>
                     <a asp-action="Edit" asp-route-id="@d.Id" class="btn btn-sm btn-warning">Sửa</a>

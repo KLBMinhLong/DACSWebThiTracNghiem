@@ -35,41 +35,58 @@ public class DeThiController : Controller
         return View();
     }
 
-    [HttpPost]
-    public IActionResult Create(DeThiCreateViewModel model)
+   [HttpPost]
+    public IActionResult Create(DeThi model)
     {
-        if (!ModelState.IsValid || model.CauHoiIds.Count == 0)
+        if (!ModelState.IsValid || model.SoLuongCauHoi <= 0)
         {
-            ModelState.AddModelError("", "Vui lòng chọn ít nhất một câu hỏi.");
+            ModelState.AddModelError("", "Vui lòng nhập số lượng câu hỏi hợp lệ.");
             ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
-            ViewBag.CauHois = _context.CauHois.Where(c => c.ChuDeId == model.ChuDeId).ToList();
             return View(model);
         }
-
+        // Đếm số câu hỏi thực tế của chủ đề
+        int tongSoCauHoi = _context.CauHois.Count(c => c.ChuDeId == model.ChuDeId);
+        if (model.SoLuongCauHoi > tongSoCauHoi)
+        {
+            ModelState.AddModelError("", $"Chủ đề này chỉ có {tongSoCauHoi} câu hỏi. Không thể chọn {model.SoLuongCauHoi} câu.");
+            ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
+            return View(model);
+        }
+        // Tạo đề thi mới
         var deThi = new DeThi
         {
             TenDeThi = model.TenDeThi,
             ThoiGianLamBai = model.ThoiGianLamBai,
             TrangThaiMo = model.TrangThaiMo,
             ChuDeId = model.ChuDeId,
-            NgayTao = DateTime.Now
+            NgayTao = DateTime.Now,
+            SoLuongCauHoi = model.SoLuongCauHoi
         };
 
         _context.DeThis.Add(deThi);
         _context.SaveChanges();
 
-        foreach (var cauHoiId in model.CauHoiIds)
+        // Lấy ngẫu nhiên n câu hỏi theo chủ đề
+        var cauHoiTheoChuDe = _context.CauHois
+            .Where(c => c.ChuDeId == model.ChuDeId)
+            .OrderBy(c => Guid.NewGuid()) // random
+            .Take(model.SoLuongCauHoi)
+            .ToList();
+
+        // Gán các câu hỏi vào ChiTietDeThi
+        foreach (var cauHoi in cauHoiTheoChuDe)
         {
             _context.ChiTietDeThis.Add(new ChiTietDeThi
             {
                 DeThiId = deThi.Id,
-                CauHoiId = cauHoiId
+                CauHoiId = cauHoi.Id
             });
         }
 
         _context.SaveChanges();
         return RedirectToAction("Index");
     }
+
 
     public IActionResult Details(int id)
     {

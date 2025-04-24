@@ -7,4 +7,5 @@ public class ChiTietDeThi
 
     public int CauHoiId { get; set; }
     public CauHoi? CauHoi { get; set; }
+    
 }
