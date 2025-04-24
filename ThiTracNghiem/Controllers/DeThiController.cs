@@ -13,6 +13,7 @@ public class DeThiController : Controller
         _context = context;
     }
 
+    // tìm kiêm theo tên dề thi
     public IActionResult Index(string searchString)
     {
         var query = _context.DeThis.Include(d => d.ChuDe).AsQueryable();
