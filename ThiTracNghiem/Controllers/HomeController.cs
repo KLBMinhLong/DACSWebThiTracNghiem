@@ -1,22 +1,28 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
+using ThiTracNghiem.Data;
 using ThiTracNghiem.Models;
 
 namespace ThiTracNghiem.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
+    private readonly AppDbContext _context;
 
-    public HomeController(ILogger<HomeController> logger)
+    public HomeController(AppDbContext context)
     {
-        _logger = logger;
+        _context = context;
     }
 
     [RequireLogin]
     public IActionResult Index()
     {
-        return View();
+        var danhSachDeThi = _context.DeThis
+        .Where(d => d.TrangThaiMo)
+        .OrderByDescending(d => d.NgayTao)
+        .ToList();
+
+    return View(danhSachDeThi);
     }
 
     public IActionResult Privacy()

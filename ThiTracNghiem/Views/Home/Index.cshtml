@@ -1,8 +1,18 @@
-﻿@{
+﻿@model IEnumerable<DeThi>
+
+@{
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+<h2>Danh sách đề thi</h2>
+
+@foreach (var deThi in Model)
+{
+    <div class="card mb-3 p-3 shadow-sm">
+        <h4><a asp-action="ChiTietDeThi" asp-route-id="@deThi.Id">@deThi.TenDeThi</a></h4>
+        <p>Số câu hỏi: @deThi.SoLuongCauHoi</p>
+        <p>Thời gian làm bài: @deThi.ThoiGianLamBai phút</p>
+        <p>Ngày tạo: @deThi.NgayTao.ToString("dd/MM/yyyy")</p>
+    </div>
+}
