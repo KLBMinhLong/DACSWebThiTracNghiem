@@ -7,12 +7,8 @@
 <h2>Chi tiết đề thi: @Model.TenDeThi</h2>
 <p><strong>Thời gian:</strong> @Model.ThoiGianLamBai phút</p>
 <p><strong>Chủ đề:</strong> @Model.ChuDe?.TenChuDe</p>
+<p><strong>Trạng thái:</strong> @(Model.TrangThaiMo ? "Mở" : "Đóng")</p>
+<p><strong>Ngày tạo:</strong> @Model.NgayTao.ToString("dd/MM/yyyy")</p>
+<p><strong>Số câu hỏi:</strong> @Model.SoLuongCauHoi câu</p>
 
-<h4>Câu hỏi</h4>
-<ul>
-    @foreach (var ct in Model.ChiTietCauHoi)
-    {
-        <li>@ct.CauHoi?.NoiDung</li>
-    }
-</ul>
 <a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using ThiTracNghiem.Data;
 
@@ -11,9 +12,11 @@ using ThiTracNghiem.Data;
 namespace ThiTracNghiem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250426113610_RemoveChiTietDeThi")]
+    partial class RemoveChiTietDeThi
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -67,7 +70,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("ChuDeId");
 
-                    b.ToTable("CauHois", (string)null);
+                    b.ToTable("CauHois");
                 });
 
             modelBuilder.Entity("ChiTietDeThi", b =>
@@ -90,7 +93,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("DeThiId");
 
-                    b.ToTable("ChiTietDeThis", (string)null);
+                    b.ToTable("ChiTietDeThis");
                 });
 
             modelBuilder.Entity("ChuDe", b =>
@@ -107,7 +110,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("ChuDes", (string)null);
+                    b.ToTable("ChuDes");
                 });
 
             modelBuilder.Entity("DeThi", b =>
@@ -141,7 +144,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasIndex("ChuDeId");
 
-                    b.ToTable("DeThis", (string)null);
+                    b.ToTable("DeThis");
                 });
 
             modelBuilder.Entity("ThiTracNghiem.Models.TaiKhoan", b =>
@@ -183,7 +186,7 @@ namespace ThiTracNghiem.Migrations
 
                     b.HasKey("TenTaiKhoan");
 
-                    b.ToTable("TaiKhoans", (string)null);
+                    b.ToTable("TaiKhoans");
                 });
 
             modelBuilder.Entity("CauHoi", b =>

@@ -66,22 +66,7 @@ public class DeThiController : Controller
         _context.DeThis.Add(deThi);
         _context.SaveChanges();
 
-        // Lấy ngẫu nhiên n câu hỏi theo chủ đề
-        var cauHoiTheoChuDe = _context.CauHois
-            .Where(c => c.ChuDeId == model.ChuDeId)
-            .OrderBy(c => Guid.NewGuid()) // random
-            .Take(model.SoLuongCauHoi)
-            .ToList();
-
-        // Gán các câu hỏi vào ChiTietDeThi
-        foreach (var cauHoi in cauHoiTheoChuDe)
-        {
-            _context.ChiTietDeThis.Add(new ChiTietDeThi
-            {
-                DeThiId = deThi.Id,
-                CauHoiId = cauHoi.Id
-            });
-        }
+       
 
         _context.SaveChanges();
         return RedirectToAction("Index");
@@ -92,8 +77,6 @@ public class DeThiController : Controller
     {
         var deThi = _context.DeThis
             .Include(d => d.ChuDe)
-            .Include(d => d.ChiTietCauHoi)
-                .ThenInclude(ct => ct.CauHoi)
             .FirstOrDefault(d => d.Id == id);
 
         if (deThi == null) return NotFound();
@@ -104,7 +87,6 @@ public class DeThiController : Controller
     public IActionResult Edit(int id)
     {
         var deThi = _context.DeThis
-            .Include(d => d.ChiTietCauHoi)
             .FirstOrDefault(d => d.Id == id);
 
         if (deThi == null) return NotFound();
@@ -114,13 +96,10 @@ public class DeThiController : Controller
             TenDeThi = deThi.TenDeThi,
             ThoiGianLamBai = deThi.ThoiGianLamBai,
             ChuDeId = deThi.ChuDeId,
-            TrangThaiMo = deThi.TrangThaiMo,
-            CauHoiIds = deThi.ChiTietCauHoi.Select(c => c.CauHoiId).ToList()
+            TrangThaiMo = deThi.TrangThaiMo
         };
 
         ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
-        ViewBag.CauHois = _context.CauHois.Where(c => c.ChuDeId == model.ChuDeId).ToList();
-
         ViewBag.DeThiId = deThi.Id;
 
         return View(model);
@@ -129,36 +108,14 @@ public class DeThiController : Controller
     [HttpPost]
     public IActionResult Edit(int id, DeThiCreateViewModel model)
     {
-        var deThi = _context.DeThis.Include(d => d.ChiTietCauHoi).FirstOrDefault(d => d.Id == id);
+        var deThi = _context.DeThis.FirstOrDefault(d => d.Id == id);
         if (deThi == null) return NotFound();
-
-        if (!ModelState.IsValid || model.CauHoiIds.Count == 0)
-        {
-            ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
-            ViewBag.CauHois = _context.CauHois.Where(c => c.ChuDeId == model.ChuDeId).ToList();
-            ViewBag.DeThiId = id;
-            ModelState.AddModelError("", "Vui lòng chọn ít nhất một câu hỏi.");
-            return View(model);
-        }
 
         // Cập nhật đề thi
         deThi.TenDeThi = model.TenDeThi;
         deThi.ThoiGianLamBai = model.ThoiGianLamBai;
         deThi.TrangThaiMo = model.TrangThaiMo;
         deThi.ChuDeId = model.ChuDeId;
-
-        // Xoá câu hỏi cũ
-        _context.ChiTietDeThis.RemoveRange(deThi.ChiTietCauHoi);
-
-        // Thêm câu hỏi mới
-        foreach (var cauHoiId in model.CauHoiIds)
-        {
-            _context.ChiTietDeThis.Add(new ChiTietDeThi
-            {
-                DeThiId = id,
-                CauHoiId = cauHoiId
-            });
-        }
 
         _context.SaveChanges();
         return RedirectToAction("Index");
@@ -168,12 +125,10 @@ public class DeThiController : Controller
     public IActionResult Delete(int id)
     {
         var deThi = _context.DeThis
-            .Include(d => d.ChiTietCauHoi)
             .FirstOrDefault(d => d.Id == id);
 
         if (deThi == null) return NotFound();
 
-        _context.ChiTietDeThis.RemoveRange(deThi.ChiTietCauHoi);
         _context.DeThis.Remove(deThi);
         _context.SaveChanges();
 

@@ -14,5 +14,4 @@ public class DeThiCreateViewModel
     [Required]
     public int ChuDeId { get; set; }
 
-    public List<int> CauHoiIds { get; set; } = new();
 }
