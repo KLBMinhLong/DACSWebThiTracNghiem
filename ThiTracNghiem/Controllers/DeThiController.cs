@@ -91,12 +91,13 @@ public class DeThiController : Controller
 
         if (deThi == null) return NotFound();
 
-        var model = new DeThiCreateViewModel
+        var model = new DeThi
         {
             TenDeThi = deThi.TenDeThi,
             ThoiGianLamBai = deThi.ThoiGianLamBai,
             ChuDeId = deThi.ChuDeId,
-            TrangThaiMo = deThi.TrangThaiMo
+            TrangThaiMo = deThi.TrangThaiMo,
+            SoLuongCauHoi = deThi.SoLuongCauHoi
         };
 
         ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
@@ -106,17 +107,35 @@ public class DeThiController : Controller
     }
 
     [HttpPost]
-    public IActionResult Edit(int id, DeThiCreateViewModel model)
+    public IActionResult Edit(int id, DeThi model)
     {
+        // ràng buộc số lượng câu hỏi phải lớn hơn 0
+        if (!ModelState.IsValid || model.SoLuongCauHoi <= 0)
+    {
+        ModelState.AddModelError("", "Vui lòng nhập số lượng câu hỏi hợp lệ.");
+        ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
+        return View(model);
+    }
+
+    // Đếm tổng số câu hỏi có trong chủ đề được chọn
+    int totalQuestions = _context.CauHois.Count(c => c.ChuDeId == model.ChuDeId);
+
+    if (model.SoLuongCauHoi > totalQuestions)
+    {
+        ModelState.AddModelError("", $"Số lượng câu hỏi không được lớn hơn số câu hỏi hiện có ({totalQuestions}) trong chủ đề.");
+        ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
+        return View(model);
+    }
+
         var deThi = _context.DeThis.FirstOrDefault(d => d.Id == id);
         if (deThi == null) return NotFound();
-
+        // var soCauHoi = model.SoLuongCauHoi; 
         // Cập nhật đề thi
         deThi.TenDeThi = model.TenDeThi;
         deThi.ThoiGianLamBai = model.ThoiGianLamBai;
         deThi.TrangThaiMo = model.TrangThaiMo;
         deThi.ChuDeId = model.ChuDeId;
-
+        deThi.SoLuongCauHoi = model.SoLuongCauHoi;
         _context.SaveChanges();
         return RedirectToAction("Index");
     }

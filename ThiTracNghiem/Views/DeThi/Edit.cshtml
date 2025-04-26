@@ -1,4 +1,4 @@
-@model DeThiCreateViewModel
+@model DeThi
 @{
     ViewData["Title"] = "Chỉnh sửa đề thi";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -32,6 +32,11 @@
         </select>
         <span asp-validation-for="ChuDeId" class="text-danger"></span>
     </div>
+    <div class="form-group">
+        <label asp-for="SoLuongCauHoi" class="control-label"></label>
+        <input asp-for="SoLuongCauHoi" class="form-control" />
+        <span asp-validation-for="SoLuongCauHoi" class="text-danger"></span>
+     </div>
 
 
     <button type="submit" class="btn btn-primary mt-3">Lưu thay đổi</button>
