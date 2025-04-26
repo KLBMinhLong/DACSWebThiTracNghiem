@@ -12,7 +12,7 @@ using ThiTracNghiem.Data;
 namespace ThiTracNghiem.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250426113610_RemoveChiTietDeThi")]
+    [Migration("20250426112737_RemoveChiTietDeThi")]
     partial class RemoveChiTietDeThi
     {
         /// <inheritdoc />
