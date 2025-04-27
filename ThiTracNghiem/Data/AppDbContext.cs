@@ -14,6 +14,17 @@ namespace ThiTracNghiem.Data
         public DbSet<ChuDe> ChuDes { get; set; }
         public DbSet<CauHoi> CauHois { get; set; }
         public DbSet<DeThi> DeThis { get; set; }
-        
+
+        public DbSet<LichSuLamBai> LichSuLamBais { get; set; }
+        public DbSet<ChiTietLamBai> ChiTietLamBais { get; set; }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<ChiTietLamBai>()
+                .HasOne(c => c.LichSuLamBai)
+                .WithMany(l => l.ChiTietLamBais)
+                .HasForeignKey(c => c.LichSuLamBaiId)
+                .OnDelete(DeleteBehavior.Restrict);
+        }
+
     }
 }
