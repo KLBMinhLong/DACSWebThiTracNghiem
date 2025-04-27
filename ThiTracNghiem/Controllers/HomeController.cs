@@ -2,6 +2,7 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using ThiTracNghiem.Data;
 using ThiTracNghiem.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace ThiTracNghiem.Controllers;
 
@@ -22,7 +23,18 @@ public class HomeController : Controller
         .OrderByDescending(d => d.NgayTao)
         .ToList();
 
-    return View(danhSachDeThi);
+        return View(danhSachDeThi);
+    }
+
+    public IActionResult ChiTietDeThi(int id)
+    {
+        var deThi = _context.DeThis
+            .Include(d => d.ChuDe)
+            .FirstOrDefault(d => d.Id == id);
+
+        if (deThi == null) return NotFound();
+
+        return View(deThi);
     }
 
     public IActionResult Privacy()
