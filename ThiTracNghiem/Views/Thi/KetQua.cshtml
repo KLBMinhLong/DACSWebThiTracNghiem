@@ -1,0 +1,55 @@
+@model KetQuaViewModel
+
+<div class="container mt-4">
+    <h2>Kết quả bài thi</h2>
+    <div class="card shadow-sm p-4 mb-4">
+        <h4 class="mb-2">Tổng số câu hỏi: @Model.TongCauHoi</h4>
+        <h4 class="mb-2">Số câu trả lời đúng: @Model.SoCauDung</h4>
+        <h3 class="text-success mb-3">Điểm số: @Model.DiemSo</h3>
+    </div>
+
+    <hr />
+
+    @for (int i = 0; i < Model.ChiTietTraLoi.Count; i++)
+    {
+        var c = Model.ChiTietTraLoi[i];
+        <div class="mb-4">
+            <p><strong>Câu @(@i + 1):</strong> @c.CauHoi</p>
+
+            <div>
+                <label>
+                    <input type="radio" disabled @(c.DapAnChon == "A" ? "checked" : "") />
+                    A. @c.DapAnA
+                </label><br />
+                <label>
+                    <input type="radio" disabled @(c.DapAnChon == "B" ? "checked" : "") />
+                    B. @c.DapAnB
+                </label><br />
+                <label>
+                    <input type="radio" disabled @(c.DapAnChon == "C" ? "checked" : "") />
+                    C. @c.DapAnC
+                </label><br />
+                <label>
+                    <input type="radio" disabled @(c.DapAnChon == "D" ? "checked" : "") />
+                    D. @c.DapAnD
+                </label>
+            </div>
+
+            <div class="mt-1 fw-bold">
+                @if (c.DungHaySai)
+                {
+                    <span class="text-success">Đúng</span>
+                }
+                else
+                {
+                    <span class="text-danger">Sai ❌. Đáp án đúng là: <strong>@c.DapAnDung</strong></span>
+                }
+            </div>
+
+            <hr />
+        </div>
+    }
+    <div class="text-center mt-4"></div>
+        <a href="/" class="btn btn-primary">Về Trang chủ</a>
+    </div>
+</div>

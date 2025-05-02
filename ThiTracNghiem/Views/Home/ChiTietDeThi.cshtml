@@ -1,13 +1,17 @@
 @model DeThi
 
-<h2>@Model.TenDeThi</h2>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">@Model.TenDeThi</h2>
 
-<ul class="list-group mb-4">
-    <li class="list-group-item">Số câu hỏi: @Model.SoLuongCauHoi</li>
-    <li class="list-group-item">Thời gian làm bài: @Model.ThoiGianLamBai phút</li>
-    <li class="list-group-item">Ngày tạo: @Model.NgayTao.ToString("dd/MM/yyyy")</li>
-</ul>
+    <ul class="list-group mb-4">
+        <li class="list-group-item"><strong>Số câu hỏi:</strong> @Model.SoLuongCauHoi</li>
+        <li class="list-group-item"><strong>Thời gian làm bài:</strong> @Model.ThoiGianLamBai phút</li>
+        <li class="list-group-item"><strong>Ngày tạo:</strong> @Model.NgayTao.ToString("dd/MM/yyyy")</li>
+    </ul>
 
-<a asp-action="BatDauLamBai" asp-route-id="@Model.Id" class="btn btn-primary">Bắt đầu làm bài</a>
-
-
+    <div class="text-center">
+        <a asp-controller="Thi" asp-action="LamBai" asp-route-id="@Model.Id" class="btn btn-success btn-lg">
+            Bắt đầu làm bài
+        </a>
+    </div>
+</div>

@@ -1,0 +1,70 @@
+@using ThiTracNghiem.Models
+@model LamBaiViewModel
+
+<div class="container mt-4">
+    <div class="row">
+        <!-- Cột bên trái: thời gian -->
+        <div class="col-md-3 text-center">
+            <div class="card p-3 shadow-sm">
+                <h5 class="text-secondary">Thời gian còn lại</h5>
+                <h1 id="countdown" class="text-danger fw-bold" style="font-size: 3rem;">00:00</h1>
+            </div>
+        </div>
+
+        <!-- Cột bên phải: câu hỏi -->
+        <div class="col-md-9">
+            <h2>@Model.DeThi.TenDeThi</h2>
+
+            <form asp-action="NopBai" method="post">
+                <input type="hidden" name="DeThiId" value="@Model.DeThi.Id" />
+
+                @for (int i = 0; i < Model.CauHois.Count; i++)
+                {
+                    <div class="mb-4">
+                        <p><strong>Câu hỏi @(@i + 1):</strong> @Model.CauHois[i].NoiDung</p>
+                        <input type="radio" name="Answers[@i]" value="A" required /> A. @Model.CauHois[i].DapAnA <br />
+                        <input type="radio" name="Answers[@i]" value="B" /> B. @Model.CauHois[i].DapAnB <br />
+                        <input type="radio" name="Answers[@i]" value="C" /> C. @Model.CauHois[i].DapAnC <br />
+                        <input type="radio" name="Answers[@i]" value="D" /> D. @Model.CauHois[i].DapAnD <br />
+                        <input type="hidden" name="QuestionIds[@i]" value="@Model.CauHois[i].Id" />
+                    </div>
+                    <hr />
+                }
+
+                <div class="text-center mt-4">
+                    <button type="submit" class="btn btn-primary btn-lg">Nộp bài</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+<script>
+    var totalTime = @Model.DeThi.ThoiGianLamBai * 60; // thời gian làm bài (giây)
+
+    function startCountdown() {
+        var countdownElement = document.getElementById('countdown');
+
+        var timer = setInterval(function () {
+            var minutes = Math.floor(totalTime / 60);
+            var seconds = totalTime % 60;
+
+            countdownElement.innerHTML = 
+                (minutes < 10 ? '0' + minutes : minutes) + ":" + 
+                (seconds < 10 ? '0' + seconds : seconds);
+
+            totalTime--;
+
+            if (totalTime < 0) {
+                clearInterval(timer);
+                alert("Hết thời gian làm bài. Bài thi sẽ được nộp tự động!");
+                document.querySelector('form').submit();
+            }
+        }, 1000);
+    }
+
+    window.onload = startCountdown;
+</script>
+}
