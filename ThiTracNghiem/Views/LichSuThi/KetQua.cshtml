@@ -1,0 +1,53 @@
+@model ThiTracNghiem.Models.LichSuLamBai
+
+@{
+    ViewData["Title"] = "Kết quả làm bài";
+}
+
+<h2 class="mb-4">KẾT QUẢ BÀI THI: @Model.DeThi.TenDeThi</h2>
+
+<p><strong>Ngày làm bài:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy HH:mm")</p>
+<p><strong>Điểm:</strong> @Model.Diem </p>
+<hr />
+
+@foreach (var ct in Model.ChiTietLamBais!)
+{
+    <div class="mb-4 p-3 border rounded shadow-sm">
+        <h5>Câu hỏi: @ct.CauHoi?.NoiDung</h5>
+
+        @if (!string.IsNullOrEmpty(ct.CauHoi?.HinhAnhUrl))
+        {
+            <img src="@ct.CauHoi.HinhAnhUrl" alt="Hình ảnh câu hỏi" class="img-fluid mb-2" />
+        }
+
+        @if (!string.IsNullOrEmpty(ct.CauHoi?.AudioUrl))
+        {
+            <audio controls class="mb-2">
+                <source src="@ct.CauHoi.AudioUrl" type="audio/mpeg" />
+                Trình duyệt không hỗ trợ audio.
+            </audio>
+        }
+
+        <ul>
+            <li @(ct.CauHoi.DapAnA == ct.DapAnChon ? "style=color:red;" : "")>A. @ct.CauHoi.DapAnA</li>
+            <li @(ct.CauHoi.DapAnB == ct.DapAnChon ? "style=color:red;" : "")>B. @ct.CauHoi.DapAnB</li>
+            <li @(ct.CauHoi.DapAnC == ct.DapAnChon ? "style=color:red;" : "")>C. @ct.CauHoi.DapAnC</li>
+            <li @(ct.CauHoi.DapAnD == ct.DapAnChon ? "style=color:red;" : "")>D. @ct.CauHoi.DapAnD</li>
+        </ul>
+
+        <p>
+            <strong>Đáp án đúng:</strong> @ct.CauHoi.DapAnDung &nbsp;|&nbsp;
+            <strong>Chọn:</strong> @ct.DapAnChon &nbsp;|&nbsp;
+            <strong>Kết quả:</strong>
+            <span class="@(ct.DungHaySai == true ? "text-success" : "text-danger")">
+                @(ct.DungHaySai == true ? "Đúng" : "Sai")
+            </span>
+        </p>
+    </div>
+}
+
+<div class="mt-4">
+    <a asp-controller="LichSuThi" asp-action="Index" class="btn btn-secondary">
+        ← Trở về lịch sử làm bài
+    </a>
+</div>

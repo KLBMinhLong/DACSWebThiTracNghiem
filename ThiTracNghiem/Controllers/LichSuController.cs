@@ -1,32 +1,45 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ThiTracNghiem.Models;
 using ThiTracNghiem.Data;
 
-namespace ThiTracNghiem.Controllers
+public class LichSuThiController : Controller
 {
-    public class LichSuController : Controller
+    private readonly AppDbContext _context;
+
+    public LichSuThiController(AppDbContext context)
     {
-        private readonly AppDbContext _context;
+        _context = context;
+    }
 
-        public LichSuController(AppDbContext context)
-        {
-            _context = context;
-        }
+    // Hiển thị danh sách lịch sử làm bài
+    public IActionResult Index()
+    {
+        var tenTaiKhoan = HttpContext.Session.GetString("UserName");
+        if (string.IsNullOrEmpty(tenTaiKhoan))
+            return RedirectToAction("DangNhap", "TaiKhoan");
 
-        public IActionResult Index()
-        {
-           var tenDangNhap = HttpContext.Session.GetString("TenTaiKhoan");
+        var lichSu = _context.LichSuLamBais
+            .Include(x => x.DeThi)
+            .Where(x => x.TenTaiKhoan == tenTaiKhoan)
+            .OrderByDescending(x => x.NgayBatDau)
+            .ToList();
 
-            // if (string.IsNullOrEmpty(username))
-            //     return RedirectToAction("DangNhap", "TaiKhoan");
+        return View(lichSu);
+    }
 
-            var lichSu = _context.LichSuLamBais
-                .Where(l => l.TenTaiKhoan == tenDangNhap)
-                .OrderByDescending(l => l.NgayNopBai)
-                .ToList();
+    // Xem chi tiết 1 lần làm bài
+    public IActionResult XemChiTiet(int id)
+    {
+        var lichSu = _context.LichSuLamBais
+            .Include(x => x.DeThi)
+            .Include(x => x.ChiTietLamBais!)
+                .ThenInclude(c => c.CauHoi)
+            .FirstOrDefault(x => x.Id == id);
 
+        if (lichSu == null)
+            return NotFound();
 
-            return View(lichSu);
-        }
+        return View("KetQua", lichSu); // dùng lại View kết quả cũ
     }
 }

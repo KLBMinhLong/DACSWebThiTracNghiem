@@ -20,8 +20,8 @@ public class ThiController : Controller
 
         return View(deThis);
     }
-    
-     [HttpGet]
+
+    [HttpGet]
     public IActionResult LamBai(int id)
     {
         var deThi = _context.DeThis.FirstOrDefault(d => d.Id == id);
@@ -41,7 +41,7 @@ public class ThiController : Controller
 
         return View(viewModel); // Gọi ra Views/Thi/LamBai.cshtml
     }
-    
+
     [HttpPost]
     public IActionResult NopBai(int DeThiId, List<int> QuestionIds, List<string> Answers)
     {
@@ -81,7 +81,7 @@ public class ThiController : Controller
         };
 
         // lưu lịch sử làm bài
-        var tenTaiKhoan = HttpContext.Session.GetString("UserName"); 
+        var tenTaiKhoan = HttpContext.Session.GetString("UserName");
 
         if (!string.IsNullOrEmpty(tenTaiKhoan))
         {
@@ -96,13 +96,36 @@ public class ThiController : Controller
 
             _context.LichSuLamBais.Add(lichSu);
             _context.SaveChanges();
+
+            // Lấy Id vừa tạo của LichSuLamBai
+            int lichSuId = lichSu.Id;
+
+            // Duyệt qua từng câu hỏi và lưu vào bảng ChiTietLamBais
+            for (int i = 0; i < QuestionIds.Count; i++)
+            {
+                var cauHoi = _context.CauHois.FirstOrDefault(c => c.Id == QuestionIds[i]);
+                if (cauHoi != null)
+                {
+                    var chiTiet = new ChiTietLamBai
+                    {
+                        LichSuLamBaiId = lichSuId,
+                        CauHoiId = cauHoi.Id,
+                        DapAnChon = Answers[i],
+                        DungHaySai = (Answers[i] == cauHoi.DapAnDung)
+                    };
+
+                    _context.ChiTietLamBais.Add(chiTiet);
+                }
+            }
+
+            _context.SaveChanges();
         }
         else
         {
             Console.WriteLine("⚠ Không lấy được TenTaiKhoan từ Session.");
         }
 
-            return View("KetQua", ketQua);
-            
-        }
+        return View("KetQua", ketQua);
+
+    }
 }
