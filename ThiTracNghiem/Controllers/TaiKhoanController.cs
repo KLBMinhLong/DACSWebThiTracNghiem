@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
 using ThiTracNghiem.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace ThiTracNghiem.Controllers
 {
@@ -189,6 +191,8 @@ namespace ThiTracNghiem.Controllers
                 ModelState.AddModelError("Email", "Email đã được sử dụng");
                 return View(model);
             }
+            // Mã hóa mật khẩu
+            model.MatKhau = MaHoaHelper.MaHoaSHA256(model.MatKhau);
 
             _context.TaiKhoans.Add(model);
             _context.SaveChanges();
@@ -280,6 +284,20 @@ namespace ThiTracNghiem.Controllers
             ViewBag.ThongBao = "Cập nhật thành công!";
             return View(model);
         }
+    }
+    public static class MaHoaHelper
+    {
+        public static string MaHoaSHA256(string input)
+        {
+            using (var sha256 = SHA256.Create())
+            {
+                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(input));
+                var builder = new StringBuilder();
+                foreach (var b in bytes)
+                    builder.Append(b.ToString("x2"));
 
+                return builder.ToString();
+            }
+        }
     }
 }
