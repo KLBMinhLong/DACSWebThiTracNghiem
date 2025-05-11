@@ -59,6 +59,8 @@ public class ThiController : Controller
                 chiTietTraLoiList.Add(new ChiTietCauTraLoi
                 {
                     CauHoi = cauHoi.NoiDung,
+                    HinhAnhUrl = cauHoi.HinhAnhUrl,
+                    AudioUrl = cauHoi.AudioUrl,
                     DapAnA = cauHoi.DapAnA,
                     DapAnB = cauHoi.DapAnB,
                     DapAnC = cauHoi.DapAnC,

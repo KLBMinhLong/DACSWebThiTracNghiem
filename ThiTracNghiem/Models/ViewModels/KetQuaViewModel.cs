@@ -6,6 +6,8 @@ namespace ThiTracNghiem.Models
     public class ChiTietCauTraLoi
     {
         public string CauHoi { get; set; }
+        public string HinhAnhUrl { get; set; }
+        public string AudioUrl { get; set; }
         public string DapAnA { get; set; }
         public string DapAnB { get; set; }
         public string DapAnC { get; set; }

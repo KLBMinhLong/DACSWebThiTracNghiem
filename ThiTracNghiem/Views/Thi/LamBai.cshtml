@@ -22,6 +22,18 @@
                 {
                     <div class="mb-4">
                         <p><strong>Câu hỏi @(@i + 1):</strong> @Model.CauHois[i].NoiDung</p>
+                        @if (!string.IsNullOrEmpty(Model.CauHois[i].HinhAnhUrl))
+                        {
+                            <img src="@Model.CauHois[i].HinhAnhUrl" alt="Hình ảnh câu hỏi" class="img-fluid mb-2" />
+                        }
+                        @if (!string.IsNullOrEmpty(Model.CauHois[i].AudioUrl))
+                        {
+                            <audio controls class="mb-2">
+                                <source src="@Model.CauHois[i].AudioUrl" type="audio/mpeg" />
+                                Trình duyệt không hỗ trợ audio.
+                            </audio>
+                        }
+                        <br />
                         <input type="radio" name="Answers[@i]" value="A" required /> A. @Model.CauHois[i].DapAnA <br />
                         <input type="radio" name="Answers[@i]" value="B" /> B. @Model.CauHois[i].DapAnB <br />
                         <input type="radio" name="Answers[@i]" value="C" /> C. @Model.CauHois[i].DapAnC <br />

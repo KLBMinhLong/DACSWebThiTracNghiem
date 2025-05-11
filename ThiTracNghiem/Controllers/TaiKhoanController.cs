@@ -22,7 +22,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // GET: TaiKhoan
-       
+
 
         // GET: TaiKhoan/Details/5
         public async Task<IActionResult> Details(string id)
@@ -57,6 +57,8 @@ namespace ThiTracNghiem.Controllers
         {
             if (ModelState.IsValid)
             {
+                // Mã hóa mật khẩu
+                taiKhoan.MatKhau = MaHoaHelper.MaHoaSHA256(taiKhoan.MatKhau);
                 _context.Add(taiKhoan);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -176,7 +178,7 @@ namespace ThiTracNghiem.Controllers
                 return View(model);
             }
 
-            model.VaiTro = "user"; // mặc định là học viên
+            model.VaiTro = "user"; // mặc định là useruser
             model.ThoiGianTao = DateTime.Now;
             model.TrangThaiKhoa = false;
 
@@ -212,7 +214,10 @@ namespace ThiTracNghiem.Controllers
         {
             var user = await _context.TaiKhoans.FindAsync(tenTaiKhoan);
 
-            if (user == null || user.MatKhau != matKhau || user.TrangThaiKhoa)
+            // Mã hóa mật khẩu người dùng nhập
+            string matKhauBam = MaHoaHelper.MaHoaSHA256(matKhau);
+
+            if (user == null || user.MatKhau != matKhauBam || user.TrangThaiKhoa)
             {
                 ViewBag.Loi = "Tài khoản không đúng hoặc đã bị khóa.";
                 return View();
@@ -223,11 +228,11 @@ namespace ThiTracNghiem.Controllers
 
             if (user.VaiTro.ToLower() == "admin")
             {
-                return RedirectToAction("Dashboard", "Admin"); // Chỗ này lát mình làm controller Admin riêng
+                return RedirectToAction("Dashboard", "Admin"); // Chỗ này CController Admin riêng
             }
             else
             {
-                    return RedirectToAction("Index", "Home"); // Giao diện người dùng bình thường
+                return RedirectToAction("Index", "Home"); // Giao diện người dùng bình thường
             }
         }
 
@@ -274,9 +279,10 @@ namespace ThiTracNghiem.Controllers
             tk.GioiTinh = model.GioiTinh;
             tk.SoDienThoai = model.SoDienThoai;
 
+            // Mã hóa mật khẩu người dùng nhập mới
             if (!string.IsNullOrEmpty(model.MatKhauMoi))
             {
-                tk.MatKhau = model.MatKhauMoi; // nên mã hóa nhưng đơn giản thì để vậy
+                tk.MatKhau = MaHoaHelper.MaHoaSHA256(model.MatKhauMoi);
             }
 
             _context.SaveChanges();

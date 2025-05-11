@@ -80,7 +80,7 @@ namespace ThiTracNghiem.Controllers
             }
 
             model.ThoiGianTao = DateTime.Now;
-
+            model.MatKhau=MaHoaHelper.MaHoaSHA256(model.MatKhau); // Mã hóa mật khẩu
             _context.TaiKhoans.Add(model);
             await _context.SaveChangesAsync();
 
