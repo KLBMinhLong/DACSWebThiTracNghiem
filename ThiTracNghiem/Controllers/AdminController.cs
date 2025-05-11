@@ -12,7 +12,7 @@ namespace ThiTracNghiem.Controllers
         {
             _context = context;
         }
-
+       
         public IActionResult Dashboard()
         {
             var role = HttpContext.Session.GetString("VaiTro");
@@ -25,7 +25,8 @@ namespace ThiTracNghiem.Controllers
         }
 
         //  Action để quản lý user
-        public async Task<IActionResult> QuanLyNguoiDung()
+        // phân trang 
+       public async Task<IActionResult> QuanLyNguoiDung(int page = 1, int pageSize = 10)
         {
             var role = HttpContext.Session.GetString("VaiTro");
             if (role == null || role.ToLower() != "admin")
@@ -33,9 +34,22 @@ namespace ThiTracNghiem.Controllers
                 return RedirectToAction("DangNhap", "TaiKhoan");
             }
 
-            var users = await _context.TaiKhoans.ToListAsync();
-            return View(users);
+            var query = _context.TaiKhoans.AsQueryable();
+            int totalItems = await query.CountAsync();
+
+            var taiKhoan = await query
+                .OrderBy(t => t.TenTaiKhoan)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+            return View(taiKhoan); // Views/Admin/QuanLyNguoiDung.cshtml
         }
+
+
         // Hiển thị form tạo tài khoản mới
         [HttpGet]
         public IActionResult CreateUser()

@@ -4,14 +4,14 @@
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
-@* Hiển thị thông báo thành công  *@
-@if (TempData["SuccessMessage"] != null)
-{
-    <div class="alert alert-success alert-dismissible fade show" role="alert">
-        @TempData["SuccessMessage"]
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-    </div>
-}
+    @* Hiển thị thông báo thành công  *@
+        @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
+                    @TempData["SuccessMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
 <div class="d-flex justify-content-center mt-4">
     <div class="w-75">
 
@@ -21,9 +21,9 @@
             <a asp-action="CreateUser" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Thêm tài khoản mới
             </a>
-
+            
         </div>
-
+            
         <table class="table table-bordered table-hover align-middle text-center">
             <thead class="table-dark">
                 <tr>
@@ -35,35 +35,57 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var user in Model)
-                {
-                    <tr>
-                        <td>@user.TenTaiKhoan</td>
-                        <td>@user.Email</td>
-                        <td>@(user.VaiTro == "admin" ? "Admin" : "User")</td>
-                        <td>
-                            @if (user.TrangThaiKhoa)
-                            {
-                                <span class="badge bg-danger">Bị khóa</span>
-                            }
-                            else
-                            {
-                                <span class="badge bg-success">Hoạt động</span>
-                            }
-                        </td>
-                        <td>
-                            <a asp-action="EditUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-warning btn-sm me-1">
-                                <i class="bi bi-pencil-square"></i> Sửa
-                            </a>
-                            <a asp-action="DeleteUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-danger btn-sm"
+            @foreach (var user in Model)
+            {
+                <tr>
+                    <td>@user.TenTaiKhoan</td>
+                    <td>@user.Email</td>
+                    <td>@(user.VaiTro == "admin" ? "Admin" : "User")</td>
+                    <td>
+                        @if (user.TrangThaiKhoa)
+                        {
+                            <span class="badge bg-danger">Bị khóa</span>
+                        }
+                        else
+                        {
+                            <span class="badge bg-success">Hoạt động</span>
+                        }
+                    </td>
+                    <td>
+                        <a asp-action="EditUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-warning btn-sm me-1">
+                            <i class="bi bi-pencil-square"></i> Sửa
+                        </a>
+                        <a asp-action="DeleteUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-danger btn-sm"
                                 onclick="return confirm('Bạn có chắc chắn muốn xoá tài khoản này không?');">
-                                <i class="bi bi-trash"></i> Xoá
-                            </a>
-                        </td>
-                    </tr>
-                }
+                            <i class="bi bi-trash"></i> Xoá
+                        </a>
+                    </td>
+                </tr>
+            }
             </tbody>
         </table>
 
     </div>
 </div>
+@* Phân trang dang fix*@
+@if (ViewBag.TotalPages > 1)
+{
+    <nav class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">&laquo;</a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="?page=@i">@i</a>
+                </li>
+            }
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+}
+
