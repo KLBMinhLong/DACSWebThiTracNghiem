@@ -16,12 +16,22 @@ public class HomeController : Controller
     }
 
     [RequireLogin]
-    public IActionResult Index()
+   public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
     {
-        var danhSachDeThi = _context.DeThis
-        .Where(d => d.TrangThaiMo)
-        .OrderByDescending(d => d.NgayTao)
-        .ToList();
+        var query = _context.DeThis
+            .Where(d => d.TrangThaiMo)
+            .OrderByDescending(d => d.NgayTao)
+            .AsQueryable();
+
+        int totalItems = await query.CountAsync();
+
+        var danhSachDeThi = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
         return View(danhSachDeThi);
     }

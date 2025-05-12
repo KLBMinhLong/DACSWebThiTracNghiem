@@ -18,11 +18,31 @@ namespace ThiTracNghiem
             _context = context;
         }
 
-        // GET: ChuDe
-        public async Task<IActionResult> Index()
+        // Phân Trang và Tìm Kiếm Theo Tên Chủ Đề
+       public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 5)
         {
-            return View(await _context.ChuDes.ToListAsync());
+            var query = _context.ChuDes.AsQueryable();
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                query = query.Where(cd => cd.TenChuDe.Contains(searchString));
+            }
+
+            int totalItems = await query.CountAsync();
+
+            var chuDes = await query
+                .OrderBy(cd => cd.TenChuDe)
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.CurrentFilter = searchString;
+
+            return View(chuDes);
         }
+
 
         // GET: ChuDe/Details/5
         public async Task<IActionResult> Details(int? id)

@@ -13,18 +13,31 @@ public class DeThiController : Controller
         _context = context;
     }
 
-    // tìm kiêm theo tên dề thi
-    public IActionResult Index(string searchString)
+    // tìm kiếm theo tên đề thi, phân trang
+    public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 5)
     {
-        var query = _context.DeThis.Include(d => d.ChuDe).AsQueryable();
+        var query = _context.DeThis
+            .Include(d => d.ChuDe)
+            .AsQueryable();
 
         if (!string.IsNullOrEmpty(searchString))
         {
             query = query.Where(d => d.TenDeThi.Contains(searchString));
         }
 
-        ViewBag.CurrentFilter = searchString; // để giữ lại giá trị input khi submit
-        return View(query.ToList());
+        int totalItems = await query.CountAsync();
+
+        var deThis = await query
+            .OrderByDescending(d => d.NgayTao)
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+        ViewBag.CurrentFilter = searchString;
+
+        return View(deThis);
     }
 
 

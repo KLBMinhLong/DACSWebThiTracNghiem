@@ -8,8 +8,14 @@
 <h1>Danh sách chủ đề</h1>
 
 <p>
-    <a asp-action="Create">Tạo chủ đề mới</a>
+    <a asp-action="Create" class="btn btn-primary">Tạo câu hỏi mới</a>
 </p>
+<form asp-action="Index" method="get" class="d-flex mb-3" style="max-width: 500px;">
+    <input type="text" name="searchString" class="form-control me-2" placeholder="Tìm chủ đề..." value="@ViewBag.CurrentFilter" />
+    <button type="submit" class="btn btn-primary">Tìm</button>
+</form>
+
+
 <table class="table">
     <thead>
         <tr>
@@ -34,3 +40,25 @@
 }
     </tbody>
 </table>
+@*Phân Trang*@
+@if (ViewBag.TotalPages > 1)
+{
+    <nav class="d-flex justify-content-center mt-4">
+        <ul class="pagination">
+            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1, searchString = ViewBag.CurrentFilter })">&laquo;</a>
+            </li>
+
+            @for (int i = 1; i <= ViewBag.TotalPages; i++)
+            {
+                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = i, searchString = ViewBag.CurrentFilter })">@i</a>
+                </li>
+            }
+
+            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1, searchString = ViewBag.CurrentFilter })">&raquo;</a>
+            </li>
+        </ul>
+    </nav>
+}
