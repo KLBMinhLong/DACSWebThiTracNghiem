@@ -37,19 +37,6 @@ public class ThiController : Controller
             .Include(x => x.ChiTietLamBais)
             .FirstOrDefault(l => l.TenTaiKhoan == tenTaiKhoan && l.DeThiId == id && l.TrangThai == "DangLam");
 
-        var gioHetHan = lichSu.NgayBatDau.AddMinutes(deThi.ThoiGianLamBai);
-        if (DateTime.Now > gioHetHan)
-        {
-            // Tự động chuyển sang trang kết quả
-            if (lichSu.TrangThai != "HoanThanh")
-            {
-                lichSu.TrangThai = "HoanThanh";
-                lichSu.NgayNopBai = gioHetHan;
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction("KetQuaDaNop", new { lichSuId = lichSu.Id });
-        }
 
         if (lichSu == null)
         {
