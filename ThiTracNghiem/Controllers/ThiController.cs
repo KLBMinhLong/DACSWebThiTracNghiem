@@ -224,7 +224,7 @@ public class ThiController : Controller
         // Cập nhật lịch sử
         lichSu.Diem = diem;
         _context.SaveChanges();
-        
+
         var vm = new KetQuaViewModel
         {
             TongCauHoi = tongCauHoi,
