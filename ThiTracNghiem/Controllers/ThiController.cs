@@ -220,6 +220,7 @@ public class ThiController : Controller
         var thoiGianPhut = (int)(lichSu.NgayNopBai.HasValue
             ? (lichSu.NgayNopBai.Value - lichSu.NgayBatDau).TotalMinutes
             : (DateTime.Now - lichSu.NgayBatDau).TotalMinutes);
+            
         // Cập nhật lịch sử
         lichSu.Diem = diem;
         _context.SaveChanges();
