@@ -14,7 +14,7 @@
     </ul>
 
     <div class="text-center">
-        
+
         @if (dangLam != null)
         {
             <div class="alert alert-warning">
@@ -27,4 +27,60 @@
             <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-success">Bắt đầu làm bài</a>
         }
     </div>
+    <hr>
+    <h4 class="mt-4">Bình luận</h4>
+    <div>
+        <form id="form-binhluan">
+            <input type="hidden" name="deThiId" value="@Model.Id" />
+            <textarea name="noiDung" class="form-control mb-2" required></textarea>
+            <button type="submit" class="btn btn-primary btn-sm">Gửi bình luận</button>
+        </form>
+
+        <div id="ds-binhluan" class="mt-4"></div>
+    </div>
 </div>
+
+@section Scripts {
+    <script>
+        const deThiId = @Model.Id;
+
+        function taiBinhLuan() {
+            fetch('/BinhLuan/DanhSach?deThiId=' + deThiId)
+                .then(res => res.text())
+                .then(html => document.getElementById('ds-binhluan').innerHTML = html);
+        }
+
+        // Gửi bình luận
+        document.getElementById("form-binhluan").addEventListener("submit", function (e) {
+            e.preventDefault();
+            const formData = new FormData(this);
+            fetch('/BinhLuan/Create', {
+                method: 'POST',
+                body: formData
+            })
+                .then(res => res.text())
+                .then(html => {
+                    this.reset();
+                    document.getElementById('ds-binhluan').innerHTML = html;
+                });
+        });
+
+        function xoaBinhLuan(id) {
+            if (!confirm("Bạn có chắc chắn muốn xóa bình luận này?")) return;
+
+            fetch('/BinhLuan/Delete', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: 'id=' + id
+            })
+                .then(res => res.text())
+                .then(html => {
+                    document.getElementById('ds-binhluan').innerHTML = html;
+                });
+        }
+
+        // Tải lại mỗi 10 giây
+        setInterval(taiBinhLuan, 10000);
+        taiBinhLuan(); // load lần đầu
+    </script>
+}

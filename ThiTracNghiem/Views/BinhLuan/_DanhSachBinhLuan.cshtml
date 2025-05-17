@@ -1,0 +1,19 @@
+@model List<ThiTracNghiem.Models.BinhLuan>
+@{
+    var username = ViewBag.UserName as string;
+}
+
+@foreach (var bl in Model)
+{
+    <div class="border-bottom py-2">
+        <strong>@bl.TenTaiKhoan</strong> - 
+        <small class="text-muted">@bl.ThoiGian.ToString("HH:mm dd/MM/yyyy")</small>
+        <p>@bl.NoiDung</p>
+
+        @if (bl.TenTaiKhoan == username)
+        {
+            <button class="btn btn-link text-danger btn-sm"
+        onclick="xoaBinhLuan(@bl.Id)">Xóa</button>
+        }
+    </div>
+}

@@ -26,5 +26,7 @@ namespace ThiTracNghiem.Data
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
+        public DbSet<BinhLuan> BinhLuans { get; set; }
+
     }
 }
