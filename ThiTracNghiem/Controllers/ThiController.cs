@@ -191,29 +191,37 @@ public class ThiController : Controller
         if (lichSu == null || lichSu.TrangThai != "HoanThanh")
             return RedirectToAction("Index");
 
+        int soCauDung = 0;
         int tongCauHoi = lichSu.ChiTietLamBais.Count;
-        int soCauDung = lichSu.ChiTietLamBais.Count(ct => ct.DapAnChon == ct.CauHoi.DapAnDung);
-        double diem = Math.Round(((double)soCauDung / tongCauHoi) * 10, 2);
-        lichSu.Diem = diem;
-        _context.SaveChanges();
-        
-        var chiTietTraLoi = lichSu.ChiTietLamBais.Select(ct => new ChiTietCauTraLoi
-        {
-            CauHoi = ct.CauHoi.NoiDung,
-            HinhAnhUrl = ct.CauHoi.HinhAnhUrl,
-            AudioUrl = ct.CauHoi.AudioUrl,
-            DapAnA = ct.CauHoi.DapAnA,
-            DapAnB = ct.CauHoi.DapAnB,
-            DapAnC = ct.CauHoi.DapAnC,
-            DapAnD = ct.CauHoi.DapAnD,
-            DapAnChon = ct.DapAnChon,
-            DapAnDung = ct.CauHoi.DapAnDung,
-            DungHaySai = ct.DapAnChon == ct.CauHoi.DapAnDung
-        }).ToList();
+        var chiTietTraLoiList = new List<ChiTietCauTraLoi>();
 
+        foreach (var ct in lichSu.ChiTietLamBais)
+        {
+            var ch = ct.CauHoi;
+            bool dung = !string.IsNullOrEmpty(ct.DapAnChon) && ct.DapAnChon == ch.DapAnDung;
+            if (dung) soCauDung++;
+
+            chiTietTraLoiList.Add(new ChiTietCauTraLoi
+            {
+                CauHoi = ch.NoiDung,
+                HinhAnhUrl = ch.HinhAnhUrl,
+                AudioUrl = ch.AudioUrl,
+                DapAnA = ch.DapAnA,
+                DapAnB = ch.DapAnB,
+                DapAnC = ch.DapAnC,
+                DapAnD = ch.DapAnD,
+                DapAnChon = ct.DapAnChon,
+                DapAnDung = ch.DapAnDung,
+                DungHaySai = dung
+            });
+        }
+
+        double diem = Math.Round(((double)soCauDung / tongCauHoi) * 10, 2);
         var thoiGianPhut = (int)(lichSu.NgayNopBai.HasValue
             ? (lichSu.NgayNopBai.Value - lichSu.NgayBatDau).TotalMinutes
             : (DateTime.Now - lichSu.NgayBatDau).TotalMinutes);
+        // Cập nhật lịch sử
+        lichSu.Diem = diem;
 
         var vm = new KetQuaViewModel
         {
@@ -221,7 +229,7 @@ public class ThiController : Controller
             SoCauDung = soCauDung,
             DiemSo = diem,
             ThoiGianPhut = thoiGianPhut,
-            ChiTietTraLoi = chiTietTraLoi
+            ChiTietTraLoi = chiTietTraLoiList
         };
 
         return View("KetQua", vm);
