@@ -37,19 +37,6 @@ public class ThiController : Controller
             .Include(x => x.ChiTietLamBais)
             .FirstOrDefault(l => l.TenTaiKhoan == tenTaiKhoan && l.DeThiId == id && l.TrangThai == "DangLam");
 
-        var gioHetHan = lichSu.NgayBatDau.AddMinutes(deThi.ThoiGianLamBai);
-        if (DateTime.Now > gioHetHan)
-        {
-            // Tự động chuyển sang trang kết quả
-            if (lichSu.TrangThai != "HoanThanh")
-            {
-                lichSu.TrangThai = "HoanThanh";
-                lichSu.NgayNopBai = gioHetHan;
-                _context.SaveChanges();
-            }
-
-            return RedirectToAction("KetQuaDaNop", new { lichSuId = lichSu.Id });
-        }
 
         if (lichSu == null)
         {
@@ -83,6 +70,19 @@ public class ThiController : Controller
             _context.SaveChanges();
         }
 
+        var gioHetHan = lichSu.NgayBatDau.AddMinutes(deThi.ThoiGianLamBai);
+        if (DateTime.Now > gioHetHan)
+        {
+            // Tự động chuyển sang trang kết quả
+            if (lichSu.TrangThai != "HoanThanh")
+            {
+                lichSu.TrangThai = "HoanThanh";
+                lichSu.NgayNopBai = gioHetHan;
+                _context.SaveChanges();
+            }
+
+            return RedirectToAction("KetQuaDaNop", new { lichSuId = lichSu.Id });
+        }
         // Load lại dữ liệu lịch sử và câu hỏi để hiển thị
         var chiTietCauHoi = _context.ChiTietLamBais
             .Include(x => x.CauHoi)
@@ -193,8 +193,10 @@ public class ThiController : Controller
 
         int tongCauHoi = lichSu.ChiTietLamBais.Count;
         int soCauDung = lichSu.ChiTietLamBais.Count(ct => ct.DapAnChon == ct.CauHoi.DapAnDung);
-        double diem = lichSu.Diem ?? 0;
-
+        double diem = Math.Round(((double)soCauDung / tongCauHoi) * 10, 2);
+        lichSu.Diem = diem;
+        _context.SaveChanges();
+        
         var chiTietTraLoi = lichSu.ChiTietLamBais.Select(ct => new ChiTietCauTraLoi
         {
             CauHoi = ct.CauHoi.NoiDung,
