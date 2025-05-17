@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Models;
 using ThiTracNghiem.Data;
+using System.Linq;
+using System;
 
 public class ThiController : Controller
 {
@@ -12,122 +14,214 @@ public class ThiController : Controller
         _context = context;
     }
 
+    // Hiển thị danh sách đề thi mở
     public IActionResult Index()
     {
         var deThis = _context.DeThis
-            .Where(d => d.TrangThaiMo) // Chỉ lấy đề thi đang mở
+            .Where(d => d.TrangThaiMo)
             .ToList();
-
         return View(deThis);
     }
 
-    [HttpGet]
+    // Bắt đầu làm bài (tạo lịch sử, random câu hỏi)
     public IActionResult LamBai(int id)
     {
+        var tenTaiKhoan = HttpContext.Session.GetString("UserName");
+        if (string.IsNullOrEmpty(tenTaiKhoan)) return RedirectToAction("DangNhap", "TaiKhoan");
+
         var deThi = _context.DeThis.FirstOrDefault(d => d.Id == id);
         if (deThi == null) return NotFound();
 
-        var cauHois = _context.CauHois
-            .Where(c => c.ChuDeId == deThi.ChuDeId)
-            .OrderBy(x => Guid.NewGuid())
-            .Take(deThi.SoLuongCauHoi)
-            .ToList();
+        // Kiểm tra đã có lịch sử thi chưa (tránh tạo lại nếu reload)
+        var lichSu = _context.LichSuLamBais
+            .Include(x => x.ChiTietLamBais)
+            .FirstOrDefault(l => l.TenTaiKhoan == tenTaiKhoan && l.DeThiId == id && l.TrangThai == "DangLam");
 
-        var viewModel = new LamBaiViewModel
+        var gioHetHan = lichSu.NgayBatDau.AddMinutes(deThi.ThoiGianLamBai);
+        if (DateTime.Now > gioHetHan)
         {
-            DeThi = deThi,
-            CauHois = cauHois
-        };
-
-        return View(viewModel); // Gọi ra Views/Thi/LamBai.cshtml
-    }
-
-    [HttpPost]
-    public IActionResult NopBai(int DeThiId, List<int> QuestionIds, List<string> Answers)
-    {
-        int correctCount = 0;
-        var chiTietTraLoiList = new List<ChiTietCauTraLoi>();
-
-        for (int i = 0; i < QuestionIds.Count; i++)
-        {
-            var cauHoi = _context.CauHois.FirstOrDefault(c => c.Id == QuestionIds[i]);
-            if (cauHoi != null)
+            // Tự động chuyển sang trang kết quả
+            if (lichSu.TrangThai != "HoanThanh")
             {
-                bool isCorrect = Answers[i] == cauHoi.DapAnDung;
-                if (isCorrect) correctCount++;
-
-                chiTietTraLoiList.Add(new ChiTietCauTraLoi
-                {
-                    CauHoi = cauHoi.NoiDung,
-                    HinhAnhUrl = cauHoi.HinhAnhUrl,
-                    AudioUrl = cauHoi.AudioUrl,
-                    DapAnA = cauHoi.DapAnA,
-                    DapAnB = cauHoi.DapAnB,
-                    DapAnC = cauHoi.DapAnC,
-                    DapAnD = cauHoi.DapAnD,
-                    DapAnChon = Answers[i],
-                    DapAnDung = cauHoi.DapAnDung,
-                    DungHaySai = (Answers[i] == cauHoi.DapAnDung)
-                });
+                lichSu.TrangThai = "HoanThanh";
+                lichSu.NgayNopBai = gioHetHan;
+                _context.SaveChanges();
             }
+
+            return RedirectToAction("KetQuaDaNop", new { lichSuId = lichSu.Id });
         }
 
-        double diem = ((double)correctCount / QuestionIds.Count) * 10;
-
-        var ketQua = new KetQuaViewModel
+        if (lichSu == null)
         {
-            TongCauHoi = QuestionIds.Count,
-            SoCauDung = correctCount,
-            DiemSo = Math.Round(diem, 2),
-            ChiTietTraLoi = chiTietTraLoiList
-        };
-
-        // lưu lịch sử làm bài
-        var tenTaiKhoan = HttpContext.Session.GetString("UserName");
-
-        if (!string.IsNullOrEmpty(tenTaiKhoan))
-        {
-            var lichSu = new LichSuLamBai
+            // Tạo mới lịch sử thi
+            lichSu = new LichSuLamBai
             {
                 TenTaiKhoan = tenTaiKhoan,
-                DeThiId = DeThiId,
-                NgayBatDau = DateTime.Now, // giả định, có thể sửa lại đúng nếu lưu từ trước
-                NgayNopBai = DateTime.Now,
-                Diem = diem,
+                DeThiId = id,
+                NgayBatDau = DateTime.Now,
+                TrangThai = "DangLam"
             };
-
             _context.LichSuLamBais.Add(lichSu);
             _context.SaveChanges();
 
-            // Lấy Id vừa tạo của LichSuLamBai
-            int lichSuId = lichSu.Id;
+            // Random câu hỏi theo chủ đề
+            var cauHois = _context.CauHois
+                .Where(c => c.ChuDeId == deThi.ChuDeId)
+                .OrderBy(x => Guid.NewGuid())
+                .Take(deThi.SoLuongCauHoi)
+                .ToList();
 
-            // Duyệt qua từng câu hỏi và lưu vào bảng ChiTietLamBais
-            for (int i = 0; i < QuestionIds.Count; i++)
+            foreach (var ch in cauHois)
             {
-                var cauHoi = _context.CauHois.FirstOrDefault(c => c.Id == QuestionIds[i]);
-                if (cauHoi != null)
+                var chiTiet = new ChiTietLamBai
                 {
-                    var chiTiet = new ChiTietLamBai
-                    {
-                        LichSuLamBaiId = lichSuId,
-                        CauHoiId = cauHoi.Id,
-                        DapAnChon = Answers[i],
-                        DungHaySai = (Answers[i] == cauHoi.DapAnDung)
-                    };
-
-                    _context.ChiTietLamBais.Add(chiTiet);
-                }
+                    LichSuLamBaiId = lichSu.Id,
+                    CauHoiId = ch.Id
+                };
+                _context.ChiTietLamBais.Add(chiTiet);
             }
-
             _context.SaveChanges();
         }
-        else
+
+        // Load lại dữ liệu lịch sử và câu hỏi để hiển thị
+        var chiTietCauHoi = _context.ChiTietLamBais
+            .Include(x => x.CauHoi)
+            .Where(x => x.LichSuLamBaiId == lichSu.Id)
+            .ToList();
+
+        ViewBag.LichSuId = lichSu.Id;
+        ViewBag.ThoiGianConLai = (deThi.ThoiGianLamBai * 60) - (int)(DateTime.Now - lichSu.NgayBatDau).TotalSeconds;
+        return View(chiTietCauHoi);
+    }
+
+    // Gọi AJAX để lưu đáp án từng câu
+    [HttpPost]
+    public IActionResult LuuDapAn(int lichSuId, int cauHoiId, string dapAnChon)
+    {
+        var lichSu = _context.LichSuLamBais.FirstOrDefault(x => x.Id == lichSuId);
+        if (lichSu == null || lichSu.TrangThai == "HoanThanh")
         {
-            Console.WriteLine("⚠ Không lấy được TenTaiKhoan từ Session.");
+            return BadRequest();
         }
 
-        return View("KetQua", ketQua);
+        var chiTiet = _context.ChiTietLamBais
+            .FirstOrDefault(x => x.LichSuLamBaiId == lichSuId && x.CauHoiId == cauHoiId);
 
+        if (chiTiet != null)
+        {
+            chiTiet.DapAnChon = dapAnChon;
+            _context.SaveChanges();
+            return Ok();
+        }
+
+        return NotFound();
+    }
+
+    // Nộp bài
+    [HttpPost]
+    public IActionResult NopBai(int lichSuId)
+    {
+        var lichSu = _context.LichSuLamBais
+            .Include(x => x.ChiTietLamBais)
+            .ThenInclude(x => x.CauHoi)
+            .FirstOrDefault(x => x.Id == lichSuId);
+
+        if (lichSu == null) return NotFound();
+
+        if (lichSu.TrangThai == "HoanThanh")
+        {
+            // Không cho chấm lại nếu đã hoàn thành
+            return RedirectToAction("Index", "Home"); // hoặc hiển thị thông báo
+        }
+        int soCauDung = 0;
+        int tongCauHoi = lichSu.ChiTietLamBais.Count;
+        var chiTietTraLoiList = new List<ChiTietCauTraLoi>();
+
+        foreach (var ct in lichSu.ChiTietLamBais)
+        {
+            var ch = ct.CauHoi;
+            bool dung = !string.IsNullOrEmpty(ct.DapAnChon) && ct.DapAnChon == ch.DapAnDung;
+            if (dung) soCauDung++;
+
+            chiTietTraLoiList.Add(new ChiTietCauTraLoi
+            {
+                CauHoi = ch.NoiDung,
+                HinhAnhUrl = ch.HinhAnhUrl,
+                AudioUrl = ch.AudioUrl,
+                DapAnA = ch.DapAnA,
+                DapAnB = ch.DapAnB,
+                DapAnC = ch.DapAnC,
+                DapAnD = ch.DapAnD,
+                DapAnChon = ct.DapAnChon,
+                DapAnDung = ch.DapAnDung,
+                DungHaySai = dung
+            });
+        }
+
+        double diem = Math.Round(((double)soCauDung / tongCauHoi) * 10, 2);
+        var thoiGianPhut = (int)(lichSu.NgayNopBai.HasValue
+            ? (lichSu.NgayNopBai.Value - lichSu.NgayBatDau).TotalMinutes
+            : (DateTime.Now - lichSu.NgayBatDau).TotalMinutes);
+
+        // Cập nhật lịch sử
+        lichSu.TrangThai = "HoanThanh";
+        lichSu.Diem = diem;
+        lichSu.NgayNopBai = DateTime.Now;
+        _context.SaveChanges();
+
+        var ketQuaVM = new KetQuaViewModel
+        {
+            TongCauHoi = tongCauHoi,
+            SoCauDung = soCauDung,
+            DiemSo = diem,
+            ThoiGianPhut = thoiGianPhut,
+            ChiTietTraLoi = chiTietTraLoiList
+        };
+
+        return View("KetQua", ketQuaVM);
+    }
+
+    public IActionResult KetQuaDaNop(int lichSuId)
+    {
+        var lichSu = _context.LichSuLamBais
+            .Include(x => x.ChiTietLamBais)
+            .ThenInclude(x => x.CauHoi)
+            .FirstOrDefault(x => x.Id == lichSuId);
+
+        if (lichSu == null || lichSu.TrangThai != "HoanThanh")
+            return RedirectToAction("Index");
+
+        int tongCauHoi = lichSu.ChiTietLamBais.Count;
+        int soCauDung = lichSu.ChiTietLamBais.Count(ct => ct.DapAnChon == ct.CauHoi.DapAnDung);
+        double diem = lichSu.Diem ?? 0;
+
+        var chiTietTraLoi = lichSu.ChiTietLamBais.Select(ct => new ChiTietCauTraLoi
+        {
+            CauHoi = ct.CauHoi.NoiDung,
+            HinhAnhUrl = ct.CauHoi.HinhAnhUrl,
+            AudioUrl = ct.CauHoi.AudioUrl,
+            DapAnA = ct.CauHoi.DapAnA,
+            DapAnB = ct.CauHoi.DapAnB,
+            DapAnC = ct.CauHoi.DapAnC,
+            DapAnD = ct.CauHoi.DapAnD,
+            DapAnChon = ct.DapAnChon,
+            DapAnDung = ct.CauHoi.DapAnDung,
+            DungHaySai = ct.DapAnChon == ct.CauHoi.DapAnDung
+        }).ToList();
+
+        var thoiGianPhut = (int)(lichSu.NgayNopBai.HasValue
+            ? (lichSu.NgayNopBai.Value - lichSu.NgayBatDau).TotalMinutes
+            : (DateTime.Now - lichSu.NgayBatDau).TotalMinutes);
+
+        var vm = new KetQuaViewModel
+        {
+            TongCauHoi = tongCauHoi,
+            SoCauDung = soCauDung,
+            DiemSo = diem,
+            ThoiGianPhut = thoiGianPhut,
+            ChiTietTraLoi = chiTietTraLoi
+        };
+
+        return View("KetQua", vm);
     }
 }

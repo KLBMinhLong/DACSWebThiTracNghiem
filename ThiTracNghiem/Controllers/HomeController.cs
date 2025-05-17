@@ -16,8 +16,16 @@ public class HomeController : Controller
     }
 
     [RequireLogin]
-   public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
+    public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
     {
+        var username = HttpContext.Session.GetString("UserName");
+
+        var lichSuDangLam = _context.LichSuLamBais
+            .Where(l => l.TenTaiKhoan == username && l.TrangThai == "DangLam")
+            .ToList();
+
+        ViewBag.LichSuDangLam = lichSuDangLam;
+
         var query = _context.DeThis
             .Where(d => d.TrangThaiMo)
             .OrderByDescending(d => d.NgayTao)
@@ -38,6 +46,14 @@ public class HomeController : Controller
 
     public IActionResult ChiTietDeThi(int id)
     {
+        var username = HttpContext.Session.GetString("UserName");
+
+        var lichSuDangLam = _context.LichSuLamBais
+            .Where(l => l.TenTaiKhoan == username && l.TrangThai == "DangLam")
+            .ToList();
+
+        ViewBag.LichSuDangLam = lichSuDangLam;
+
         var deThi = _context.DeThis
             .Include(d => d.ChuDe)
             .FirstOrDefault(d => d.Id == id);

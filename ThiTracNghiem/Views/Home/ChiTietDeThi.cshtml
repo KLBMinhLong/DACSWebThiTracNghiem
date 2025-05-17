@@ -1,4 +1,8 @@
 @model DeThi
+@{
+    var danhSachLichSu = ViewBag.LichSuDangLam as List<ThiTracNghiem.Models.LichSuLamBai>;
+    var dangLam = danhSachLichSu?.FirstOrDefault(l => l.DeThiId == Model.Id);
+}
 
 <div class="container mt-4">
     <h2 class="mb-4 text-center">@Model.TenDeThi</h2>
@@ -10,8 +14,17 @@
     </ul>
 
     <div class="text-center">
-        <a asp-controller="Thi" asp-action="LamBai" asp-route-id="@Model.Id" class="btn btn-success btn-lg">
-            Bắt đầu làm bài
-        </a>
+        
+        @if (dangLam != null)
+        {
+            <div class="alert alert-warning">
+                🕒 Bạn đang làm dở đề này từ @dangLam.NgayBatDau.ToString("HH:mm dd/MM")
+            </div>
+            <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-warning">Tiếp tục làm bài</a>
+        }
+        else
+        {
+            <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-success">Bắt đầu làm bài</a>
+        }
     </div>
 </div>

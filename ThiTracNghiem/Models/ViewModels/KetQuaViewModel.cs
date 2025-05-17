@@ -24,6 +24,7 @@ namespace ThiTracNghiem.Models
         public int TongCauHoi { get; set; }
         public int SoCauDung { get; set; }
         public double DiemSo { get; set; }
+        public int ThoiGianPhut { get; set; }
         public List<ChiTietCauTraLoi> ChiTietTraLoi { get; set; }
     }
 }

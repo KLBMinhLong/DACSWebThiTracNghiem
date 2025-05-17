@@ -1,82 +1,89 @@
-@using ThiTracNghiem.Models
-@model LamBaiViewModel
+@model List<ChiTietLamBai>
+@{
+    ViewBag.Title = "Làm bài thi";
+    var lichSuId = ViewBag.LichSuId;
+    var thoiGian = (int)ViewBag.ThoiGianConLai;
+}
 
 <div class="container mt-4">
-    <div class="row">
-        <!-- Cột bên trái: thời gian -->
-        <div class="col-md-3 text-center">
-            <div class="card p-3 shadow-sm">
-                <h5 class="text-secondary">Thời gian còn lại</h5>
-                <h1 id="countdown" class="text-danger fw-bold" style="font-size: 3rem;">00:00</h1>
-            </div>
-        </div>
+    <h3 class="text-center mb-4">Bài Thi</h3>
 
-        <!-- Cột bên phải: câu hỏi -->
-        <div class="col-md-9">
-            <h2>@Model.DeThi.TenDeThi</h2>
+    <div class="alert alert-info text-center">
+        Thời gian còn lại: <span id="countdown" class="fw-bold text-danger"></span>
+    </div>
 
-            <form asp-action="NopBai" method="post">
-                <input type="hidden" name="DeThiId" value="@Model.DeThi.Id" />
+    <form id="formThi">
+        @for (int i = 0; i < Model.Count; i++)
+        {
+            var cauHoi = Model[i].CauHoi;
+            var dapAnChon = Model[i].DapAnChon;
 
-                @for (int i = 0; i < Model.CauHois.Count; i++)
+            <div class="card mb-4 shadow-sm p-3">
+                <p><strong>Câu @(@i + 1):</strong> @cauHoi.NoiDung</p>
+                @if (!string.IsNullOrEmpty(cauHoi?.HinhAnhUrl))
                 {
-                    <div class="mb-4">
-                        <p><strong>Câu hỏi @(@i + 1):</strong> @Model.CauHois[i].NoiDung</p>
-                        @if (!string.IsNullOrEmpty(Model.CauHois[i].HinhAnhUrl))
-                        {
-                            <img src="@Model.CauHois[i].HinhAnhUrl" alt="Hình ảnh câu hỏi" class="img-fluid mb-2" />
-                        }
-                        @if (!string.IsNullOrEmpty(Model.CauHois[i].AudioUrl))
-                        {
-                            <audio controls class="mb-2">
-                                <source src="@Model.CauHois[i].AudioUrl" type="audio/mpeg" />
-                                Trình duyệt không hỗ trợ audio.
-                            </audio>
-                        }
-                        <br />
-                        <input type="radio" name="Answers[@i]" value="A" required /> A. @Model.CauHois[i].DapAnA <br />
-                        <input type="radio" name="Answers[@i]" value="B" /> B. @Model.CauHois[i].DapAnB <br />
-                        <input type="radio" name="Answers[@i]" value="C" /> C. @Model.CauHois[i].DapAnC <br />
-                        <input type="radio" name="Answers[@i]" value="D" /> D. @Model.CauHois[i].DapAnD <br />
-                        <input type="hidden" name="QuestionIds[@i]" value="@Model.CauHois[i].Id" />
-                    </div>
-                    <hr />
+                    <img src="@cauHoi.HinhAnhUrl" alt="Hình ảnh câu hỏi" class="img-fluid mb-2" width="30%"/>
                 }
 
-                <div class="text-center mt-4">
-                    <button type="submit" class="btn btn-primary btn-lg">Nộp bài</button>
-                </div>
-            </form>
-        </div>
-    </div>
+                @if (!string.IsNullOrEmpty(cauHoi?.AudioUrl))
+                {
+                    <audio controls class="mb-2">
+                        <source src="@cauHoi.AudioUrl" type="audio/mpeg" />
+                        Trình duyệt không hỗ trợ audio.
+                    </audio>
+                }
+                <input type="hidden" name="CauHoiId" value="@cauHoi.Id" />
+
+                @foreach (var dapAn in new[] { "A", "B", "C", "D" })
+                {
+                    var noiDung = typeof(CauHoi).GetProperty("DapAn" + dapAn).GetValue(cauHoi)?.ToString();
+                    var isChecked = (dapAn == dapAnChon) ? "checked" : "";
+
+                    <div class="form-check">
+                        <input class="form-check-input" type="radio" name="dapAn_@cauHoi.Id" value="@dapAn"
+                               @Html.Raw(isChecked)
+                               onchange="luuDapAn(@lichSuId, @cauHoi.Id, '@dapAn')">
+                        <label class="form-check-label"> @dapAn. @noiDung </label>
+                    </div>
+                }
+            </div>
+        }
+    </form>
+
+    <form asp-action="NopBai" method="post">
+        <input type="hidden" name="lichSuId" value="@lichSuId" />
+        <button type="submit" class="btn btn-success">Nộp bài</button>
+    </form>
 </div>
 
-
 @section Scripts {
-<script>
-    var totalTime = @Model.DeThi.ThoiGianLamBai * 60; // thời gian làm bài (giây)
+    <script>
+        // Đếm ngược
+        let timeLeft = @thoiGian;
+        const countdown = document.getElementById("countdown");
+        const timer = setInterval(() => {
+            let minutes = Math.floor(timeLeft / 60);
+            let seconds = timeLeft % 60;
+            countdown.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            timeLeft--;
 
-    function startCountdown() {
-        var countdownElement = document.getElementById('countdown');
-
-        var timer = setInterval(function () {
-            var minutes = Math.floor(totalTime / 60);
-            var seconds = totalTime % 60;
-
-            countdownElement.innerHTML = 
-                (minutes < 10 ? '0' + minutes : minutes) + ":" + 
-                (seconds < 10 ? '0' + seconds : seconds);
-
-            totalTime--;
-
-            if (totalTime < 0) {
+            if (timeLeft < 0) {
                 clearInterval(timer);
-                alert("Hết thời gian làm bài. Bài thi sẽ được nộp tự động!");
-                document.querySelector('form').submit();
+                document.querySelector("form[asp-action='NopBai']").submit();
             }
         }, 1000);
-    }
 
-    window.onload = startCountdown;
-</script>
+        // AJAX lưu đáp án từng câu
+        function luuDapAn(lichSuId, cauHoiId, dapAnChon) {
+            fetch('/Thi/LuuDapAn', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `lichSuId=${lichSuId}&cauHoiId=${cauHoiId}&dapAnChon=${dapAnChon}`
+            }).then(res => {
+                if (!res.ok) {
+                    alert('Lưu đáp án thất bại!');
+                }
+            });
+        }
+    </script>
 }
