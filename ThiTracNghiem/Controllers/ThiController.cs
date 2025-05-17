@@ -222,7 +222,8 @@ public class ThiController : Controller
             : (DateTime.Now - lichSu.NgayBatDau).TotalMinutes);
         // Cập nhật lịch sử
         lichSu.Diem = diem;
-
+        _context.SaveChanges();
+        
         var vm = new KetQuaViewModel
         {
             TongCauHoi = tongCauHoi,
