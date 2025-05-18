@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using ThiTracNghiem.Data;
 using ThiTracNghiem.Models;
+using Microsoft.EntityFrameworkCore;
+
 
 namespace ThiTracNghiem.Controllers
 {
@@ -44,11 +46,11 @@ namespace ThiTracNghiem.Controllers
         }
 
         // Giao diện quản lý liên hệ
-        public IActionResult QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay)
+       public async Task<IActionResult> QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay, int page = 1, int pageSize = 5)
         {
             var ds = _context.LienHes.AsQueryable();
 
-            if (!string.IsNullOrEmpty(trangThai))
+            if (!string.IsNullOrEmpty(trangThai) && trangThai != "Tất cả")
                 ds = ds.Where(l => l.TrangThaiXuLy == trangThai);
 
             if (tuNgay.HasValue)
@@ -57,8 +59,22 @@ namespace ThiTracNghiem.Controllers
             if (denNgay.HasValue)
                 ds = ds.Where(l => l.NgayGui <= denNgay.Value.Date.AddDays(1));
 
-            return View(ds.OrderByDescending(l => l.NgayGui).ToList());
+            int totalItems = await ds.CountAsync();
+            var lienHeList = await ds.OrderByDescending(l => l.NgayGui)
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize)
+                                    .ToListAsync();
+
+            // Gửi dữ liệu cho View
+            ViewBag.CurrentPage = page;
+            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.TrangThai = trangThai;
+            ViewBag.TuNgay = tuNgay?.ToString("yyyy-MM-dd");
+            ViewBag.DenNgay = denNgay?.ToString("yyyy-MM-dd");
+
+            return View(lienHeList);
         }
+
 
         // Đánh dấu đã xử lý
         public IActionResult DoiTrangThai(int id)
