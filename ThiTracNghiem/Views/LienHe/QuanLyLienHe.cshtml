@@ -1,0 +1,60 @@
+@model List<LienHe>
+@{
+    ViewBag.Title = "Quản lý liên hệ";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h4>Danh sách liên hệ</h4>
+
+<form method="get" class="row mb-3">
+    <div class="col-md-3">
+        <input type="date" name="tuNgay" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <input type="date" name="denNgay" class="form-control" />
+    </div>
+    <div class="col-md-3">
+        <select name="trangThai" class="form-select">
+            <option value="">Tất cả</option>
+            <option value="Chưa xử lý">Chưa xử lý</option>
+            <option value="Đã xử lý">Đã xử lý</option>
+        </select>
+    </div>
+    <div class="col-md-3">
+        <button class="btn btn-primary">Lọc</button>
+    </div>
+</form>
+
+<table class="table table-bordered">
+    <thead>
+        <tr>
+            <th>Người gửi</th>
+            <th>Email</th>
+            <th>Nội dung</th>
+            <th>Thời gian</th>
+            <th>Trạng thái</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.HoTen (@item.TenTaiKhoan)</td>
+                <td>@item.Email</td>
+                <td>@item.NoiDung</td>
+                <td>@item.NgayGui.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>
+                    <span class="badge @(item.TrangThaiXuLy == "Đã xử lý" ? "bg-success" : "bg-warning text-dark")">
+                        @item.TrangThaiXuLy
+                    </span>
+                </td>
+                <td>
+                    <a asp-action="DoiTrangThai" asp-route-id="@item.Id" class="btn btn-sm btn-outline-secondary">
+                        Đổi trạng thái
+                    </a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

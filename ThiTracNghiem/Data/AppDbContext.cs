@@ -27,6 +27,7 @@ namespace ThiTracNghiem.Data
         }
 
         public DbSet<BinhLuan> BinhLuans { get; set; }
+        public DbSet<LienHe> LienHes { get; set; }
 
     }
 }

@@ -1,0 +1,27 @@
+@model LienHe
+@{
+    ViewBag.Title = "Liên hệ hỗ trợ";
+}
+
+<h4>Liên hệ hỗ trợ</h4>
+
+@if (TempData["ThongBao"] != null)
+{
+    <div class="alert alert-success">@TempData["ThongBao"]</div>
+}
+
+<form asp-action="GuiLienHe" method="post">
+    <div class="mb-2">
+        <label>Họ tên</label>
+        <input name="HoTen" class="form-control" required />
+    </div>
+    <div class="mb-2">
+        <label>Email</label>
+        <input name="Email" class="form-control" type="email" required />
+    </div>
+    <div class="mb-2">
+        <label>Nội dung</label>
+        <textarea name="NoiDung" class="form-control" rows="4" required></textarea>
+    </div>
+    <button type="submit" class="btn btn-primary">Gửi liên hệ</button>
+</form>
