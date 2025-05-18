@@ -1,14 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
 using ThiTracNghiem.Models;
 using System.Security.Cryptography;
 using System.Text;
+using Microsoft.AspNetCore.Authentication;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ThiTracNghiem.Controllers
 {
@@ -24,6 +23,7 @@ namespace ThiTracNghiem.Controllers
         // GET: TaiKhoan
 
         // GET: TaiKhoan/Details/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Details(string id)
         {
             if (id == null)
@@ -42,14 +42,14 @@ namespace ThiTracNghiem.Controllers
         }
 
         // GET: TaiKhoan/Create
+        [Authorize(Roles = "admin")]
         public IActionResult Create()
         {
             return View();
         }
 
         // POST: TaiKhoan/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("TenTaiKhoan,MatKhau,Email,NgaySinh,GioiTinh,SoDienThoai,VaiTro,TrangThaiKhoa,ThoiGianTao,AnhDaiDienUrl")] TaiKhoan taiKhoan)
@@ -82,8 +82,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // POST: TaiKhoan/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(string id, [Bind("TenTaiKhoan,MatKhau,Email,NgaySinh,GioiTinh,SoDienThoai,VaiTro,TrangThaiKhoa,ThoiGianTao,AnhDaiDienUrl")] TaiKhoan taiKhoan)
@@ -117,6 +116,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // GET: TaiKhoan/Delete/5
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> Delete(string id)
         {
             if (id == null)
@@ -135,6 +135,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // POST: TaiKhoan/Delete/5
+        [Authorize(Roles = "admin")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(string id)
@@ -213,6 +214,17 @@ namespace ThiTracNghiem.Controllers
         {
             var user = await _context.TaiKhoans.FindAsync(tenTaiKhoan);
 
+            var claims = new List<Claim>
+                {
+                    new Claim(ClaimTypes.Name, user.TenTaiKhoan),
+                    new Claim(ClaimTypes.Role, user.VaiTro) // ví dụ: "admin" hoặc "user"
+                };
+
+            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("MyCookieAuth", principal);
+
             // Mã hóa mật khẩu người dùng nhập
             string matKhauBam = MaHoaHelper.MaHoaSHA256(matKhau);
 
@@ -224,15 +236,9 @@ namespace ThiTracNghiem.Controllers
 
             HttpContext.Session.SetString("UserName", user.TenTaiKhoan);
             HttpContext.Session.SetString("VaiTro", user.VaiTro);
-
-            if (user.VaiTro.ToLower() == "admin")
-            {
-                return RedirectToAction("Dashboard", "Admin"); // Chỗ này CController Admin riêng
-            }
-            else
-            {
-                return RedirectToAction("Index", "Home"); // Giao diện người dùng bình thường
-            }
+            
+            return RedirectToAction("Index", "Home"); // Giao diện người dùng bình thường
+            
         }
 
         public IActionResult DangXuat()

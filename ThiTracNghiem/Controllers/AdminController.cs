@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ThiTracNghiem.Controllers
 {
@@ -13,6 +14,7 @@ namespace ThiTracNghiem.Controllers
             _context = context;
         }
        
+       [Authorize(Roles = "admin")]
         public IActionResult Dashboard()
         {
             var role = HttpContext.Session.GetString("VaiTro");
@@ -25,7 +27,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         //  Action để quản lý user
-        // phân trang 
+        [Authorize(Roles = "admin")]
        public async Task<IActionResult> QuanLyNguoiDung(int page = 1, int pageSize = 10)
         {
             var role = HttpContext.Session.GetString("VaiTro");
@@ -51,6 +53,7 @@ namespace ThiTracNghiem.Controllers
 
 
         // Hiển thị form tạo tài khoản mới
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public IActionResult CreateUser()
         {
@@ -64,6 +67,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // Xử lý khi admin submit form
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> CreateUser(ThiTracNghiem.Models.TaiKhoan model)
@@ -100,7 +104,9 @@ namespace ThiTracNghiem.Controllers
 
             return RedirectToAction("QuanLyNguoiDung");
         }
+
         // GET: Admin/EditUser
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> EditUser(string id)
         {
@@ -120,6 +126,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // POST: Admin/EditUser
+        [Authorize(Roles = "admin")]
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> EditUser(ThiTracNghiem.Models.TaiKhoan model)
@@ -153,7 +160,9 @@ namespace ThiTracNghiem.Controllers
 
             return RedirectToAction("QuanLyNguoiDung");
         }
+
         // GET: Admin/DeleteUser
+        [Authorize(Roles = "admin")]
         [HttpGet]
         public async Task<IActionResult> DeleteUser(string id)
         {

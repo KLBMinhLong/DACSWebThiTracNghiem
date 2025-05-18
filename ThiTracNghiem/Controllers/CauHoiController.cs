@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
 using ClosedXML.Excel;
+using Microsoft.AspNetCore.Authorization;
 
 
 namespace ThiTracNghiem
 {
+    [Authorize(Roles = "admin")]
     public class CauHoiController : Controller
     {
         private readonly AppDbContext _context;
@@ -89,7 +91,7 @@ namespace ThiTracNghiem
         // POST: CauHoi/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-       [HttpPost]
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(CauHoi cauHoi, IFormFile? HinhAnhFile, IFormFile? AudioFile)
         {

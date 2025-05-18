@@ -44,6 +44,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // Giao diện quản lý liên hệ
+        [Authorize(Roles = "admin")]
         public IActionResult QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay)
         {
             var ds = _context.LienHes.AsQueryable();
@@ -61,6 +62,7 @@ namespace ThiTracNghiem.Controllers
         }
 
         // Đánh dấu đã xử lý
+        [Authorize(Roles = "admin")]
         public IActionResult DoiTrangThai(int id)
         {
             var lh = _context.LienHes.Find(id);

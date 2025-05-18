@@ -6,9 +6,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
+using Microsoft.AspNetCore.Authorization;
 
 namespace ThiTracNghiem
 {
+    [Authorize(Roles = "admin")]
     public class ChuDeController : Controller
     {
         private readonly AppDbContext _context;
@@ -19,7 +21,7 @@ namespace ThiTracNghiem
         }
 
         // Phân Trang và Tìm Kiếm Theo Tên Chủ Đề
-       public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 5)
+        public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 5)
         {
             var query = _context.ChuDes.AsQueryable();
 

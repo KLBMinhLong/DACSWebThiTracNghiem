@@ -1,6 +1,7 @@
 using ThiTracNghiem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,6 +15,14 @@ builder.Services.AddSession(options =>
     options.Cookie.IsEssential = true;
 });
 
+//  Thêm xác thực cookie
+builder.Services.AddAuthentication("MyCookieAuth")
+    .AddCookie("MyCookieAuth", options =>
+    {
+        options.LoginPath = "/TaiKhoan/DangNhap";
+        options.AccessDeniedPath = "/Home/AccessDenied";
+    });
+    
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
@@ -30,11 +39,12 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
 app.UseRouting();
 
 app.UseSession();
 
+// Kích hoạt authentication/authorization
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
@@ -48,44 +58,4 @@ using (var scope = app.Services.CreateScope())
 }
 
 app.Run();
-
-// async Task CreateRoles(IServiceProvider serviceProvider)
-// {
-//     var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-//     var userManager = serviceProvider.GetRequiredService<UserManager<IdentityUser>>();
-
-//     string[] roleNames = { "Admin", "User" };
-//     IdentityResult roleResult;
-
-//     foreach (var roleName in roleNames)
-//     {
-//         var roleExist = await roleManager.RoleExistsAsync(roleName);
-//         if (!roleExist)
-//         {
-//             roleResult = await roleManager.CreateAsync(new IdentityRole(roleName));
-//         }
-//     }
-
-//     // Tạo tài khoản Admin mặc định
-//     var adminUser = new IdentityUser
-//     {
-//         UserName = "admin@gmail.com",
-//         Email = "admin@gmail.com",
-//         EmailConfirmed = true
-//     };
-
-//     string adminPassword = "Admin@123";
-
-//     var user = await userManager.FindByEmailAsync(adminUser.Email);
-
-//     if (user == null)
-//     {
-//         var createPowerUser = await userManager.CreateAsync(adminUser, adminPassword);
-//         if (createPowerUser.Succeeded)
-//         {
-//             await userManager.AddToRoleAsync(adminUser, "Admin");
-//         }
-//     }
-// }
-
 

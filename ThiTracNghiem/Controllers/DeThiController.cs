@@ -3,9 +3,12 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Models;
 using ThiTracNghiem.Data;
+using Microsoft.AspNetCore.Authorization;
 
+[Authorize(Roles = "admin")]
 public class DeThiController : Controller
 {
+
     private readonly AppDbContext _context;
 
     public DeThiController(AppDbContext context)
@@ -48,7 +51,7 @@ public class DeThiController : Controller
         return View();
     }
 
-   [HttpPost]
+    [HttpPost]
     public IActionResult Create(DeThi model)
     {
         if (!ModelState.IsValid || model.SoLuongCauHoi <= 0)
@@ -79,7 +82,7 @@ public class DeThiController : Controller
         _context.DeThis.Add(deThi);
         _context.SaveChanges();
 
-       
+
 
         _context.SaveChanges();
         return RedirectToAction("Index");
@@ -124,21 +127,21 @@ public class DeThiController : Controller
     {
         // ràng buộc số lượng câu hỏi phải lớn hơn 0
         if (!ModelState.IsValid || model.SoLuongCauHoi <= 0)
-    {
-        ModelState.AddModelError("", "Vui lòng nhập số lượng câu hỏi hợp lệ.");
-        ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
-        return View(model);
-    }
+        {
+            ModelState.AddModelError("", "Vui lòng nhập số lượng câu hỏi hợp lệ.");
+            ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
+            return View(model);
+        }
 
-    // Đếm tổng số câu hỏi có trong chủ đề được chọn
-    int totalQuestions = _context.CauHois.Count(c => c.ChuDeId == model.ChuDeId);
+        // Đếm tổng số câu hỏi có trong chủ đề được chọn
+        int totalQuestions = _context.CauHois.Count(c => c.ChuDeId == model.ChuDeId);
 
-    if (model.SoLuongCauHoi > totalQuestions)
-    {
-        ModelState.AddModelError("", $"Số lượng câu hỏi không được lớn hơn số câu hỏi hiện có ({totalQuestions}) trong chủ đề.");
-        ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
-        return View(model);
-    }
+        if (model.SoLuongCauHoi > totalQuestions)
+        {
+            ModelState.AddModelError("", $"Số lượng câu hỏi không được lớn hơn số câu hỏi hiện có ({totalQuestions}) trong chủ đề.");
+            ViewBag.ChuDeId = new SelectList(_context.ChuDes, "Id", "TenChuDe", model.ChuDeId);
+            return View(model);
+        }
 
         var deThi = _context.DeThis.FirstOrDefault(d => d.Id == id);
         if (deThi == null) return NotFound();
