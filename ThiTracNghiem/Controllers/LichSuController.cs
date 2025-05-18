@@ -12,21 +12,31 @@ public class LichSuThiController : Controller
         _context = context;
     }
 
-    // Hiển thị danh sách lịch sử làm bài
-    public IActionResult Index()
+    // Hiển thị danh sách lịch sử làm bài, phân trang
+   public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
     {
         var tenTaiKhoan = HttpContext.Session.GetString("UserName");
         if (string.IsNullOrEmpty(tenTaiKhoan))
             return RedirectToAction("DangNhap", "TaiKhoan");
 
-        var lichSu = _context.LichSuLamBais
+        var query = _context.LichSuLamBais
             .Include(x => x.DeThi)
             .Where(x => x.TenTaiKhoan == tenTaiKhoan)
             .OrderByDescending(x => x.NgayBatDau)
-            .ToList();
+            .AsQueryable();
 
-        return View(lichSu);
+        int totalItems = await query.CountAsync();
+        var lichSu = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
+            .ToListAsync();
+
+        ViewBag.CurrentPage = page;
+        ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+        return View(lichSu); // Views/LichSuLamBai/Index.cshtml hoặc tương đương
     }
+
 
     // Xem chi tiết 1 lần làm bài
     public IActionResult XemChiTiet(int id)
