@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using ThiTracNghiem.Data;
 using ThiTracNghiem.Models;
 using Microsoft.EntityFrameworkCore;
+using System.Text;
 
 
 namespace ThiTracNghiem.Controllers
@@ -47,7 +48,7 @@ namespace ThiTracNghiem.Controllers
 
         // Giao diện quản lý liên hệ
         [Authorize(Roles = "admin")]
-        public IActionResult QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay)
+        public async Task<IActionResult> QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay, int page = 1, int pageSize = 10)
         {
             var ds = _context.LienHes.AsQueryable();
 
