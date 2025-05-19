@@ -5,42 +5,38 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Danh sách chủ đề</h1>
+<h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Chủ Đề</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Tạo câu hỏi mới</a>
-</p>
+<a asp-action="Create" class="btn btn-success mb-3">+ Tạo chủ đề mới</a>
+
 <form asp-action="Index" method="get" class="d-flex mb-3" style="max-width: 500px;">
     <input type="text" name="searchString" class="form-control me-2" placeholder="Tìm chủ đề..." value="@ViewBag.CurrentFilter" />
     <button type="submit" class="btn btn-primary">Tìm</button>
 </form>
 
-
-<table class="table">
-    <thead>
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
         <tr>
-            <th>
-                Tên chủ đề
-            </th>
-            <th></th>
+            <th>Tên chủ đề</th>
+            <th>Hành động</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.TenChuDe)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Chỉnh sửa</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.TenChuDe</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1">Xem</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Sửa</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"
+                       onclick="return confirm('Bạn có chắc chắn muốn xoá chủ đề này không?');">Xoá</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-@*Phân Trang*@
+
 @if (ViewBag.TotalPages > 1)
 {
     <nav class="d-flex justify-content-center mt-4">

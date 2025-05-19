@@ -8,7 +8,11 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+.btn:focus,
+.btn:active:focus,
+.btn-link.nav-link:focus,
+.form-control:focus,
+.form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
@@ -19,4 +23,96 @@ html {
 
 body {
   margin-bottom: 60px;
+}
+body {
+  background: linear-gradient(to bottom, #e6f2ff, #ffffff);
+  min-height: 100vh;
+}
+
+.bg-pattern {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.05;
+  z-index: -1;
+  background-image: url("data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI2MCIgaGVpZ2h0PSI2MCIgdmlld0JveD0iMCAwIDYwIDYwIj48ZyBmaWxsPSIjMDA2NmNjIj48cGF0aCBkPSJNMzYgMzRjMC0xLjEuOS0yIDItMmgxMGMxLjEgMCAyIC45IDIgMnYxMGMwIDEuMS0uOSAyLTIgMmgtMTBjLTEuMSAwLTItLjktMi0yVjM0eiIvPjxwYXRoIGQ9Ik0yMCAxMGMwLTEuMS45LTIgMi0yaDEwYzEuMSAwIDIgLjkgMiAydjEwYzAgMS4xLS45IDItMiAyaC0xMGMtMS4xIDAtMi0uOS0yLTJWMTB6Ii8+PHBhdGggZD0iTTQgMzZjMC0xLjEuOS0yIDItMmgxMGMxLjEgMCAyIC45IDIgMnYxMGMwIDEuMS0uOSAyLTIgMkg2Yy0xLjEgMC0yLS45LTItMlYzNnoiLz48L2c+PC9zdmc+");
+}
+
+.navbar {
+  background-color: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(10px);
+}
+
+.hero-section {
+  background-color: #0d6efd;
+  border-radius: 1rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-pattern {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  background-color: rgba(13, 110, 253, 0.2);
+  z-index: 0;
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.card {
+  transition: all 0.3s ease;
+  border-color: #cfe2ff;
+}
+.card-body p.card-text {
+  font-size: 1rem;
+  line-height: 1.5;
+}
+
+.card .row.row-cols-2 {
+  row-gap: 0.25rem;
+}
+
+.card .card-body {
+  padding-bottom: 0.5rem;
+}
+
+.card:hover {
+  box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+  transform: translateY(-2px);
+}
+
+.category-badge {
+  background-color: #e6f2ff;
+  color: #0d6efd;
+  border: 1px solid #cfe2ff;
+}
+
+.footer {
+  background-color: #0d6efd;
+  color: white;
+}
+
+.footer a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: white;
+}
+
+.footer-border-top {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+div .badge {
+  color: #0d6efd;
 }

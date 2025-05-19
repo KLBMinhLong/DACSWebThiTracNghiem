@@ -5,32 +5,30 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Danh sách câu hỏi</h1>
+<h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Câu Hỏi</h2>
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Tạo câu hỏi mới</a>
-    <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importModal">
-        Nhập từ Excel
-    </button>
-    @*tìm kiếm*@
-    <form asp-action="Index" method="get" class="d-flex align-items-center gap-2 mb-3">
-    <select name="chuDeId" class="form-select" style="max-width: 250px;">
-        <option value="">-- Chọn chủ đề --</option>
-        @foreach (var chuDe in ViewBag.ChuDes)
-        {
-            var selected = Context.Request.Query["chuDeId"] == chuDe.Id.ToString() ? "selected" : "";
-            <option value="@chuDe.Id" selected="@(Context.Request.Query["chuDeId"] == chuDe.Id.ToString())">
-            @chuDe.TenChuDe
-            </option>
-        }
-    </select>
-    <button type="submit" class="btn btn-outline-primary">Tìm Kiếm</button>
-</form>
-      
+<div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="d-flex gap-2">
+        <a asp-action="Create" class="btn btn-primary">Tạo câu hỏi mới</a>
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#importModal">
+            Nhập từ Excel
+        </button>
+    </div>
+    <form asp-action="Index" method="get" class="d-flex align-items-center gap-2">
+        <select name="chuDeId" class="form-select" style="max-width: 250px;">
+            <option value="">-- Chọn chủ đề --</option>
+            @foreach (var chuDe in ViewBag.ChuDes)
+            {
+                <option value="@chuDe.Id" selected="@(Context.Request.Query["chuDeId"] == chuDe.Id.ToString())">
+                    @chuDe.TenChuDe
+                </option>
+            }
+        </select>
+        <button type="submit" class="btn btn-outline-primary">Tìm Kiếm</button>
+    </form>
+</div>
 
-</p>
-
- @* thêm file exel*@
+<!-- Modal Import Excel -->
 <div class="modal fade" id="importModal" tabindex="-1" aria-labelledby="importModalLabel" aria-hidden="true">
     <div class="modal-dialog">
         <div class="modal-content">
@@ -46,12 +44,12 @@
                     </div>
                     <div class="mb-3">
                         <label class="form-label">Chủ đề</label>
-                       <select class="form-select" name="ChuDeId" required>
-                        <option value="">-- Chọn chủ đề --</option>
-                        @foreach (var chuDe in ViewBag.ChuDes)
-                        {
-                            <option value="@chuDe.Id">@chuDe.TenChuDe</option>
-                        }
+                        <select class="form-select" name="ChuDeId" required>
+                            <option value="">-- Chọn chủ đề --</option>
+                            @foreach (var chuDe in ViewBag.ChuDes)
+                            {
+                                <option value="@chuDe.Id">@chuDe.TenChuDe</option>
+                            }
                         </select>
                     </div>
                 </div>
@@ -64,67 +62,41 @@
     </div>
 </div>
 
-<table class="table">
-    <thead>
+<table class="table table-bordered align-middle">
+    <thead class="table-light">
         <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.NoiDung)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DapAnA)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DapAnB)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DapAnC)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DapAnD)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DapAnDung)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ChuDe)
-            </th>
-            <th></th>
+            <th class="text-start">Nội dung</th>
+            <th class="text-center">Đáp án A</th>
+            <th class="text-center">Đáp án B</th>
+            <th class="text-center">Đáp án C</th>
+            <th class="text-center">Đáp án D</th>
+            <th class="text-center">Đáp án đúng</th>
+            <th class="text-center">Chủ đề</th>
+            <th class="text-center">Hành động</th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.NoiDung)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DapAnA)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DapAnB)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DapAnC)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DapAnD)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DapAnDung)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ChuDe.TenChuDe)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.Id">Chỉnh sửa</a> |
-                <a asp-action="Details" asp-route-id="@item.Id">Chi tiết</a> |
-                <a asp-action="Delete" asp-route-id="@item.Id">Xóa</a>
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td class="text-start">@item.NoiDung</td>
+                <td class="text-center">@item.DapAnA</td>
+                <td class="text-center">@item.DapAnB</td>
+                <td class="text-center">@item.DapAnC</td>
+                <td class="text-center">@item.DapAnD</td>
+                <td class="text-center">@item.DapAnDung</td>
+                <td class="text-center">@item.ChuDe?.TenChuDe</td>
+                <td class="text-center">
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm me-1">Sửa</a>
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm me-1">Xem</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
+                       onclick="return confirm('Bạn có chắc chắn muốn xoá câu hỏi này không?');">Xoá</a>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
-@* Phân trang *@
+
 @if (ViewBag.TotalPages > 1)
 {
     <nav class="d-flex justify-content-center mt-4">
@@ -146,7 +118,3 @@
         </ul>
     </nav>
 }
-
-
-
-

@@ -48,7 +48,7 @@ namespace ThiTracNghiem.Controllers
 
         // Giao diện quản lý liên hệ
         [Authorize(Roles = "admin")]
-        public async Task<IActionResult> QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay, int page = 1, int pageSize = 10)
+        public async Task<IActionResult> QuanLyLienHe(string trangThai, DateTime? tuNgay, DateTime? denNgay, int page = 1, int pageSize = 5)
         {
             var ds = _context.LienHes.AsQueryable();
 
