@@ -32,36 +32,28 @@
                     <div class="collapse navbar-collapse" id="navbarNav">
                         <ul class="navbar-nav ms-auto">
                             <li class="nav-item">
-                                <a class="nav-link active text-primary fw-medium" asp-controller="Admin"
-                                    asp-action="Dashboard">Trang chủ ADMIN</a>
+                                <a class="nav-link fw-medium @(ViewContext.RouteData.Values["action"]?.ToString() == "Dashboard" ? "active text-primary" : "text-secondary")" asp-controller="Admin" asp-action="Dashboard">Trang chủ ADMIN</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-secondary" asp-controller="Admin"
-                                    asp-action="QuanLyNguoiDung">Quản lý người dùng</a>
+                                <a class="nav-link fw-medium @(ViewContext.RouteData.Values["action"]?.ToString() == "QuanLyNguoiDung" ? "active text-primary" : "text-secondary")" asp-controller="Admin" asp-action="QuanLyNguoiDung">Quản lý người dùng</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-secondary" asp-controller="ChuDe" asp-action="Index">Quản lý Chủ
-                                    đề</a>
+                                <a class="nav-link fw-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "ChuDe" ? "active text-primary" : "text-secondary")" asp-controller="ChuDe" asp-action="Index">Quản lý Chủ đề</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-secondary" asp-controller="CauHoi" asp-action="Index">Quản lý
-                                    Câu hỏi</a>
+                                <a class="nav-link fw-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "CauHoi" ? "active text-primary" : "text-secondary")" asp-controller="CauHoi" asp-action="Index">Quản lý Câu hỏi</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-secondary" asp-controller="DeThi" asp-action="Index">Quản lý Đề
-                                    thi</a>
+                                <a class="nav-link fw-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "DeThi" ? "active text-primary" : "text-secondary")" asp-controller="DeThi" asp-action="Index">Quản lý Đề thi</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-secondary" asp-controller="LienHe"
-                                    asp-action="QuanLyLienHe">Quản lý Liên hệ</a>
+                                <a class="nav-link fw-medium @(ViewContext.RouteData.Values["controller"]?.ToString() == "LienHe" ? "active text-primary" : "text-secondary")" asp-controller="LienHe" asp-action="QuanLyLienHe">Quản lý Liên hệ</a>
                             </li>
                             <li class="nav-item">
-                                <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Index">Trở Lại
-                                    Trang Chủ</a>
+                                <a class="btn btn-outline-primary" asp-controller="Home" asp-action="Index">Trở Lại Trang Chủ</a>
                             </li>
                             <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
-                                <a class="btn btn-outline-primary" asp-controller="TaiKhoan" asp-action="DangXuat">Đăng
-                                    xuất</a>
+                                <a class="btn btn-outline-primary" asp-controller="TaiKhoan" asp-action="DangXuat">Đăng xuất</a>
                             </li>
                         </ul>
                     </div>
