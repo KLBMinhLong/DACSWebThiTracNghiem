@@ -1,4 +1,3 @@
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ThiTracNghiem.Data;
@@ -8,6 +7,7 @@ using System.Text;
 using Microsoft.AspNetCore.Authentication;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using ThiTracNghiem.Helpers;
 
 namespace ThiTracNghiem.Controllers
 {
@@ -294,6 +294,54 @@ namespace ThiTracNghiem.Controllers
 
             ViewBag.ThongBao = "Cập nhật thành công!";
             return View(model);
+        }
+
+        // GET: /TaiKhoan/QuenMatKhau
+        public IActionResult QuenMatKhau()
+        {
+            return View();
+        }
+
+        // POST: /TaiKhoan/QuenMatKhau
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> QuenMatKhau(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+            {
+                ViewBag.Loi = "Vui lòng nhập email.";
+                return View();
+            }
+            var user = await _context.TaiKhoans.FirstOrDefaultAsync(tk => tk.Email == email);
+            if (user == null)
+            {
+                ViewBag.Loi = "Không tìm thấy tài khoản với email này.";
+                return View();
+            }
+            // Tạo mật khẩu mới ngẫu nhiên
+            var newPassword = GenerateRandomPassword(8);
+            user.MatKhau = MaHoaHelper.MaHoaSHA256(newPassword);
+            await _context.SaveChangesAsync();
+
+            // Gửi email mật khẩu mới
+            try
+            {
+                await EmailHelper.SendEmailAsync(email, "Cấp lại mật khẩu ThiTracNghiem", $"Mật khẩu mới của bạn là: <b>{newPassword}</b>");
+                ViewBag.ThongBao = "Mật khẩu mới đã được gửi tới email của bạn.";
+            }
+            catch(Exception ex)
+            {
+                // Xử lý lỗi gửi email
+                ViewBag.Loi = "Không gửi được email. Vui lòng thử lại sau." + ex.Message;
+            }
+            return View();
+        }
+
+        private string GenerateRandomPassword(int length)
+        {
+            const string chars = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
+            var random = new Random();
+            return new string(Enumerable.Repeat(chars, length).Select(s => s[random.Next(s.Length)]).ToArray());
         }
     }
     public static class MaHoaHelper

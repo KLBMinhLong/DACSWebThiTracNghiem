@@ -398,3 +398,10 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+# Bảo mật file biến môi trường
+.env
+.env.*
+
+# Ignore env
+set_smtp_env.bat

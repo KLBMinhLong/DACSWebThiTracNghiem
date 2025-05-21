@@ -17,7 +17,7 @@ public class DeThiController : Controller
     }
 
     // tìm kiếm theo tên đề thi, phân trang
-    public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 5)
+    public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 10)
     {
         var query = _context.DeThis
             .Include(d => d.ChuDe)

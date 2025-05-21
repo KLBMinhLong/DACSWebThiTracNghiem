@@ -1,72 +1,71 @@
 @model ThiTracNghiem.Models.TaiKhoan
 
-
-<h2>Đăng ký tài khoản</h2>
-
-@if (ViewBag.ThongBao != null)
-{
-    <div class="alert alert-success">@ViewBag.ThongBao</div>
-}
-
-<form asp-action="DangKy" method="post">
-    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-
-    <div class="form-group">
-        <label>Tên tài khoản</label>
-        <input asp-for="TenTaiKhoan" class="form-control" />
-        <span asp-validation-for="TenTaiKhoan" class="text-danger"></span>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Đăng ký tài khoản</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/dangky.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="register-container">
+        <form class="register-form" asp-action="DangKy" method="post">
+            <h2>Đăng ký tài khoản</h2>
+            @if (ViewBag.ThongBao != null)
+            {
+                <div class="success-message">@ViewBag.ThongBao</div>
+            }
+            <div asp-validation-summary="ModelOnly" class="error-message"></div>
+            <div>
+                <label>Tên tài khoản</label>
+                <input asp-for="TenTaiKhoan" />
+                <span asp-validation-for="TenTaiKhoan" class="error-message"></span>
+            </div>
+            <div>
+                <label asp-for="MatKhau">Mật khẩu</label>
+                <input asp-for="MatKhau" type="password" id="MatKhau" />
+                <span asp-validation-for="MatKhau" class="error-message"></span>
+            </div>
+            <div>
+                <label>Nhập lại mật khẩu</label>
+                <input type="password" id="NhapLaiMatKhau" />
+                <span id="passwordMismatch" class="error-message"></span>
+            </div>
+            <div>
+                <label>Email</label>
+                <input asp-for="Email" />
+                <span asp-validation-for="Email" class="error-message"></span>
+            </div>
+            <div>
+                <label>Ngày sinh</label>
+                <input asp-for="NgaySinh" type="date" />
+                <span asp-validation-for="NgaySinh" class="error-message"></span>
+            </div>
+            <div>
+                <label>Giới tính</label>
+                <select asp-for="GioiTinh">
+                    <option value="">-- Chọn giới tính --</option>
+                    <option value="Nam">Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+                <span asp-validation-for="GioiTinh" class="error-message"></span>
+            </div>
+            <div>
+                <label>Số điện thoại</label>
+                <input asp-for="SoDienThoai" />
+                <span asp-validation-for="SoDienThoai" class="error-message"></span>
+            </div>
+            <button type="submit">Đăng ký</button>
+        </form>
     </div>
-
-    <div class="form-group">
-        <label asp-for="MatKhau">Mật khẩu</label>
-        <input asp-for="MatKhau" type="password" class="form-control" id="MatKhau" />
-        <span asp-validation-for="MatKhau" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Nhập lại mật khẩu</label>
-        <input  type="password" class="form-control" id="NhapLaiMatKhau" />
-        <span id="passwordMismatch" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Email</label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Ngày sinh</label>
-        <input asp-for="NgaySinh" type="date" class="form-control" />
-        <span asp-validation-for="NgaySinh" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Giới tính</label>
-        <select asp-for="GioiTinh" class="form-control">
-            <option value="">-- Chọn giới tính --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-        </select>
-        <span asp-validation-for="GioiTinh" class="text-danger"></span>
-    </div>
-
-    <div class="form-group">
-        <label>Số điện thoại</label>
-        <input asp-for="SoDienThoai" class="form-control" />
-        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-2">Đăng ký</button>
-</form>
-
-@section Scripts {
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script>
         $(document).ready(function(){
             $('#NhapLaiMatKhau').on('keyup', function(){
                 var password = $('#MatKhau').val();
                 var confirm = $(this).val();
-                
                 if (password !== confirm) {
                     $('#passwordMismatch').text('Mật khẩu không khớp');
                 } else {
@@ -76,5 +75,6 @@
         });
     </script>
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-}
+</body>
+</html>
 

@@ -5,6 +5,12 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+<style>
+    th {
+        padding-bottom: 20px !important;
+    }
+</style>
+
 <h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Câu Hỏi</h2>
 
 <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
@@ -65,14 +71,14 @@
 <table class="table table-bordered align-middle">
     <thead class="table-light">
         <tr>
-            <th class="text-start">Nội dung</th>
+            <th class="text-center">Nội dung</th>
             <th class="text-center">Đáp án A</th>
             <th class="text-center">Đáp án B</th>
             <th class="text-center">Đáp án C</th>
             <th class="text-center">Đáp án D</th>
             <th class="text-center">Đáp án đúng</th>
             <th class="text-center">Chủ đề</th>
-            <th class="text-center">Hành động</th>
+            <th class="text-center" colspan="3">Hành động</th>
         </tr>
     </thead>
     <tbody>
@@ -87,8 +93,12 @@
                 <td class="text-center">@item.DapAnDung</td>
                 <td class="text-center">@item.ChuDe?.TenChuDe</td>
                 <td class="text-center">
-                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm me-1">Sửa</a>
-                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm me-1">Xem</a>
+                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-warning btn-sm">Sửa</a>
+                </td>
+                <td class="text-center">
+                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Xem</a>
+                </td>
+                <td class="text-center">
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
                        onclick="return confirm('Bạn có chắc chắn muốn xoá câu hỏi này không?');">Xoá</a>
                 </td>

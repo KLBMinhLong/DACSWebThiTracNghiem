@@ -1,0 +1,15 @@
+.back-home {
+    border: 1px solid #0d6efd;
+    border-radius: 5px;
+    background-color: #0d6efd;
+}
+
+.back-home:hover {
+    background-color: #fff;
+    color: #036bdb;
+}
+
+.back-home a{
+    color: #fff !important;
+    text-decoration: none;  
+}

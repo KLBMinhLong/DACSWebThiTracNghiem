@@ -1,0 +1,24 @@
+@{
+    ViewBag.Title = "Quên mật khẩu";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2 class="mb-4 fw-bold text-center text-primary">Quên mật khẩu</h2>
+
+<form asp-action="QuenMatKhau" method="post" class="mx-auto" style="max-width:400px;">
+    <div class="mb-3">
+        <label for="email" class="form-label">Nhập email tài khoản</label>
+        <input type="email" class="form-control" id="email" name="email" required />
+    </div>
+    <button type="submit" class="btn btn-primary w-100">Gửi mật khẩu mới</button>
+</form>
+
+@if (ViewBag.ThongBao != null)
+{
+    <div class="alert alert-success mt-3">@ViewBag.ThongBao</div>
+    <a class="btn btn-sm btn-outline-secondary" asp-controller="TaiKhoan" asp-action="DangNhap">Về Trang Đăng Nhập</a>
+}
+@if (ViewBag.Loi != null)
+{
+    <div class="alert alert-danger mt-3">@ViewBag.Loi</div>
+}
