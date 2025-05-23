@@ -4,24 +4,89 @@
     ViewData["Title"] = "Home Page";
     var danhSachLichSu = ViewBag.LichSuDangLam as List<ThiTracNghiem.Models.LichSuLamBai>;
 }
+<!-- Hero Section -->
+<section class="hero-section mb-5 p-4 p-md-5 text-white">
+    <div class="hero-pattern"></div>
+    <div class="hero-content row">
+        <div class="col-md-8 col-lg-6">
+            <h2 class="display-6 fw-bold mb-3">Chào mừng đến với Smart Test</h2>
+            <p class="mb-4 opacity-75">
+                Nền tảng thi trắc nghiệm trực tuyến giúp bạn kiểm tra kiến thức và
+                cải thiện kỹ năng học tập một cách hiệu quả.
+            </p>
+        </div>
+    </div>
+</section>
+
+
+<form asp-action="Index" method="get" class="row g-2 align-items-end mb-4">
+    <div class="col-md-6">
+        <input type="text" name="searchString" class="form-control" placeholder="Tìm kiếm theo tên đề thi..." value="@ViewBag.CurrentFilter" />
+    </div>
+    <div class="col-md-4">
+        <select name="chuDeId" class="form-select">
+            <option value="">-- Tất cả chủ đề --</option>
+            @foreach (var chuDe in ViewBag.ChuDes)
+            {
+                <option value="@chuDe.Id" selected="@(ViewBag.CurrentChuDeId?.ToString() == chuDe.Id.ToString())">@chuDe.TenChuDe</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-2">
+        <button type="submit" class="btn btn-primary w-100">Lọc</button>
+    </div>
+</form>
 
 <h2>Danh sách đề thi</h2>
 
 @foreach (var deThi in Model)
 {
     var dangLam = danhSachLichSu?.FirstOrDefault(l => l.DeThiId == deThi.Id);
-    <div class="card mb-3 p-3 shadow-sm">
-        <h4><a asp-action="ChiTietDeThi" asp-route-id="@deThi.Id">@deThi.TenDeThi</a></h4>
-        <p>Số câu hỏi: @deThi.SoLuongCauHoi</p>
-        <p>Thời gian làm bài: @deThi.ThoiGianLamBai phút</p>
-        <p>Ngày tạo: @deThi.NgayTao.ToString("dd/MM/yyyy")</p>
-        @if (dangLam != null)
-        {
-            <span class="badge bg-warning text-dark">🕒 Đang làm dở</span>
-            <a href="/Thi/LamBai?id=@deThi.Id" class="btn btn-outline-primary btn-sm ms-2">Tiếp tục làm bài</a>
-        }
+    <div class="card mb-3 shadow-sm border-0 position-relative">
+        <div class="card-body">
+            <div class="d-flex justify-content-between align-items-start">
+                <div>
+                    <h5 class="card-title fw-bold text-primary">
+                        <a asp-action="ChiTietDeThi" asp-route-id="@deThi.Id" class="text-decoration-none">
+                            @deThi.TenDeThi
+                        </a>
+                    </h5>
+
+                    <div class="text-muted small mt-2">
+                        <div class="mb-1">
+                            <i class="bi bi-clock me-1"></i> @deThi.ThoiGianLamBai phút
+                        </div>
+                        <div class="mb-1">
+                            <i class="bi bi-list-task me-1"></i> @deThi.SoLuongCauHoi câu hỏi
+                        </div>
+                        <div>
+                            <i class="bi bi-calendar-event me-1"></i> @deThi.NgayTao.ToString("yyyy-MM-dd")
+                        </div>
+                    </div>
+
+                    @if (dangLam != null)
+                    {
+                        <div class="mt-2">
+                            <span class="badge bg-warning text-dark">🕒 Đang làm dở</span>
+                            <a href="/Thi/LamBai?id=@deThi.Id" class="btn btn-outline-primary btn-sm ms-2">
+                                Tiếp tục làm bài
+                            </a>
+                        </div>
+                    }
+                </div>
+
+                <div>
+                    <span class="badge bg-light border text-primary fw-medium">
+                        @deThi.ChuDe?.TenChuDe
+                    </span>
+                </div>
+            </div>
+        </div>
     </div>
 }
+
+
+
 @*Phân Trang*@
 @if (ViewBag.TotalPages > 1)
 {

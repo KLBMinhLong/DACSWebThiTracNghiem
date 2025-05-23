@@ -16,7 +16,7 @@ public class HomeController : Controller
     }
 
     [RequireLogin]
-    public async Task<IActionResult> Index(int page = 1, int pageSize = 6)
+    public async Task<IActionResult> Index(string searchString, int? chuDeId, int page = 1, int pageSize = 6)
     {
         var username = HttpContext.Session.GetString("UserName");
 
@@ -27,9 +27,23 @@ public class HomeController : Controller
         ViewBag.LichSuDangLam = lichSuDangLam;
 
         var query = _context.DeThis
-            .Where(d => d.TrangThaiMo)
-            .OrderByDescending(d => d.NgayTao)
+            .Include(d => d.ChuDe)
+            .Where(d => d.TrangThaiMo) // chỉ lấy đề đang mở
             .AsQueryable();
+
+        // Tìm kiếm
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            query = query.Where(d => d.TenDeThi.Contains(searchString));
+        }
+
+        // Lọc theo chủ đề
+        if (chuDeId.HasValue)
+        {
+            query = query.Where(d => d.ChuDeId == chuDeId);
+        }
+
+        query = query.OrderByDescending(d => d.NgayTao);
 
         int totalItems = await query.CountAsync();
 
@@ -38,11 +52,17 @@ public class HomeController : Controller
             .Take(pageSize)
             .ToListAsync();
 
+        // Truyền dữ liệu cần thiết cho view
         ViewBag.CurrentPage = page;
         ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+        ViewBag.CurrentFilter = searchString;
+        ViewBag.CurrentChuDeId = chuDeId;
+
+        ViewBag.ChuDes = await _context.ChuDes.ToListAsync();
 
         return View(danhSachDeThi);
     }
+
 
     public IActionResult ChiTietDeThi(int id)
     {
