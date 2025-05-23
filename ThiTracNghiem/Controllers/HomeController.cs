@@ -63,6 +63,10 @@ public class HomeController : Controller
         return View(danhSachDeThi);
     }
 
+    public IActionResult GioiThieu()
+    {
+        return View();
+    }
 
     public IActionResult ChiTietDeThi(int id)
     {
