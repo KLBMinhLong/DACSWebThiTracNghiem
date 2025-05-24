@@ -3,17 +3,62 @@
     var username = ViewBag.UserName as string;
 }
 
-@foreach (var bl in Model)
-{
-    <div class="border-bottom py-2">
-        <strong>@bl.TenTaiKhoan</strong> - 
-        <small class="text-muted">@bl.ThoiGian.ToString("HH:mm dd/MM/yyyy")</small>
-        <p>@bl.NoiDung</p>
-
-        @if (bl.TenTaiKhoan == username)
+<div class="comments-container my-4">
+    @if (Model.Count == 0)
+    {
+        <div class="text-center text-muted py-4">
+            <i class="bi bi-chat-square-text fs-3 d-block mb-2"></i>
+            <p>Chưa có bình luận nào. Hãy là người đầu tiên bình luận!</p>
+        </div>
+    }
+    else
+    {
+        @foreach (var bl in Model)
         {
-            <button class="btn btn-link text-danger btn-sm"
-        onclick="xoaBinhLuan(@bl.Id)">Xóa</button>
+            <div class="comment-item mb-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <div class="d-flex align-items-center">
+                                <div class="avatar-container me-2">
+                                    <div class="rounded-circle bg-primary text-white d-flex justify-content-center align-items-center" 
+                                         style="width: 36px; height: 36px; font-size: 16px;">
+                                        @bl.TenTaiKhoan.Substring(0, 1).ToUpper()
+                                    </div>
+                                </div>
+                                <div>
+                                    <div class="fw-bold">@bl.TenTaiKhoan</div>
+                                    <div class="text-muted small">
+                                        <i class="bi bi-clock me-1"></i>@bl.ThoiGian.ToString("HH:mm dd/MM/yyyy")
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            @if (bl.TenTaiKhoan == username)
+                            {
+                                <button class="btn btn-sm btn-outline-danger" onclick="xoaBinhLuan(@bl.Id)">
+                                    <i class="bi bi-trash me-1"></i>Xóa
+                                </button>
+                            }
+                        </div>
+                        <p class="card-text mb-0">@bl.NoiDung</p>
+                    </div>
+                </div>
+            </div>
         }
-    </div>
-}
+    }
+</div>
+
+<style>
+    .comment-item:last-child {
+        margin-bottom: 0 !important;
+    }
+    
+    .comment-item .card:hover {
+        border-color: #ddd;
+    }
+    
+    .comment-item .card {
+        transition: all 0.2s ease;
+    }
+</style>

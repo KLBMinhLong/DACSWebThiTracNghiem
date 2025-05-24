@@ -21,6 +21,7 @@ namespace ThiTracNghiem.Controllers
         // Giao diện người dùng gửi liên hệ
         public IActionResult GuiLienHe()
         {
+
             if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
                 return RedirectToAction("DangNhap", "TaiKhoan");
             return View();
@@ -29,6 +30,11 @@ namespace ThiTracNghiem.Controllers
         [HttpPost]
         public IActionResult GuiLienHe(string HoTen, string Email, string NoiDung)
         {
+            if (NoiDung != null && NoiDung.Length > 1000)
+            {
+                ModelState.AddModelError("NoiDung", "Nội dung không được vượt quá 1000 ký tự.");
+                return View();
+            }
             var user = HttpContext.Session.GetString("UserName");
 
             var lh = new LienHe

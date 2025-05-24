@@ -31,7 +31,8 @@
         <div class="form-group">
             <label for="NoiDung">Nội dung</label>
             <textarea name="NoiDung" id="NoiDung" class="form-control" required 
-                      placeholder="Nhập nội dung bạn muốn liên hệ..."></textarea>
+                      placeholder="Nhập nội dung bạn muốn liên hệ..." maxlength="1000"></textarea>
+            <span asp-validation-for="NoiDung" class="text-danger"></span>        
         </div>
         
         <button type="submit" class="btn-send">

@@ -4,7 +4,8 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Liên Hệ</nav></h2>
+<h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Liên Hệ</nav>
+</h2>
 
 <form method="get" class="row mb-3">
     <div class="col-md-3">
@@ -42,10 +43,26 @@
             <tr>
                 <td>@item.HoTen (@item.TenTaiKhoan)</td>
                 <td>@item.Email</td>
-                <td>@item.NoiDung</td>
+                <td style="max-width:350px;">
+                    <div class="content-preview" style="max-height: 50px; overflow: hidden; position: relative;"
+                        id="preview-@item.Id">
+                        @item.NoiDung
+                        @if (!string.IsNullOrEmpty(item.NoiDung) && item.NoiDung.Length > 200)
+                        {
+                            <div class="fade-bottom"
+                                style="position:absolute;bottom:0;left:0;width:100%;height:30px;background:linear-gradient(transparent,white);">
+                            </div>
+                        }
+                    </div>
+                    @if (!string.IsNullOrEmpty(item.NoiDung) && item.NoiDung.Length > 200)
+                    {
+                        <button type="button" class="btn btn-link p-0" onclick="toggleContent(@item.Id)">Xem thêm</button>
+                    }
+                </td>
                 <td>@item.NgayGui.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>
-                    <span class="badge @(item.TrangThaiXuLy == "Đã xử lý" ? "bg-success text-white" : "bg-warning text-dark")">
+                    <span
+                        class="badge @(item.TrangThaiXuLy == "Đã xử lý" ? "bg-success text-white" : "bg-warning text-dark")">
                         @item.TrangThaiXuLy
                     </span>
                 </td>
@@ -64,19 +81,37 @@
     <nav class="d-flex justify-content-center mt-4">
         <ul class="pagination">
             <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("QuanLyLienHe", new { page = ViewBag.CurrentPage - 1, trangThai = ViewBag.TrangThai, tuNgay = ViewBag.TuNgay, denNgay = ViewBag.DenNgay })">&laquo;</a>
+                <a class="page-link"
+                    href="@Url.Action("QuanLyLienHe", new { page = ViewBag.CurrentPage - 1, trangThai = ViewBag.TrangThai, tuNgay = ViewBag.TuNgay, denNgay = ViewBag.DenNgay })">&laquo;</a>
             </li>
 
             @for (int i = 1; i <= ViewBag.TotalPages; i++)
             {
                 <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("QuanLyLienHe", new { page = i, trangThai = ViewBag.TrangThai, tuNgay = ViewBag.TuNgay, denNgay = ViewBag.DenNgay })">@i</a>
+                    <a class="page-link"
+                        href="@Url.Action("QuanLyLienHe", new { page = i, trangThai = ViewBag.TrangThai, tuNgay = ViewBag.TuNgay, denNgay = ViewBag.DenNgay })">@i</a>
                 </li>
             }
 
             <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("QuanLyLienHe", new { page = ViewBag.CurrentPage + 1, trangThai = ViewBag.TrangThai, tuNgay = ViewBag.TuNgay, denNgay = ViewBag.DenNgay })">&raquo;</a>
+                <a class="page-link"
+                    href="@Url.Action("QuanLyLienHe", new { page = ViewBag.CurrentPage + 1, trangThai = ViewBag.TrangThai, tuNgay = ViewBag.TuNgay, denNgay = ViewBag.DenNgay })">&raquo;</a>
             </li>
         </ul>
     </nav>
+}
+
+@section Scripts {
+    <script>
+        function toggleContent(id) {
+            var preview = document.getElementById('preview-' + id);
+            if (preview.style.maxHeight === "none") {
+                preview.style.maxHeight = "50px";
+                event.target.innerText = "Xem thêm";
+            } else {
+                preview.style.maxHeight = "none";
+                event.target.innerText = "Thu gọn";
+            }
+        }
+    </script>
 }

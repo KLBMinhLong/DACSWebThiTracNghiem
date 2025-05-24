@@ -16,12 +16,19 @@
 <div class="d-flex justify-content-center mt-4">
     <div class="container"> @* Dùng container để khớp với layout header *@
 
-        
-
-        <div class="mb-3 text-start">
+        <div class="d-flex justify-content-between align-items-center mb-3">
             <a asp-action="CreateUser" class="btn btn-success">
                 <i class="bi bi-plus-circle"></i> Thêm tài khoản mới
             </a>
+            
+            <!-- Form tìm kiếm -->
+            <form asp-action="QuanLyNguoiDung" method="get" class="d-flex" style="max-width: 400px;">
+                <input type="text" name="searchString" class="form-control me-2" 
+                       placeholder="Tìm kiếm theo tên..." value="@ViewBag.CurrentFilter" />
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search me-1"></i> Tìm
+                </button>
+            </form>
         </div>
 
         <table class="table table-bordered table-hover text-center align-middle">
@@ -52,11 +59,14 @@
                             }
                         </td>
                         <td>
+                            <a asp-action="DetailUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-info btn-sm">
+                                <i class="bi bi-eye"></i> Xem
+                            </a>
                             <a asp-action="EditUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-warning btn-sm me-1">
                                 <i class="bi bi-pencil-square"></i> Sửa
                             </a>
                             <a asp-action="DeleteUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-danger btn-sm"
-                               onclick="return confirm('Bạn có chắc chắn muốn xoá tài khoản này không?');">
+                                onclick="return confirm('Bạn có chắc chắn muốn xoá tài khoản này không?');">
                                 <i class="bi bi-trash"></i> Xoá
                             </a>
                         </td>
@@ -65,24 +75,24 @@
             </tbody>
         </table>
 
-        @* Phân trang *@
+        @* Phân trang với tìm kiếm *@
         @if (ViewBag.TotalPages > 1)
         {
             <nav class="d-flex justify-content-center mt-4">
                 <ul class="pagination">
                     <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                        <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)">&laquo;</a>
+                        <a class="page-link" href="?page=@(ViewBag.CurrentPage - 1)&searchString=@ViewBag.CurrentFilter">&laquo;</a>
                     </li>
 
                     @for (int i = 1; i <= ViewBag.TotalPages; i++)
                     {
                         <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                            <a class="page-link" href="?page=@i">@i</a>
+                            <a class="page-link" href="?page=@i&searchString=@ViewBag.CurrentFilter">@i</a>
                         </li>
                     }
 
                     <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                        <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)">&raquo;</a>
+                        <a class="page-link" href="?page=@(ViewBag.CurrentPage + 1)&searchString=@ViewBag.CurrentFilter">&raquo;</a>
                     </li>
                 </ul>
             </nav>

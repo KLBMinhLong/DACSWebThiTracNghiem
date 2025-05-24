@@ -16,7 +16,7 @@ public class DeThiController : Controller
         _context = context;
     }
 
-    // tìm kiếm theo tên đề thi, phân trang
+    // tìm kiếm theo tên đề thi hoặc chủ đề, phân trang
     public async Task<IActionResult> Index(string searchString, int page = 1, int pageSize = 10)
     {
         var query = _context.DeThis
@@ -25,7 +25,11 @@ public class DeThiController : Controller
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            query = query.Where(d => d.TenDeThi.Contains(searchString));
+            // Tìm kiếm theo cả tên đề thi và tên chủ đề
+            query = query.Where(d => 
+                d.TenDeThi.Contains(searchString) || 
+                d.ChuDe.TenChuDe.Contains(searchString)
+            );
         }
 
         int totalItems = await query.CountAsync();

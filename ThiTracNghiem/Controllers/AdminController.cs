@@ -13,8 +13,8 @@ namespace ThiTracNghiem.Controllers
         {
             _context = context;
         }
-       
-       [Authorize(Roles = "admin")]
+
+        [Authorize(Roles = "admin")]
         public IActionResult Dashboard()
         {
             var role = HttpContext.Session.GetString("VaiTro");
@@ -28,7 +28,7 @@ namespace ThiTracNghiem.Controllers
 
         //  Action để quản lý user
         [Authorize(Roles = "admin")]
-       public async Task<IActionResult> QuanLyNguoiDung(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> QuanLyNguoiDung(string searchString, int page = 1, int pageSize = 10)
         {
             var role = HttpContext.Session.GetString("VaiTro");
             if (role == null || role.ToLower() != "admin")
@@ -36,19 +36,36 @@ namespace ThiTracNghiem.Controllers
                 return RedirectToAction("DangNhap", "TaiKhoan");
             }
 
-            var query = _context.TaiKhoans.AsQueryable();
-            int totalItems = await query.CountAsync();
+            // Lưu trạng thái tìm kiếm
+            ViewBag.CurrentFilter = searchString;
 
-            var taiKhoan = await query
-                .OrderBy(t => t.TenTaiKhoan)
+            // Lấy danh sách tài khoản
+            var query = _context.TaiKhoans.AsQueryable();
+
+            // Áp dụng tìm kiếm nếu có
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                // Tìm theo tên tài khoản (chứa chuỗi tìm kiếm)
+                query = query.Where(u => u.TenTaiKhoan.Contains(searchString) ||
+                                         u.Email.Contains(searchString));
+            }
+
+            // Đếm tổng số bản ghi sau khi lọc
+            int totalRecords = await query.CountAsync();
+            int totalPages = (int)Math.Ceiling((double)totalRecords / pageSize);
+
+            // Lấy dữ liệu phân trang
+            var users = await query
+                .OrderBy(u => u.TenTaiKhoan)
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
 
+            // Truyền thông tin phân trang cho view
             ViewBag.CurrentPage = page;
-            ViewBag.TotalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+            ViewBag.TotalPages = totalPages;
 
-            return View(taiKhoan); // Views/Admin/QuanLyNguoiDung.cshtml
+            return View(users);
         }
 
 
@@ -98,7 +115,7 @@ namespace ThiTracNghiem.Controllers
             }
 
             model.ThoiGianTao = DateTime.Now;
-            model.MatKhau=MaHoaHelper.MaHoaSHA256(model.MatKhau); // Mã hóa mật khẩu
+            model.MatKhau = MaHoaHelper.MaHoaSHA256(model.MatKhau); // Mã hóa mật khẩu
             _context.TaiKhoans.Add(model);
             await _context.SaveChangesAsync();
 
@@ -184,7 +201,38 @@ namespace ThiTracNghiem.Controllers
             return RedirectToAction("QuanLyNguoiDung");
         }
 
+        // GET: Admin/DetailUser
+        [Authorize(Roles = "admin")]
+        [HttpGet]
+        public async Task<IActionResult> DetailUser(string id)
+        {
+            var role = HttpContext.Session.GetString("VaiTro");
+            if (role == null || role.ToLower() != "admin")
+            {
+                return RedirectToAction("DangNhap", "TaiKhoan");
+            }
 
+            var user = await _context.TaiKhoans.FindAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            // Lấy thêm dữ liệu liên quan (số bài thi, điểm trung bình...)
+            var baiThiCount = await _context.LichSuLamBais.CountAsync(kt => kt.TenTaiKhoan == id);
+            var diemTB = 0.0;
+            if (baiThiCount > 0)
+            {
+                diemTB = await _context.LichSuLamBais
+                    .Where(kt => kt.TenTaiKhoan == id)
+                    .AverageAsync(kt => kt.Diem) ?? 0.0;
+            }
+
+            ViewBag.SoBaiThi = baiThiCount;
+            ViewBag.DiemTrungBinh = Math.Round(diemTB, 2);
+
+            return View(user);
+        }
 
     }
 }
