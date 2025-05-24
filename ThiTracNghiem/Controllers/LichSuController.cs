@@ -13,7 +13,7 @@ public class LichSuThiController : Controller
     }
 
     // Hiển thị danh sách lịch sử làm bài, phân trang
-   public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
+    public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
     {
         var tenTaiKhoan = HttpContext.Session.GetString("UserName");
         if (string.IsNullOrEmpty(tenTaiKhoan))
@@ -41,6 +41,10 @@ public class LichSuThiController : Controller
     // Xem chi tiết 1 lần làm bài
     public IActionResult XemChiTiet(int id)
     {
+        var tenTaiKhoan = HttpContext.Session.GetString("UserName");
+        if (string.IsNullOrEmpty(tenTaiKhoan))
+            return RedirectToAction("DangNhap", "TaiKhoan");
+
         var lichSu = _context.LichSuLamBais
             .Include(x => x.DeThi)
             .Include(x => x.ChiTietLamBais!)

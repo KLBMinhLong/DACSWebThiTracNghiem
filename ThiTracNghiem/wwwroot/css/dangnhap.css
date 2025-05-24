@@ -64,10 +64,14 @@
 
 /* Thông báo lỗi */
 .login-form .error-message {
-  color: red;
+  color: #dc3545;
   text-align: center;
   font-size: 0.9rem;
-  margin-top: 15px;
+  margin-bottom: 15px;
+  padding: 8px;
+  background-color: #f8d7da;
+  border-radius: 4px;
+  border: 1px solid #f5c6cb;
 }
 /* Thay đổi màu sắc của nút đăng nhập khi hover */
 .login-form button:hover {
@@ -134,5 +138,24 @@
 
 .btn-signin:hover {
   background-color: #63afff !important;
+}
 
+/* Styling for registration link section */
+.register-link {
+  text-align: center;
+  margin-top: 20px;
+  font-size: 0.9rem;
+  color: #555;
+}
+
+.register-link a {
+  color: #007bff;
+  text-decoration: none;
+  font-weight: 500;
+  margin-left: 5px;
+}
+
+.register-link a:hover {
+  text-decoration: underline;
+  color: #0056b3;
 }

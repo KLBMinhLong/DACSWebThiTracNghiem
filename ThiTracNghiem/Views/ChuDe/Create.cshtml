@@ -5,27 +5,26 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Tạo chủ đề mới</h1>
-
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="TenChuDe" class="control-label">Tên Chủ Đề</label>
-                <input asp-for="TenChuDe" class="form-control" />
-                <span asp-validation-for="TenChuDe" class="text-danger"></span>
+<h2 class="mb-4 fw-bold text-center text-primary">Tạo Chủ Đề Mới</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="Create">
+                    <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
+                    <div class="mb-3">
+                        <label asp-for="TenChuDe" class="form-label">Tên Chủ Đề</label>
+                        <input asp-for="TenChuDe" class="form-control" />
+                        <span asp-validation-for="TenChuDe" class="text-danger"></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Trở lại</a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i> Tạo mới</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Trở lại danh sách</a>
 </div>
 
 @section Scripts {

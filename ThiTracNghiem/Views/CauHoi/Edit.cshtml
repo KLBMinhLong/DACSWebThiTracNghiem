@@ -5,59 +5,86 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Sửa câu hỏi</h1>
-
-<h4>CauHoi</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="NoiDung" class="control-label"></label>
-                <input asp-for="NoiDung" class="form-control" />
-                <span asp-validation-for="NoiDung" class="text-danger"></span>
+<h2 class="mb-4 fw-bold text-center text-primary">Sửa Câu Hỏi</h2>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="Edit" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <input type="hidden" asp-for="Id" />
+                    <div class="mb-3">
+                        <label asp-for="NoiDung" class="form-label"></label>
+                        <input asp-for="NoiDung" class="form-control" />
+                        <span asp-validation-for="NoiDung" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnA" class="form-label"></label>
+                        <input asp-for="DapAnA" class="form-control" />
+                        <span asp-validation-for="DapAnA" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnB" class="form-label"></label>
+                        <input asp-for="DapAnB" class="form-control" />
+                        <span asp-validation-for="DapAnB" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnC" class="form-label"></label>
+                        <input asp-for="DapAnC" class="form-control" />
+                        <span asp-validation-for="DapAnC" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnD" class="form-label"></label>
+                        <input asp-for="DapAnD" class="form-control" />
+                        <span asp-validation-for="DapAnD" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnDung" class="form-label"></label>
+                        <input asp-for="DapAnDung" class="form-control" />
+                        <span asp-validation-for="DapAnDung" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChuDeId" class="form-label"></label>
+                        <select asp-for="ChuDeId" class="form-control" asp-items="ViewBag.ChuDeId"></select>
+                        <span asp-validation-for="ChuDeId" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label>Hình ảnh hiện tại</label><br />
+                        @if (!string.IsNullOrEmpty(Model.HinhAnhUrl))
+                        {
+                            <img src="@Model.HinhAnhUrl" alt="Ảnh minh họa" class="img-fluid rounded border mb-2" style="max-width: 300px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có hình ảnh</span>
+                        }
+                        <input type="file" name="HinhAnhFile" class="form-control mt-2" accept="image/*" />
+                        <small class="form-text text-muted">Chọn file để thay đổi hình ảnh.</small>
+                    </div>
+                    <div class="mb-3">
+                        <label>Audio hiện tại</label><br />
+                        @if (!string.IsNullOrEmpty(Model.AudioUrl))
+                        {
+                            <audio controls class="mb-2">
+                                <source src="@Model.AudioUrl" type="audio/mpeg" />
+                                Trình duyệt không hỗ trợ audio.
+                            </audio>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có audio</span>
+                        }
+                        <input type="file" name="AudioFile" class="form-control mt-2" accept="audio/*" />
+                        <small class="form-text text-muted">Chọn file để thay đổi audio.</small>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Trở lại</a>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-save me-1"></i> Lưu</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="DapAnA" class="control-label"></label>
-                <input asp-for="DapAnA" class="form-control" />
-                <span asp-validation-for="DapAnA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnB" class="control-label"></label>
-                <input asp-for="DapAnB" class="form-control" />
-                <span asp-validation-for="DapAnB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnC" class="control-label"></label>
-                <input asp-for="DapAnC" class="form-control" />
-                <span asp-validation-for="DapAnC" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnD" class="control-label"></label>
-                <input asp-for="DapAnD" class="form-control" />
-                <span asp-validation-for="DapAnD" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnDung" class="control-label"></label>
-                <input asp-for="DapAnDung" class="form-control" />
-                <span asp-validation-for="DapAnDung" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChuDeId" class="control-label"></label>
-                <select asp-for="ChuDeId" class="form-control" asp-items="ViewBag.ChuDeId"></select>
-                <span asp-validation-for="ChuDeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
-</div>
-
-<div>
-    <a asp-action="Index">Trở lại danh sách</a>
 </div>
 
 @section Scripts {

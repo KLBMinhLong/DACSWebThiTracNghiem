@@ -21,13 +21,15 @@ namespace ThiTracNghiem.Controllers
         // Giao diện người dùng gửi liên hệ
         public IActionResult GuiLienHe()
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString("UserName")))
+                return RedirectToAction("DangNhap", "TaiKhoan");
             return View();
         }
 
         [HttpPost]
         public IActionResult GuiLienHe(string HoTen, string Email, string NoiDung)
         {
-            var user = HttpContext.Session.GetString("UserName") ?? "Khách";
+            var user = HttpContext.Session.GetString("UserName");
 
             var lh = new LienHe
             {

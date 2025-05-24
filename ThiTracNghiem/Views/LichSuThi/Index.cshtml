@@ -1,56 +1,88 @@
 @model List<LichSuLamBai>
-
-<h3 class="mb-3">Lịch sử thi</h3>
-
-@if (!Model.Any())
-{
-    <p>Bạn chưa có lịch sử thi nào.</p>
+@{
+    ViewData["Title"] = "Lịch sử thi";
 }
-else
-{
-    <table class="table table-bordered">
-    <thead>
-        <tr>
-            <th>Đề thi</th>
-            <th>Ngày làm</th>
-            <th>Điểm</th>
-            <th>Xem lại</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.DeThi.TenDeThi</td>
-                <td>@item.NgayBatDau.ToString("dd/MM/yyyy HH:mm")</td>
-                <td>@(item.Diem.HasValue ? item.Diem + " điểm" : "Chưa có")</td>
-                <td>
-                    <a asp-action="XemChiTiet" asp-route-id="@item.Id" class="btn btn-info btn-sm">Xem lại</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
-}
-@if (ViewBag.TotalPages > 1)
-{
-    <nav class="d-flex justify-content-center">
-        <ul class="pagination">
-            <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })">&laquo;</a>
-            </li>
 
-            @for (int i = 1; i <= ViewBag.TotalPages; i++)
-            {
-                <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                    <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+<link rel="stylesheet" href="~/css/lichsuthi.css" />
+
+<div class="container history-container">
+    <h3 class="history-header">Lịch sử thi</h3>@if (!Model.Any())
+    {
+        <div class="empty-history">
+            <p>Bạn chưa có lịch sử thi nào.</p>
+            <a href="/DeThi" class="btn btn-view">Bắt đầu làm bài</a>
+        </div>
+    }
+        else
+    {
+        <table class="table table-hover history-table">
+            <thead>
+                <tr>
+                    <th>Đề thi</th>
+                    <th>Ngày làm</th>
+                    <th>Điểm</th>
+                    <th>Xem lại</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    string scoreClass = "no-score";
+                    if (item.Diem.HasValue)
+                    {
+                        if (item.Diem >= 8) scoreClass = "score-high";
+                        else if (item.Diem >= 5) scoreClass = "score-medium";
+                        else scoreClass = "score-low";
+                    }
+                    <tr>
+                        <td data-label="Đề thi" title="@(item.DeThi != null ? item.DeThi.TenDeThi : "Đề thi không có sẵn")">
+                            @(item.DeThi != null ? item.DeThi.TenDeThi : "Đề thi không có sẵn")
+                        </td>
+                        <td data-label="Ngày làm">@item.NgayBatDau.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td data-label="Điểm">
+                            <span class="history-score @scoreClass">
+                                @(item.Diem.HasValue? item.Diem + " điểm" : "Chưa có")
+                            </span>
+                        </td>
+                        <td data-label="Xem lại">
+                            <a asp-action="XemChiTiet" asp-route-id="@item.Id" class="btn btn-view">
+                                Xem lại
+                            </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @if (ViewBag.TotalPages > 1)
+    {
+        <nav class="d-flex justify-content-center">
+            <ul class="pagination">
+                <!-- Nút Previous -->
+                <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage - 1 })"
+                        aria-label="Previous">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
                 </li>
-            }
 
-            <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })">&raquo;</a>
-            </li>
-        </ul>
-    </nav>
-}
+                <!-- Hiển thị số trang -->
+                @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                {
+                    <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
+                        <a class="page-link" href="@Url.Action("Index", new { page = i })">@i</a>
+                    </li>
+                }
 
+                <!-- Nút Next -->
+                <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
+                    <a class="page-link" href="@Url.Action("Index", new { page = ViewBag.CurrentPage + 1 })"
+                        aria-label="Next">
+                        <i class="bi bi-chevron-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    }
+</div>

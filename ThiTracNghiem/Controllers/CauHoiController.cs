@@ -78,7 +78,7 @@ namespace ThiTracNghiem
                 return NotFound();
             }
 
-            return View(cauHoi);
+            return View(cauHoi); // View sẽ hiển thị cả hình ảnh và âm thanh nếu có
         }
 
         // GET: CauHoi/Create
@@ -149,7 +149,7 @@ namespace ThiTracNghiem
                 return NotFound();
             }
             ViewData["ChuDeId"] = new SelectList(_context.ChuDes, "Id", "TenChuDe", cauHoi.ChuDeId);
-            return View(cauHoi);
+            return View(cauHoi); // View sẽ cho phép upload hình ảnh và âm thanh mới
         }
 
         // POST: CauHoi/Edit/5
@@ -157,7 +157,7 @@ namespace ThiTracNghiem
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NoiDung,DapAnA,DapAnB,DapAnC,DapAnD,DapAnDung,ChuDeId")] CauHoi cauHoi)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NoiDung,DapAnA,DapAnB,DapAnC,DapAnD,DapAnDung,ChuDeId")] CauHoi cauHoi, IFormFile? HinhAnhFile, IFormFile? AudioFile)
         {
             if (id != cauHoi.Id)
             {
@@ -168,8 +168,44 @@ namespace ThiTracNghiem
             {
                 try
                 {
+                    // Lấy dữ liệu cũ từ DB
+                    var oldCauHoi = await _context.CauHois.AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
+                    if (oldCauHoi == null)
+                        return NotFound();
+
+                    // Xử lý ảnh nếu có upload mới
+                    if (HinhAnhFile != null && HinhAnhFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(HinhAnhFile.FileName);
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "images", fileName);
+                        using var stream = new FileStream(path, FileMode.Create);
+                        await HinhAnhFile.CopyToAsync(stream);
+                        cauHoi.HinhAnhUrl = "/uploads/images/" + fileName;
+                    }
+                    else
+                    {
+                        // Giữ nguyên ảnh cũ
+                        cauHoi.HinhAnhUrl = oldCauHoi.HinhAnhUrl;
+                    }
+
+                    // Xử lý audio nếu có upload mới
+                    if (AudioFile != null && AudioFile.Length > 0)
+                    {
+                        var fileName = Guid.NewGuid() + Path.GetExtension(AudioFile.FileName);
+                        var path = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "uploads", "audio", fileName);
+                        using var stream = new FileStream(path, FileMode.Create);
+                        await AudioFile.CopyToAsync(stream);
+                        cauHoi.AudioUrl = "/uploads/audio/" + fileName;
+                    }
+                    else
+                    {
+                        // Giữ nguyên audio cũ
+                        cauHoi.AudioUrl = oldCauHoi.AudioUrl;
+                    }
+
                     _context.Update(cauHoi);
                     await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
                 }
                 catch (DbUpdateConcurrencyException)
                 {
@@ -182,7 +218,6 @@ namespace ThiTracNghiem
                         throw;
                     }
                 }
-                return RedirectToAction(nameof(Index));
             }
             ViewData["ChuDeId"] = new SelectList(_context.ChuDes, "Id", "TenChuDe", cauHoi.ChuDeId);
             return View(cauHoi);
@@ -227,6 +262,7 @@ namespace ThiTracNghiem
             return _context.CauHois.Any(e => e.Id == id);
         }
         // them file exel
+        // Import Excel chỉ import nội dung, không import hình/audio
         [HttpPost]
         public IActionResult ImportExcel(IFormFile file, int ChuDeId)
         {
@@ -262,7 +298,9 @@ namespace ThiTracNghiem
                                 DapAnC = row.Cell(4).GetValue<string>(),
                                 DapAnD = row.Cell(5).GetValue<string>(),
                                 DapAnDung = row.Cell(6).GetValue<string>(),
-                                ChuDeId = ChuDeId
+                                ChuDeId = ChuDeId,
+                                HinhAnhUrl = null,
+                                AudioUrl = null
                             };
 
                             _context.CauHois.Add(cauHoi);

@@ -4,50 +4,71 @@
     ViewData["Title"] = "Kết quả làm bài";
 }
 
-<h2 class="mb-4">KẾT QUẢ BÀI THI: @Model.DeThi.TenDeThi</h2>
+<link rel="stylesheet" href="~/css/ketqua.css" />
 
-<p><strong>Ngày làm bài:</strong> @Model.NgayBatDau.ToString("dd/MM/yyyy HH:mm")</p>
-<p><strong>Điểm:</strong> @Model.Diem </p>
-<hr />
-
-@foreach (var ct in Model.ChiTietLamBais!)
-{
-    <div class="mb-4 p-3 border rounded shadow-sm">
-        <h5>Câu hỏi: @ct.CauHoi?.NoiDung</h5>
-
-        @if (!string.IsNullOrEmpty(ct.CauHoi?.HinhAnhUrl))
-        {
-            <img src="@ct.CauHoi.HinhAnhUrl" alt="Hình ảnh câu hỏi" class="img-fluid mb-2" />
-        }
-
-        @if (!string.IsNullOrEmpty(ct.CauHoi?.AudioUrl))
-        {
-            <audio controls class="mb-2">
-                <source src="@ct.CauHoi.AudioUrl" type="audio/mpeg" />
-                Trình duyệt không hỗ trợ audio.
-            </audio>
-        }
-
-        <ul>
-            <li @(ct.CauHoi.DapAnA == ct.DapAnChon ? "style=color:red;" : "")>A. @ct.CauHoi.DapAnA</li>
-            <li @(ct.CauHoi.DapAnB == ct.DapAnChon ? "style=color:red;" : "")>B. @ct.CauHoi.DapAnB</li>
-            <li @(ct.CauHoi.DapAnC == ct.DapAnChon ? "style=color:red;" : "")>C. @ct.CauHoi.DapAnC</li>
-            <li @(ct.CauHoi.DapAnD == ct.DapAnChon ? "style=color:red;" : "")>D. @ct.CauHoi.DapAnD</li>
-        </ul>
-
-        <p>
-            <strong>Đáp án đúng:</strong> @ct.CauHoi.DapAnDung &nbsp;|&nbsp;
-            <strong>Chọn:</strong> @ct.DapAnChon &nbsp;|&nbsp;
-            <strong>Kết quả:</strong>
-            <span class="@(ct.DungHaySai == true ? "text-success" : "text-danger")">
-                @(ct.DungHaySai == true ? "Đúng" : "Sai")
-            </span>
-        </p>
+<div class="container result-container">
+    <h2 class="result-header">KẾT QUẢ BÀI THI</h2>
+    
+    <div class="result-info">
+        <div class="row">            <div class="col-md-8">
+                <h4>@(Model.DeThi != null ? Model.DeThi.TenDeThi : "Đề thi không có sẵn")</h4>
+                <p><i class="bi bi-calendar3"></i> Ngày làm: @Model.NgayBatDau.ToString("dd/MM/yyyy HH:mm")</p>
+            </div>
+            <div class="col-md-4 text-md-end">
+                <h4><i class="bi bi-star-fill text-warning"></i> Điểm: @Model.Diem</h4>
+            </div>
+        </div>
     </div>
-}
 
-<div class="mt-4">
-    <a asp-controller="LichSuThi" asp-action="Index" class="btn btn-secondary">
-        ← Trở về lịch sử làm bài
-    </a>
+    @foreach (var ct in Model.ChiTietLamBais!)
+    {
+        <div class="result-question">
+            <h5>@ct.CauHoi?.NoiDung</h5>
+
+            @if (!string.IsNullOrEmpty(ct.CauHoi?.HinhAnhUrl))
+            {
+                <img src="@ct.CauHoi.HinhAnhUrl" alt="Hình ảnh câu hỏi" class="img-fluid mb-2" />
+            }
+
+            @if (!string.IsNullOrEmpty(ct.CauHoi?.AudioUrl))
+            {
+                <audio controls class="mb-2">
+                    <source src="@ct.CauHoi.AudioUrl" type="audio/mpeg" />
+                    Trình duyệt không hỗ trợ audio.
+                </audio>
+            }            <ul class="answer-list">
+                @if (ct.CauHoi != null)
+                {
+                    <li class="@(ct.CauHoi.DapAnA == ct.DapAnChon ? "user-answer" : "") @(ct.CauHoi.DapAnDung == "A" ? "correct-answer" : "")">
+                        A. @ct.CauHoi.DapAnA
+                    </li>
+                    <li class="@(ct.CauHoi.DapAnB == ct.DapAnChon ? "user-answer" : "") @(ct.CauHoi.DapAnDung == "B" ? "correct-answer" : "")">
+                        B. @ct.CauHoi.DapAnB
+                    </li>
+                    <li class="@(ct.CauHoi.DapAnC == ct.DapAnChon ? "user-answer" : "") @(ct.CauHoi.DapAnDung == "C" ? "correct-answer" : "")">
+                        C. @ct.CauHoi.DapAnC
+                    </li>
+                    <li class="@(ct.CauHoi.DapAnD == ct.DapAnChon ? "user-answer" : "") @(ct.CauHoi.DapAnDung == "D" ? "correct-answer" : "")">
+                        D. @ct.CauHoi.DapAnD
+                    </li>
+                }
+                else
+                {
+                    <li>Không có thông tin câu hỏi</li>
+                }
+            </ul>
+
+            <div>
+                <span class="result-summary @(ct.DungHaySai == true ? "result-correct" : "result-wrong")">
+                    @(ct.DungHaySai == true ? "Đúng" : "Sai")
+                </span>
+            </div>
+        </div>
+    }
+
+    <div class="mt-4 text-center">
+        <a asp-controller="LichSuThi" asp-action="Index" class="btn-back">
+            <i class="bi bi-arrow-left"></i> Trở về lịch sử thi
+        </a>
+    </div>
 </div>

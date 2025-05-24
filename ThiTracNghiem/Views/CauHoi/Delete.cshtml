@@ -5,60 +5,39 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Xóa câu hỏi</h1>
-
-<h3>Bạn có muốn xóa câu hỏi này không?</h3>
-<div>
-    <h4>CauHoi</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.NoiDung)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.NoiDung)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnA)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnA)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnB)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnB)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnC)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnC)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnD)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnD)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DapAnDung)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.DapAnDung)
-        </dd>
-        <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.ChuDe)
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.ChuDe.TenChuDe)
-        </dd>
-    </dl>
-    
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
-        <a asp-action="Index">Trở lại danh sách</a>
-    </form>
+<h2 class="mb-4 fw-bold text-center text-danger">Xóa Câu Hỏi</h2>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm border-danger">
+            <div class="card-body">
+                <div class="alert alert-danger mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    Bạn có chắc chắn muốn <b>xóa</b> câu hỏi này không?
+                </div>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Nội dung</dt>
+                    <dd class="col-sm-8">@Model.NoiDung</dd>
+                    <dt class="col-sm-4">Đáp án A</dt>
+                    <dd class="col-sm-8">@Model.DapAnA</dd>
+                    <dt class="col-sm-4">Đáp án B</dt>
+                    <dd class="col-sm-8">@Model.DapAnB</dd>
+                    <dt class="col-sm-4">Đáp án C</dt>
+                    <dd class="col-sm-8">@Model.DapAnC</dd>
+                    <dt class="col-sm-4">Đáp án D</dt>
+                    <dd class="col-sm-8">@Model.DapAnD</dd>
+                    <dt class="col-sm-4">Đáp án đúng</dt>
+                    <dd class="col-sm-8">@Model.DapAnDung</dd>
+                    <dt class="col-sm-4">Chủ đề</dt>
+                    <dd class="col-sm-8">@Model.ChuDe?.TenChuDe</dd>
+                </dl>
+                <form asp-action="Delete" class="mt-4">
+                    <input type="hidden" asp-for="Id" />
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Trở lại</a>
+                        <button type="submit" class="btn btn-danger"><i class="bi bi-trash me-1"></i> Xóa</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>

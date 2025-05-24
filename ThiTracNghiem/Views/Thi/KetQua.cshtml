@@ -1,92 +1,263 @@
 @model KetQuaViewModel
 
 @{
+    Layout = "~/Views/Shared/_LayoutNoFooter.cshtml";
     ViewBag.Title = "Kết quả bài thi";
     var tongCauHoi = Model.TongCauHoi;
     var soCauDung = Model.SoCauDung;
     var diem = Model.DiemSo;
     var soCauSai = tongCauHoi - soCauDung;
     var phanTram = Math.Round((double)soCauDung / tongCauHoi * 100);
+    
+    // Xác định màu sắc dựa trên điểm số
+    string scoreClass = "low";
+    string resultMessage = "Cần cố gắng hơn";
+    
+    if (diem >= 8) {
+        scoreClass = "high";
+        resultMessage = "Xuất sắc";
+    } else if (diem >= 5) {
+        scoreClass = "medium";
+        resultMessage = "Khá tốt";
+    }
 }
 
-<div class="container mt-4">
-    <div class="card p-4 shadow-sm mb-4">
+<link rel="stylesheet" href="~/css/ketquathi.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.8.0/font/bootstrap-icons.css">
+
+<div class="container mt-4 animation-fade-in">
+    <div class="card p-4 result-card mb-4">
         <div class="row align-items-center">
-            <div class="col-md-8">
-                <h4 class="fw-bold">Kết quả bài thi</h4>
+            <div class="col-md-8">                <h4 class="fw-bold mb-3">
+                    <i class="bi bi-trophy-fill text-warning me-2"></i>Kết quả bài thi
+                    <span class="badge ms-2" style="background-color: @(scoreClass == "high" ? "#006625" : (scoreClass == "medium" ? "#b35c00" : "#9c1e1e")); color: white; font-weight: 600;">@resultMessage</span>
+                </h4>
                 <p>
-                    <i class="bi bi-clock"></i> Hoàn thành: @DateTime.Now.ToString("dd/MM/yyyy - HH:mm") <br />
-                    <span class="text-secondary">Thời gian làm bài: <strong>@Model.ThoiGianPhut phút</strong> &nbsp; | &nbsp;
-                        Số câu: <strong>@tongCauHoi</strong></span>
+                    <i class="bi bi-calendar-check me-2"></i> Hoàn thành: <strong>@DateTime.Now.ToString("dd/MM/yyyy - HH:mm")</strong> <br />
+                    <i class="bi bi-stopwatch me-2"></i> Thời gian làm bài: <strong>@Model.ThoiGianPhut phút</strong> <br />
+                    <i class="bi bi-list-ol me-2"></i> Số câu hỏi: <strong>@tongCauHoi câu</strong> <br />
+                    <i class="bi bi-star-fill me-2 text-warning"></i> Điểm đạt được: <strong>@diem / 10</strong>
                 </p>
             </div>
             <div class="col-md-4 text-center">
-                <div class="rounded-circle border border-success p-4"
-                    style="width: 120px; height: 120px; margin: 0 auto;">
-                    <div class="fs-4 fw-bold text-success">@soCauDung/@tongCauHoi</div>
-                    <div class="text-secondary">@phanTram%</div>
+                <div class="score-circle score-circle-@scoreClass">
+                    <div class="score-value score-@scoreClass">@soCauDung/@tongCauHoi</div>
+                    <div class="score-percent">@phanTram%</div>
+                    <div class="score-points">@diem điểm</div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="row text-center mb-4">
-        <div class="col-md-4">
-            <h3 class="text-success">@soCauDung</h3>
-            <p>Câu đúng</p>
+    <div class="row mb-4">        <div class="col-md-4 mb-3">
+            <div class="stat-card stat-card-correct">
+                <div class="stat-icon mb-2">
+                    <i class="bi bi-check-circle-fill" style="font-size: 2.2rem; color: #006625;"></i>
+                </div>
+                <div class="stat-value text-success">@soCauDung</div>
+                <div class="stat-label">Câu trả lời đúng</div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <h3 class="text-danger">@soCauSai</h3>
-            <p>Câu sai</p>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card stat-card-incorrect">
+                <div class="stat-icon mb-2">
+                    <i class="bi bi-x-circle-fill" style="font-size: 2.2rem; color: #9c1e1e;"></i>
+                </div>
+                <div class="stat-value text-danger">@soCauSai</div>
+                <div class="stat-label">Câu trả lời sai</div>
+            </div>
         </div>
-        <div class="col-md-4">
-            <h3 class="text-primary">@diem</h3>
-            <p>Điểm số</p>
+        <div class="col-md-4 mb-3">
+            <div class="stat-card stat-card-score">
+                <div class="stat-icon mb-2">
+                    <i class="bi bi-award-fill" style="font-size: 2.2rem; color: #0050a6;"></i>
+                </div>
+                <div class="stat-value text-primary">@diem</div>
+                <div class="stat-label">Điểm số</div>
+            </div>
         </div>
     </div>
 
-    <div class="card shadow-sm p-4">
-        <h5 class="mb-3">Chi tiết kết quả</h5>
-
-        @for (int i = 0; i < Model.ChiTietTraLoi.Count; i++)
-        {
-            var item = Model.ChiTietTraLoi[i];
-            var status = item.DungHaySai ? "dung" : "sai";
-
-            <div class="ketqua-item border-bottom py-3" data-status="@status">
-                <strong>Câu hỏi @(@i + 1):</strong>
-                <span class="badge bg-@(item.DungHaySai ? "success" : "danger")">
-                    @(item.DungHaySai ? "Đúng" : "Sai")
-                </span>
-
-                <div class="mt-2">@item.CauHoi</div>
-
-                @if (!string.IsNullOrEmpty(item.HinhAnhUrl))
-                {
-                    <div class="my-2">
-                        <img src="@item.HinhAnhUrl" alt="Hình ảnh" class="img-fluid rounded" style="max-width: 300px;" />
-                    </div>
-                }
-
-                @if (!string.IsNullOrEmpty(item.AudioUrl))
-                {
-                    <div class="my-2">
-                        <audio controls>
-                            <source src="@item.AudioUrl" type="audio/mpeg" />
-                            Trình duyệt không hỗ trợ audio.
-                        </audio>
-                    </div>
-                }
-
-                <div class="mt-2">
-                    <p><strong>A.</strong> @item.DapAnA</p>
-                    <p><strong>B.</strong> @item.DapAnB</p>
-                    <p><strong>C.</strong> @item.DapAnC</p>
-                    <p><strong>D.</strong> @item.DapAnD</p>
-                    <p><strong>Đáp án bạn chọn:</strong> <span class="text-primary">@item.DapAnChon</span></p>
-                    <p><strong>Đáp án đúng:</strong> <span class="text-success">@item.DapAnDung</span></p>
-                </div>
+    <div class="card detail-card p-4">
+        <h5 class="detail-title"><i class="bi bi-list-check me-2"></i>Chi tiết kết quả</h5>
+        
+        <div class="mb-4">            <div class="d-flex justify-content-end mb-3">
+                <button id="expandAllBtn" class="btn btn-sm me-2" style="background-color: #424242; color: white;">
+                    <i class="bi bi-arrows-expand me-1"></i> Mở rộng tất cả
+                </button>
+                <button id="collapseAllBtn" class="btn btn-sm" style="background-color: #424242; color: white;">
+                    <i class="bi bi-arrows-collapse me-1"></i> Thu gọn tất cả
+                </button>
             </div>
-        }
+        </div>
+
+        <div class="ketqua-list">
+            @for (int i = 0; i < Model.ChiTietTraLoi.Count; i++)
+            {
+                var item = Model.ChiTietTraLoi[i];
+                var status = item.DungHaySai ? "dung" : "sai";
+                var statusText = item.DungHaySai ? "Đúng" : "Sai";
+                var statusIcon = item.DungHaySai ? "bi-check-circle-fill" : "bi-x-circle-fill";
+                var statusClass = item.DungHaySai ? "success" : "danger";
+
+                <div class="ketqua-item mb-4" data-status="@status">
+                    <div class="d-flex justify-content-between align-items-center">                        <h5 class="mb-0">
+                            <span class="badge me-2" style="background-color: #424242; color: white;">Câu @(i + 1)</span>
+                            <span class="badge" style="background-color: @(statusClass == "success" ? "#006625" : "#9c1e1e"); color: white;">
+                                <i class="bi @statusIcon me-1"></i> @statusText
+                            </span>
+                        </h5>                        <button class="btn btn-sm toggle-detail" type="button" data-bs-toggle="collapse" 
+                                data-bs-target="#detail-@i" aria-expanded="false"
+                                style="background-color: #0050a6; color: white; border: none;">
+                            <i class="bi bi-arrows-expand"></i> Chi tiết
+                        </button>
+                    </div>
+
+                    <div class="question-text mt-3">@item.CauHoi</div>
+
+                    <div class="collapse" id="detail-@i">
+                        @if (!string.IsNullOrEmpty(item.HinhAnhUrl))
+                        {
+                            <div class="media-container my-3">
+                                <img src="@item.HinhAnhUrl" alt="Hình ảnh" class="img-fluid rounded" style="max-width: 300px;" />
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(item.AudioUrl))
+                        {
+                            <div class="media-container my-3">
+                                <audio controls class="w-100" style="max-width: 300px;">
+                                    <source src="@item.AudioUrl" type="audio/mpeg" />
+                                    Trình duyệt không hỗ trợ audio.
+                                </audio>
+                            </div>
+                        }
+
+                        <div class="answer-options mt-3">
+                            @{
+                                string GetAnswerClass(string option) {
+                                    if (option == item.DapAnDung) return "answer-correct";
+                                    if (option == item.DapAnChon && option != item.DapAnDung) return "answer-incorrect";
+                                    if (option == item.DapAnChon) return "answer-selected";
+                                    return "";
+                                }
+                                  string GetAnswerIcon(string option) {
+                                    if (option == item.DapAnDung) return "<i class=\"bi bi-check-circle-fill\" style=\"color: #006625; font-size: 1.2rem;\"></i>";
+                                    if (option == item.DapAnChon && option != item.DapAnDung) return "<i class=\"bi bi-x-circle-fill\" style=\"color: #9c1e1e; font-size: 1.2rem;\"></i>";
+                                    return "";
+                                }
+                            }
+                            
+                            <div class="answer-option @GetAnswerClass("A")">
+                                <div>
+                                    <strong class="me-2">A.</strong> @item.DapAnA
+                                </div>
+                                <div>
+                                    @Html.Raw(GetAnswerIcon("A"))
+                                </div>
+                            </div>
+                            <div class="answer-option @GetAnswerClass("B")">
+                                <div>
+                                    <strong class="me-2">B.</strong> @item.DapAnB
+                                </div>
+                                <div>
+                                    @Html.Raw(GetAnswerIcon("B"))
+                                </div>
+                            </div>
+                            <div class="answer-option @GetAnswerClass("C")">
+                                <div>
+                                    <strong class="me-2">C.</strong> @item.DapAnC
+                                </div>
+                                <div>
+                                    @Html.Raw(GetAnswerIcon("C"))
+                                </div>
+                            </div>
+                            <div class="answer-option @GetAnswerClass("D")">
+                                <div>
+                                    <strong class="me-2">D.</strong> @item.DapAnD
+                                </div>
+                                <div>
+                                    @Html.Raw(GetAnswerIcon("D"))
+                                </div>
+                            </div>
+                        </div>                        <div class="answer-comparison mt-3">
+                            <div>
+                                <strong>Đáp án của bạn:</strong> 
+                                <span style="font-weight: 700; color: @(item.DungHaySai ? "#006625" : "#9c1e1e");">
+                                    @(string.IsNullOrEmpty(item.DapAnChon) ? "Không chọn" : item.DapAnChon)
+                                </span>
+                            </div>
+                            <div>
+                                <strong>Đáp án đúng:</strong> 
+                                <span style="font-weight: 700; color: #006625;">@item.DapAnDung</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+        
+        <div class="text-center mt-4">
+            <a href="@Url.Action("Index", "LichSuThi")" class="btn btn-back">
+                <i class="bi bi-arrow-left me-2"></i> Xem lịch sử thi
+            </a>
+            <a href="@Url.Action("Index", "Home")" class="btn btn-primary ms-2">
+                <i class="bi bi-house-door me-2"></i> Về trang chủ
+            </a>
+        </div>
     </div>
 </div>
+
+@section Scripts {
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // Xử lý nút mở rộng tất cả
+            document.getElementById("expandAllBtn").addEventListener("click", function() {
+                document.querySelectorAll(".collapse").forEach(function(el) {
+                    new bootstrap.Collapse(el, { toggle: true });
+                    
+                    // Thay đổi icon của nút toggle
+                    const toggleBtn = document.querySelector(`[data-bs-target="#${el.id}"]`);
+                    if (toggleBtn) {
+                        const icon = toggleBtn.querySelector("i");
+                        if (icon) {
+                            icon.classList.remove("bi-arrows-expand");
+                            icon.classList.add("bi-arrows-collapse");
+                        }
+                    }
+                });
+            });
+            
+            // Xử lý nút thu gọn tất cả
+            document.getElementById("collapseAllBtn").addEventListener("click", function() {
+                document.querySelectorAll(".collapse").forEach(function(el) {
+                    new bootstrap.Collapse(el, { toggle: false });
+                    
+                    // Thay đổi icon của nút toggle
+                    const toggleBtn = document.querySelector(`[data-bs-target="#${el.id}"]`);
+                    if (toggleBtn) {
+                        const icon = toggleBtn.querySelector("i");
+                        if (icon) {
+                            icon.classList.remove("bi-arrows-collapse");
+                            icon.classList.add("bi-arrows-expand");
+                        }
+                    }
+                });
+            });
+            
+            // Xử lý sự kiện khi toggle một item
+            document.querySelectorAll(".toggle-detail").forEach(function(btn) {
+                btn.addEventListener("click", function() {
+                    const icon = this.querySelector("i");
+                    if (icon.classList.contains("bi-arrows-expand")) {
+                        icon.classList.remove("bi-arrows-expand");
+                        icon.classList.add("bi-arrows-collapse");
+                    } else {
+                        icon.classList.remove("bi-arrows-collapse");
+                        icon.classList.add("bi-arrows-expand");
+                    }
+                });
+            });
+        });
+    </script>
+}

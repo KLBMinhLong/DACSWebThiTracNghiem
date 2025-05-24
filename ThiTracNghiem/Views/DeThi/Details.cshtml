@@ -4,11 +4,29 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Chi tiết đề thi: @Model.TenDeThi</h2>
-<p><strong>Thời gian:</strong> @Model.ThoiGianLamBai phút</p>
-<p><strong>Chủ đề:</strong> @Model.ChuDe?.TenChuDe</p>
-<p><strong>Trạng thái:</strong> @(Model.TrangThaiMo ? "Mở" : "Đóng")</p>
-<p><strong>Ngày tạo:</strong> @Model.NgayTao.ToString("dd/MM/yyyy")</p>
-<p><strong>Số câu hỏi:</strong> @Model.SoLuongCauHoi câu</p>
-
-<a asp-action="Index" class="btn btn-secondary mt-3">Quay lại</a>
+<h2 class="mb-4 fw-bold text-center text-primary">Chi Tiết Đề Thi</h2>
+<div class="row justify-content-center">
+    <div class="col-md-7 col-lg-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-5">Tên đề thi</dt>
+                    <dd class="col-sm-7">@Model.TenDeThi</dd>
+                    <dt class="col-sm-5">Thời gian</dt>
+                    <dd class="col-sm-7">@Model.ThoiGianLamBai phút</dd>
+                    <dt class="col-sm-5">Chủ đề</dt>
+                    <dd class="col-sm-7">@Model.ChuDe?.TenChuDe</dd>
+                    <dt class="col-sm-5">Trạng thái</dt>
+                    <dd class="col-sm-7">@(Model.TrangThaiMo ? "Mở" : "Đóng")</dd>
+                    <dt class="col-sm-5">Ngày tạo</dt>
+                    <dd class="col-sm-7">@Model.NgayTao.ToString("dd/MM/yyyy")</dd>
+                    <dt class="col-sm-5">Số câu hỏi</dt>
+                    <dd class="col-sm-7">@Model.SoLuongCauHoi câu</dd>
+                </dl>
+                <div class="d-flex justify-content-end mt-4">
+                    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Quay lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

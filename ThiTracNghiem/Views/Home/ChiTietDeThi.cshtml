@@ -1,42 +1,74 @@
 @model DeThi
 @{
+    ViewData["Title"] = Model.TenDeThi;
     var danhSachLichSu = ViewBag.LichSuDangLam as List<ThiTracNghiem.Models.LichSuLamBai>;
     var dangLam = danhSachLichSu?.FirstOrDefault(l => l.DeThiId == Model.Id);
 }
 
-<div class="container mt-4">
-    <h2 class="mb-4 text-center">@Model.TenDeThi</h2>
+<link rel="stylesheet" href="~/css/chitietthi.css" />
 
-    <ul class="list-group mb-4">
-        <li class="list-group-item"><strong>Số câu hỏi:</strong> @Model.SoLuongCauHoi</li>
-        <li class="list-group-item"><strong>Thời gian làm bài:</strong> @Model.ThoiGianLamBai phút</li>
-        <li class="list-group-item"><strong>Ngày tạo:</strong> @Model.NgayTao.ToString("dd/MM/yyyy")</li>
-    </ul>
+<div class="container exam-detail-container">
+    <h2 class="exam-title">@Model.TenDeThi</h2>
 
-    <div class="text-center">
+    <div class="exam-info">
+        <div class="info-item">
+            <div class="info-label">
+                <i class="bi bi-question-circle me-2"></i>Số câu hỏi:
+            </div>
+            <div class="info-value">@Model.SoLuongCauHoi câu</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">
+                <i class="bi bi-clock me-2"></i>Thời gian làm bài:
+            </div>
+            <div class="info-value">@Model.ThoiGianLamBai phút</div>
+        </div>
+        <div class="info-item">
+            <div class="info-label">
+                <i class="bi bi-calendar-date me-2"></i>Ngày tạo:
+            </div>
+            <div class="info-value">@Model.NgayTao.ToString("dd/MM/yyyy")</div>
+        </div>
+    </div>
 
+    <div class="action-container">
         @if (dangLam != null)
         {
-            <div class="alert alert-warning">
-                🕒 Bạn đang làm dở đề này từ @dangLam.NgayBatDau.ToString("HH:mm dd/MM")
+            <div class="ongoing-alert">
+                <i class="bi bi-hourglass-split"></i>
+                <div>
+                    Bạn đang làm dở đề này từ @dangLam.NgayBatDau.ToString("HH:mm dd/MM/yyyy")
+                </div>
             </div>
-            <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-warning">Tiếp tục làm bài</a>
+            <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-continue">
+                Tiếp tục làm bài
+            </a>
         }
         else
         {
-            <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-success">Bắt đầu làm bài</a>
-        }
-    </div>
-    <hr>
-    <h4 class="mt-4">Bình luận</h4>
-    <div>
-        <form id="form-binhluan">
-            <input type="hidden" name="deThiId" value="@Model.Id" />
-            <textarea name="noiDung" class="form-control mb-2" required></textarea>
-            <button type="submit" class="btn btn-primary btn-sm">Gửi bình luận</button>
-        </form>
+            <a href="/Thi/LamBai?id=@Model.Id" class="btn btn-primary">
+                Bắt đầu làm bài
+            </a>
+        }    </div>
+    
+    <div class="comment-section">
+        <h4 class="comment-header">
+            <i class="bi bi-chat-dots me-2"></i>Bình luận
+        </h4>
+        <div class="comment-form">
+            <form id="form-binhluan">
+                <input type="hidden" name="deThiId" value="@Model.Id" />
+                <textarea name="noiDung" class="form-control mb-3" 
+                          placeholder="Viết bình luận của bạn về đề thi này..." required></textarea>
+                <div class="text-end">
+                    <button type="submit" class="btn-comment">
+                        <i class="bi bi-send me-1"></i>Gửi bình luận
+                    </button>
+                </div>
+            </form>
+        </div>
 
-        <div id="ds-binhluan" class="mt-4"></div>
+        <div id="ds-binhluan" class="comments-list"></div>
     </div>
 </div>
 

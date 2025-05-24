@@ -5,71 +5,66 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Tạo câu hỏi mới</h1>
-
-<h4>CauHoi</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create" enctype="multipart/form-data" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="NoiDung" class="control-label"></label>
-                <input asp-for="NoiDung" class="form-control" />
-                <span asp-validation-for="NoiDung" class="text-danger"></span>
+<h2 class="mb-4 fw-bold text-center text-primary">Tạo Câu Hỏi Mới</h2>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <form asp-action="Create" enctype="multipart/form-data" method="post">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="mb-3">
+                        <label asp-for="NoiDung" class="form-label"></label>
+                        <input asp-for="NoiDung" class="form-control" />
+                        <span asp-validation-for="NoiDung" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label>Hình ảnh minh họa (tùy chọn)</label>
+                        <input type="file" name="HinhAnhFile" class="form-control" accept="image/*" />
+                    </div>
+                    <div class="mb-3">
+                        <label>Audio (tùy chọn, mp3/wav)</label>
+                        <input type="file" name="AudioFile" class="form-control" accept="audio/*" />
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnA" class="form-label"></label>
+                        <input asp-for="DapAnA" class="form-control" />
+                        <span asp-validation-for="DapAnA" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnB" class="form-label"></label>
+                        <input asp-for="DapAnB" class="form-control" />
+                        <span asp-validation-for="DapAnB" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnC" class="form-label"></label>
+                        <input asp-for="DapAnC" class="form-control" />
+                        <span asp-validation-for="DapAnC" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnD" class="form-label"></label>
+                        <input asp-for="DapAnD" class="form-control" />
+                        <span asp-validation-for="DapAnD" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="DapAnDung" class="form-label"></label>
+                        <input asp-for="DapAnDung" class="form-control" />
+                        <span asp-validation-for="DapAnDung" class="text-danger"></span>
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="ChuDeId" class="form-label">Chủ đề</label>
+                        <select asp-for="ChuDeId" class="form-control" asp-items="ViewBag.ChuDeId"></select>
+                        <span asp-validation-for="ChuDeId" class="text-danger"></span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Trở lại</a>
+                        <button type="submit" class="btn btn-success"><i class="bi bi-plus-circle me-1"></i> Thêm mới</button>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label>Hình ảnh minh họa (tùy chọn)</label>
-                <input type="file" name="HinhAnhFile" class="form-control" accept="image/*" />
-            </div>
-
-            <div class="form-group">
-                <label>Audio (tùy chọn, mp3/wav)</label>
-                <input type="file" name="AudioFile" class="form-control" accept="audio/*" />
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnA" class="control-label"></label>
-                <input asp-for="DapAnA" class="form-control" />
-                <span asp-validation-for="DapAnA" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnB" class="control-label"></label>
-                <input asp-for="DapAnB" class="form-control" />
-                <span asp-validation-for="DapAnB" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnC" class="control-label"></label>
-                <input asp-for="DapAnC" class="form-control" />
-                <span asp-validation-for="DapAnC" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnD" class="control-label"></label>
-                <input asp-for="DapAnD" class="form-control" />
-                <span asp-validation-for="DapAnD" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DapAnDung" class="control-label"></label>
-                <input asp-for="DapAnDung" class="form-control" />
-                <span asp-validation-for="DapAnDung" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="ChuDeId" class="control-label">Chủ đề</label>
-                <select asp-for="ChuDeId" class="form-control" asp-items="ViewBag.ChuDeId"></select>
-                <span asp-validation-for="ChuDeId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
 
-<div>
-    <a asp-action="Index">Trở lại danh sách</a>
-</div>
-
 @section Scripts {
-    @{
-        await Html.RenderPartialAsync("_ValidationScriptsPartial");
-    }
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
 }

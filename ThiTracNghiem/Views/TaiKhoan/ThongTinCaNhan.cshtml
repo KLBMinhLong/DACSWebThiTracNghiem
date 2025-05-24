@@ -1,60 +1,99 @@
 @model ThongTinCaNhanViewModel
-
-<h2>Thông tin cá nhân</h2>
-
-@if (ViewBag.ThongBao != null)
-{
-    <div class="alert alert-success">@ViewBag.ThongBao</div>
+@{
+    ViewData["Title"] = "Thông tin cá nhân";
 }
 
-<form asp-action="ThongTinCaNhan" method="post">
-    <input type="hidden" asp-for="TenTaiKhoan" />
+<link rel="stylesheet" href="~/css/thongtincanhan.css" />
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
-    </div>
+<div class="profile-container">
+    <h2 class="profile-header">
+        <i class="bi bi-person-circle me-2"></i>Thông tin cá nhân
+    </h2>
 
-    <div class="form-group">
-        <label asp-for="NgaySinh"></label>
-        <input asp-for="NgaySinh" type="date" class="form-control" />
-        <span asp-validation-for="NgaySinh" class="text-danger"></span>
-    </div>
+    @if (ViewBag.ThongBao != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>@ViewBag.ThongBao
+        </div>
+    }
 
-    <div class="form-group">
-        <label asp-for="GioiTinh"></label>
-        <select asp-for="GioiTinh" class="form-control">
-            <option value="">-- Chọn giới tính --</option>
-            <option value="Nam">Nam</option>
-            <option value="Nữ">Nữ</option>
-        </select>
-        <span asp-validation-for="GioiTinh" class="text-danger"></span>
-    </div>
+    <form asp-action="ThongTinCaNhan" method="post" class="profile-form">
+        <input type="hidden" asp-for="TenTaiKhoan" />
 
-    <div class="form-group">
-        <label asp-for="SoDienThoai"></label>
-        <input asp-for="SoDienThoai" class="form-control" />
-        <span asp-validation-for="SoDienThoai" class="text-danger"></span>
-    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="Email">Email</label>
+                    <input asp-for="Email" class="form-control" placeholder="Nhập email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+            </div>
 
-    <hr />
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="SoDienThoai">Số điện thoại</label>
+                    <input asp-for="SoDienThoai" class="form-control" placeholder="Nhập số điện thoại" />
+                    <span asp-validation-for="SoDienThoai" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
 
-    <div class="form-group">
-        <label asp-for="MatKhauMoi">Mật khẩu mới</label>
-        <input asp-for="MatKhauMoi" type="password" class="form-control" />
-        <span asp-validation-for="MatKhauMoi" class="text-danger"></span>
-    </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="NgaySinh">Ngày sinh</label>
+                    <input asp-for="NgaySinh" type="date" class="form-control" />
+                    <span asp-validation-for="NgaySinh" class="text-danger"></span>
+                </div>
+            </div>
 
-    <div class="form-group">
-        <label asp-for="NhapLaiMatKhauMoi">Nhập lại mật khẩu mới</label>
-        <input asp-for="NhapLaiMatKhauMoi" type="password" class="form-control" />
-        <span asp-validation-for="NhapLaiMatKhauMoi" class="text-danger"></span>
-    </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label asp-for="GioiTinh">Giới tính</label>
+                    <select asp-for="GioiTinh" class="form-control">
+                        <option value="">-- Chọn giới tính --</option>
+                        <option value="Nam">Nam</option>
+                        <option value="Nữ">Nữ</option>
+                    </select>
+                    <span asp-validation-for="GioiTinh" class="text-danger"></span>
+                </div>
+            </div>
+        </div>
 
-    <button type="submit" class="btn btn-primary mt-2">Lưu thay đổi</button>
-</form>
+        <div class="profile-section">
+            <h3 class="section-title">
+                <i class="bi bi-shield-lock me-2"></i>Đổi mật khẩu
+            </h3>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="MatKhauMoi">Mật khẩu mới</label>
+                        <input asp-for="MatKhauMoi" type="password" class="form-control"
+                            placeholder="Nhập mật khẩu mới" />
+                        <span asp-validation-for="MatKhauMoi" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label asp-for="NhapLaiMatKhauMoi">Nhập lại mật khẩu mới</label>
+                        <input asp-for="NhapLaiMatKhauMoi" type="password" class="form-control"
+                            placeholder="Nhập lại mật khẩu mới" />
+                        <span asp-validation-for="NhapLaiMatKhauMoi" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-save">
+                <i class="bi bi-check-lg me-2"></i>Lưu thay đổi
+            </button>
+        </div>
+    </form>
+</div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    @await Html.PartialAsync("_ValidationScriptsPartial")
 }

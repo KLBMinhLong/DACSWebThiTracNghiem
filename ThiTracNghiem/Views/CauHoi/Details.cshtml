@@ -5,59 +5,60 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Chi tiết câu hỏi</h1>
+<h2 class="mb-4 fw-bold text-center text-primary">Chi Tiết Câu Hỏi</h2>
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <dl class="row">
+                    <dt class="col-sm-4">Nội dung</dt>
+                    <dd class="col-sm-8">@Model.NoiDung</dd>
 
-<div>
-    <h4>Câu hỏi</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            Nội dung
-        </dt>
-        <dd class="col-sm-10">
-            @Model.NoiDung
-        </dd>
+                    <dt class="col-sm-4">Hình ảnh</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.HinhAnhUrl))
+                        {
+                            <img src="@Model.HinhAnhUrl" alt="Ảnh minh họa" class="img-fluid rounded border" style="max-width: 300px;" />
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có hình ảnh</span>
+                        }
+                    </dd>
 
-        @if (!string.IsNullOrEmpty(Model.HinhAnhUrl))
-        {
-            <dt class="col-sm-2">Hình ảnh</dt>
-            <dd class="col-sm-10">
-                <img src="@Model.HinhAnhUrl" alt="Ảnh minh họa" class="img-fluid rounded border" style="max-width: 400px;" />
-            </dd>
-        }
+                    <dt class="col-sm-4">Audio</dt>
+                    <dd class="col-sm-8">
+                        @if (!string.IsNullOrEmpty(Model.AudioUrl))
+                        {
+                            <audio controls>
+                                <source src="@Model.AudioUrl" type="audio/mpeg" />
+                                Trình duyệt không hỗ trợ audio.
+                            </audio>
+                        }
+                        else
+                        {
+                            <span class="text-muted">Không có audio</span>
+                        }
+                    </dd>
 
-        @if (!string.IsNullOrEmpty(Model.AudioUrl))
-        {
-            <dt class="col-sm-2">Audio</dt>
-            <dd class="col-sm-10">
-                <audio controls>
-                    <source src="@Model.AudioUrl" type="audio/mpeg" />
-                    Trình duyệt không hỗ trợ audio.
-                </audio>
-            </dd>
-        }
-
-        <dt class="col-sm-2">Đáp án A</dt>
-        <dd class="col-sm-10">@Model.DapAnA</dd>
-
-        <dt class="col-sm-2">Đáp án B</dt>
-        <dd class="col-sm-10">@Model.DapAnB</dd>
-
-        <dt class="col-sm-2">Đáp án C</dt>
-        <dd class="col-sm-10">@Model.DapAnC</dd>
-
-        <dt class="col-sm-2">Đáp án D</dt>
-        <dd class="col-sm-10">@Model.DapAnD</dd>
-
-        <dt class="col-sm-2">Đáp án đúng</dt>
-        <dd class="col-sm-10">@Model.DapAnDung</dd>
-
-        <dt class="col-sm-2">Chủ đề</dt>
-        <dd class="col-sm-10">@Model.ChuDe?.TenChuDe</dd>
-    </dl>
-</div>
-
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning">Sửa</a>
-    <a asp-action="Index" class="btn btn-secondary ml-2">Trở lại danh sách</a>
+                    <dt class="col-sm-4">Đáp án A</dt>
+                    <dd class="col-sm-8">@Model.DapAnA</dd>
+                    <dt class="col-sm-4">Đáp án B</dt>
+                    <dd class="col-sm-8">@Model.DapAnB</dd>
+                    <dt class="col-sm-4">Đáp án C</dt>
+                    <dd class="col-sm-8">@Model.DapAnC</dd>
+                    <dt class="col-sm-4">Đáp án D</dt>
+                    <dd class="col-sm-8">@Model.DapAnD</dd>
+                    <dt class="col-sm-4">Đáp án đúng</dt>
+                    <dd class="col-sm-8">@Model.DapAnDung</dd>
+                    <dt class="col-sm-4">Chủ đề</dt>
+                    <dd class="col-sm-8">@Model.ChuDe?.TenChuDe</dd>
+                </dl>
+                <div class="d-flex justify-content-between">
+                    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Trở lại</a>
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-warning"><i class="bi bi-pencil-square me-1"></i> Sửa</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

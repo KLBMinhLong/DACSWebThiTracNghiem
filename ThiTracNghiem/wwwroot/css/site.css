@@ -45,6 +45,44 @@ body {
   backdrop-filter: blur(10px);
 }
 
+/* Styles for auth buttons */
+.navbar .btn {
+  transition: all 0.3s ease;
+  font-weight: 500;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.08);
+}
+
+.navbar .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.12);
+}
+
+.navbar .btn-outline-primary {
+  border-width: 2px;
+}
+
+.navbar .btn-outline-success {
+  border-width: 2px;
+}
+
+.navbar .btn-outline-danger {
+  border-width: 2px;
+}
+
+/* Responsive adjustments for auth buttons */
+@media (max-width: 768px) {
+  .navbar .nav-item + .nav-item {
+    margin-top: 8px;
+  }
+  
+  .navbar .btn {
+    display: block;
+    width: 100%;
+    margin-top: 5px;
+    text-align: left;
+  }
+}
+
 .hero-section {
   background-color: #0d6efd;
   border-radius: 1rem;
@@ -116,3 +154,90 @@ body {
 div .badge {
   color: #0d6efd;
 }
+
+footer {
+    background-color: #0d6efd;
+    color: #fff;
+    padding: 40px 0;
+    font-size: 15px;
+}
+
+footer a {
+    color: #fff;
+    text-decoration: none;
+}
+
+footer a:hover {
+    text-decoration: underline;
+}
+
+.footer-logo {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.footer-logo img {
+    width: 40px;
+    height: 40px;
+    margin-right: 10px;
+}
+
+.footer-col {
+    margin-bottom: 20px;
+}
+
+footer .social-icons i {
+    font-size: 24px;
+    margin-right: 12px;
+    color: #fff;
+    transition: 0.3s;
+}
+
+footer .social-icons i:hover {
+    color: #ffc107;
+}
+
+footer .copyright {
+    text-align: center;
+    margin-top: 30px;
+    font-size: 14px;
+    opacity: 0.8;
+}
+
+/* Đảm bảo các link không bị mờ */
+footer a {
+    color: #ffffff !important;
+    text-decoration: none;
+    font-weight: 400;
+    padding-top: 30px;
+}
+
+footer .clock-logo {
+    border: 2px solid #fff;
+    border-radius: 50%;
+}
+
+footer a:hover {
+    color: #ffc107; /* màu cam sáng khi hover */
+}
+
+/* Mạng xã hội - icon hover đúng màu theo nền tảng */
+footer .social-icons a {
+    display: inline-block;
+    margin-right: 12px;
+    font-size: 24px;
+    transition: 0.3s ease;
+    color: white;
+}
+
+footer .social-icons a:hover .bi-facebook {
+    color: #1877f2;
+}
+footer .social-icons a:hover .bi-twitter {
+    color: #1da1f2;
+}
+footer .social-icons a:hover .bi-youtube {
+    color: #ff0000;
+}
+

@@ -5,21 +5,20 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h1>Chi tiết</h1>
-
-<div>
-    <h4>Chủ đề</h4>
-    <hr />
-    <dl class="row">
-        <dt class = "col-sm-2">
-            Tên Chủ Đề
-        </dt>
-        <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.TenChuDe)
-        </dd>
-    </dl>
-</div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Sửa</a> |
-    <a asp-action="Index">Trở lại danh sách</a>
+<h2 class="mb-4 fw-bold text-center text-primary">Chi Tiết Chủ Đề</h2>
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Tên Chủ Đề</dt>
+                    <dd class="col-sm-8">@Html.DisplayFor(model => model.TenChuDe)</dd>
+                </dl>
+                <div class="d-flex justify-content-between mt-4">
+                    <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning"><i class="bi bi-pencil-square me-1"></i> Sửa</a>
+                    <a asp-action="Index" class="btn btn-secondary"><i class="bi bi-arrow-left"></i> Trở lại</a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>

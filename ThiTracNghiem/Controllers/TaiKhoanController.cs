@@ -241,8 +241,9 @@ namespace ThiTracNghiem.Controllers
             
         }
 
-        public IActionResult DangXuat()
+        public async Task<IActionResult> DangXuat()
         {
+            await HttpContext.SignOutAsync();
             HttpContext.Session.Clear();
             return RedirectToAction("DangNhap");
         }

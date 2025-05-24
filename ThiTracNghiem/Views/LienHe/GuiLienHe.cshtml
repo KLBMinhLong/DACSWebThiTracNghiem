@@ -3,25 +3,39 @@
     ViewBag.Title = "Liên hệ hỗ trợ";
 }
 
-<h4>Liên hệ hỗ trợ</h4>
+<link rel="stylesheet" href="~/css/lienhe.css" />
 
-@if (TempData["ThongBao"] != null)
-{
-    <div class="alert alert-success">@TempData["ThongBao"]</div>
-}
+<div class="container contact-container">
+    <h3 class="contact-header">
+        <i class="bi bi-chat-dots me-2"></i>Liên hệ hỗ trợ
+    </h3>
 
-<form asp-action="GuiLienHe" method="post">
-    <div class="mb-2">
-        <label>Họ tên</label>
-        <input name="HoTen" class="form-control" required />
-    </div>
-    <div class="mb-2">
-        <label>Email</label>
-        <input name="Email" class="form-control" type="email" required />
-    </div>
-    <div class="mb-2">
-        <label>Nội dung</label>
-        <textarea name="NoiDung" class="form-control" rows="4" required></textarea>
-    </div>
-    <button type="submit" class="btn btn-primary">Gửi liên hệ</button>
-</form>
+    @if (TempData["ThongBao"] != null)
+    {
+        <div class="alert alert-success">
+            <i class="bi bi-check-circle me-2"></i>@TempData["ThongBao"]
+        </div>
+    }
+
+    <form asp-action="GuiLienHe" method="post" class="contact-form">
+        <div class="form-group">
+            <label for="HoTen">Họ tên</label>
+            <input name="HoTen" id="HoTen" class="form-control" required placeholder="Nhập họ tên của bạn" />
+        </div>
+        
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input name="Email" id="Email" class="form-control" type="email" required placeholder="Nhập địa chỉ email" />
+        </div>
+        
+        <div class="form-group">
+            <label for="NoiDung">Nội dung</label>
+            <textarea name="NoiDung" id="NoiDung" class="form-control" required 
+                      placeholder="Nhập nội dung bạn muốn liên hệ..."></textarea>
+        </div>
+        
+        <button type="submit" class="btn-send">
+            <i class="bi bi-send me-2"></i>Gửi liên hệ
+        </button>
+    </form>
+</div>
