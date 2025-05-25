@@ -105,11 +105,19 @@ public class ThiController : Controller
         }
 
         var chiTiet = _context.ChiTietLamBais
+            .Include(x => x.CauHoi)
             .FirstOrDefault(x => x.LichSuLamBaiId == lichSuId && x.CauHoiId == cauHoiId);
 
         if (chiTiet != null)
         {
             chiTiet.DapAnChon = dapAnChon;
+            
+            // Tính toán và lưu kết quả đúng/sai ngay lập tức
+            if (chiTiet.CauHoi != null)
+            {
+                chiTiet.DungHaySai = !string.IsNullOrEmpty(dapAnChon) && dapAnChon == chiTiet.CauHoi.DapAnDung;
+            }
+            
             _context.SaveChanges();
             return Ok();
         }
