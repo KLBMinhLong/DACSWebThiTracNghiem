@@ -1,3 +1,6 @@
+@{
+    var isLoggedIn = !string.IsNullOrEmpty(Context.Session.GetString("UserName"));
+}
 <!DOCTYPE html>
 <html lang="vi">
 
@@ -18,7 +21,17 @@
             </h1>
             <p class="lead mb-4">Hệ thống giúp học sinh, sinh viên luyện tập, làm bài và theo dõi kết quả một cách hiệu
                 quả, dễ sử dụng, hiện đại và bảo mật.</p>
-            <a href="/TaiKhoan/DangKy" class="btn btn-gradient px-4 py-2">Đăng ký ngay</a>
+
+            @if (isLoggedIn)
+            {
+                <!-- Nếu đã đăng nhập: Hiển thị nút "Bắt đầu làm bài" -->
+                <a href="/Home/Index" class="btn btn-gradient px-4 py-2">Bắt đầu làm bài</a>
+            }
+            else
+            {
+                <!-- Nếu chưa đăng nhập: Hiển thị nút "Đăng ký ngay" -->
+                <a href="/TaiKhoan/DangKy" class="btn btn-gradient px-4 py-2">Đăng ký ngay</a>
+            }
         </div>
     </section>
 
@@ -59,7 +72,8 @@
                     <h2 class="section-title"><span>Lợi ích</span> khi sử dụng hệ thống</h2>
                     <ul class="benefit-list">
                         <li><i class="bi bi-check-circle text-success me-2"></i>Làm bài mọi lúc, không cần in giấy</li>
-                        <li><i class="bi bi-check-circle text-success me-2"></i>Hệ thống tính điểm, thời gian tự động</li>
+                        <li><i class="bi bi-check-circle text-success me-2"></i>Hệ thống tính điểm, thời gian tự động
+                        </li>
                         <li><i class="bi bi-check-circle text-success me-2"></i>Bảo toàn dữ liệu khi mất kết nối hoặc
                             reload</li>
                         <li><i class="bi bi-check-circle text-success me-2"></i>Dễ sử dụng, không cần cài đặt phần mềm
@@ -69,7 +83,8 @@
                     </ul>
                 </div>
                 <div class="col-md-6 text-center">
-                    <img src="/uploads/images/benefit.png" class="img-fluid rounded shadow howto-img" alt="Lợi ích thi trắc nghiệm">
+                    <img src="/uploads/images/benefit.png" class="img-fluid rounded shadow howto-img"
+                        alt="Lợi ích thi trắc nghiệm">
                 </div>
             </div>
         </div>
@@ -85,13 +100,15 @@
                         <ul class="benefit-list">
                             <li><b>1. Đăng nhập:</b> Đăng nhập bằng tài khoản để truy cập và làm bài thi.</li>
                             <li><b>2. Chọn đề thi:</b> Chọn đề thi được mở trong danh sách và nhấn "Bắt đầu thi".</li>
-                            <li><b>3. Làm bài và nộp bài:</b> Hệ thống đếm thời gian, tự lưu đáp án từng câu. Sau khi hoàn
+                            <li><b>3. Làm bài và nộp bài:</b> Hệ thống đếm thời gian, tự lưu đáp án từng câu. Sau khi
+                                hoàn
                                 tất, bấm "Nộp bài" để xem kết quả.</li>
                             <li><b>4. Xem lại kết quả:</b> Vào mục "Lịch sử thi" để xem lại điểm và câu trả lời.</li>
                         </ul>
                     </div>
                     <div class="col-md-6 text-center">
-                        <img src="/uploads/images/how-to-use.png" class="img-fluid rounded shadow howto-img" alt="Hướng dẫn sử dụng">
+                        <img src="/uploads/images/how-to-use.png" class="img-fluid rounded shadow howto-img"
+                            alt="Hướng dẫn sử dụng">
                     </div>
                 </div>
             </div>

@@ -247,14 +247,56 @@ namespace ThiTracNghiem
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var cauHoi = await _context.CauHois.FindAsync(id);
-            if (cauHoi != null)
+            try
             {
-                _context.CauHois.Remove(cauHoi);
-            }
+                var cauHoi = await _context.CauHois.FindAsync(id);
+                if (cauHoi == null)
+                {
+                    return NotFound();
+                }
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                // Kiểm tra xem câu hỏi có tồn tại trong lịch sử làm bài không
+                bool cauHoiTrongLichSu = await _context.ChiTietLamBais.AnyAsync(ct => ct.CauHoiId == id);
+                if (cauHoiTrongLichSu)
+                {
+                    TempData["ErrorMessage"] = "Không thể xóa câu hỏi này vì đã có trong lịch sử làm bài của người dùng.";
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Lấy chủ đề của câu hỏi
+                int chuDeId = cauHoi.ChuDeId;
+
+                // Đếm tổng số câu hỏi hiện tại của chủ đề
+                int tongSoCauHoi = await _context.CauHois.CountAsync(c => c.ChuDeId == chuDeId);
+
+                // Tìm đề thi có số lượng câu hỏi nhiều nhất thuộc chủ đề này
+                var deThiNhieuCauNhat = await _context.DeThis
+                    .Where(d => d.ChuDeId == chuDeId)
+                    .OrderByDescending(d => d.SoLuongCauHoi)
+                    .FirstOrDefaultAsync();
+
+                if (deThiNhieuCauNhat != null)
+                {
+                    // Nếu số câu hỏi còn lại sau khi xóa sẽ ít hơn đề thi có nhiều câu hỏi nhất
+                    if (tongSoCauHoi - 1 < deThiNhieuCauNhat.SoLuongCauHoi)
+                    {
+                        TempData["ErrorMessage"] = $"Không thể xóa câu hỏi này vì chủ đề {cauHoi.ChuDe?.TenChuDe} cần tối thiểu {deThiNhieuCauNhat.SoLuongCauHoi} câu hỏi cho đề thi \"{deThiNhieuCauNhat.TenDeThi}\".";
+                        return RedirectToAction(nameof(Index), new { chuDeId = cauHoi.ChuDeId });
+                    }
+                }
+
+                // Nếu qua được các điều kiện, tiến hành xóa câu hỏi
+                _context.CauHois.Remove(cauHoi);
+                await _context.SaveChangesAsync();
+                
+                TempData["SuccessMessage"] = "Xóa câu hỏi thành công.";
+                return RedirectToAction(nameof(Index), new { chuDeId = cauHoi.ChuDeId });
+            }
+            catch (Exception ex)
+            {
+                TempData["ErrorMessage"] = "Không thể xóa câu hỏi. Lỗi: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool CauHoiExists(int id)

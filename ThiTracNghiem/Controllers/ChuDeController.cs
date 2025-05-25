@@ -160,14 +160,45 @@ namespace ThiTracNghiem
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var chuDe = await _context.ChuDes.FindAsync(id);
-            if (chuDe != null)
+            try
             {
-                _context.ChuDes.Remove(chuDe);
-            }
+                // Kiểm tra xem có đề thi nào thuộc chủ đề này không
+                bool coDeThiLienQuan = await _context.DeThis.AnyAsync(d => d.ChuDeId == id);
+                
+                // Kiểm tra xem có câu hỏi nào thuộc chủ đề này không
+                bool coCauHoiLienQuan = await _context.CauHois.AnyAsync(c => c.ChuDeId == id);
 
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+                if (coDeThiLienQuan || coCauHoiLienQuan)
+                {
+                    string thongBaoLoi = "Không thể xóa chủ đề này vì ";
+                    if (coDeThiLienQuan && coCauHoiLienQuan)
+                        thongBaoLoi += "đã có đề thi và câu hỏi liên quan.";
+                    else if (coDeThiLienQuan)
+                        thongBaoLoi += "đã có đề thi liên quan.";
+                    else
+                        thongBaoLoi += "đã có câu hỏi liên quan.";
+                        
+                    TempData["ErrorMessage"] = thongBaoLoi;
+                    return RedirectToAction(nameof(Index));
+                }
+
+                // Nếu không có đề thi hoặc câu hỏi liên quan, tiến hành xóa
+                var chuDe = await _context.ChuDes.FindAsync(id);
+                if (chuDe != null)
+                {
+                    _context.ChuDes.Remove(chuDe);
+                    await _context.SaveChangesAsync();
+                    TempData["SuccessMessage"] = "Xóa chủ đề thành công.";
+                }
+
+                return RedirectToAction(nameof(Index));
+            }
+            catch (Exception ex)
+            {
+                // Bắt các lỗi khác nếu có
+                TempData["ErrorMessage"] = "Không thể xóa chủ đề. Lỗi: " + ex.Message;
+                return RedirectToAction(nameof(Index));
+            }
         }
 
         private bool ChuDeExists(int id)

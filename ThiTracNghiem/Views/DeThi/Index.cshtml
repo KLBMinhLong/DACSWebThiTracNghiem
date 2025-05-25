@@ -5,6 +5,24 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
+@* Hiển thị thông báo lỗi nếu có *@
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@* Hiển thị thông báo thành công nếu có *@
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Đề Thi</h2>
 
 <a asp-action="Create" class="btn btn-success mb-3">+ Tạo đề thi mới</a>

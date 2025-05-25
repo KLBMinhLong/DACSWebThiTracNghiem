@@ -160,18 +160,38 @@ public class DeThiController : Controller
         return RedirectToAction("Index");
     }
 
-    [HttpPost]
-    public IActionResult Delete(int id)
+    [HttpPost, ActionName("Delete")]
+    [ValidateAntiForgeryToken]
+    public async Task<IActionResult> DeleteConfirmed(int id)
     {
-        var deThi = _context.DeThis
-            .FirstOrDefault(d => d.Id == id);
-
-        if (deThi == null) return NotFound();
-
-        _context.DeThis.Remove(deThi);
-        _context.SaveChanges();
-
-        return RedirectToAction("Index");
+        try
+        {
+            // Kiểm tra xem đề thi có chi tiết đề thi không
+            bool coChiTietDeThi = await _context.LichSuLamBais.AnyAsync(c => c.DeThiId == id);
+            if (coChiTietDeThi)
+            {
+                // Nếu có chi tiết đề thi, không cho phép xóa và hiển thị thông báo
+                TempData["ErrorMessage"] = "Không thể xóa đề thi này vì đã có dữ liệu bài thi liên quan.";
+                return RedirectToAction(nameof(Index));
+            }
+            
+            // Nếu không có chi tiết đề thi, tiến hành xóa
+            var deThi = await _context.DeThis.FindAsync(id);
+            if (deThi != null)
+            {
+                _context.DeThis.Remove(deThi);
+                await _context.SaveChangesAsync();
+                TempData["SuccessMessage"] = "Xóa đề thi thành công.";
+            }
+            
+            return RedirectToAction(nameof(Index));
+        }
+        catch (Exception ex)
+        {
+            // Bắt các lỗi khác nếu có
+            TempData["ErrorMessage"] = "Không thể xóa đề thi. Lỗi: " + ex.Message;
+            return RedirectToAction(nameof(Index));
+        }
     }
 
 }

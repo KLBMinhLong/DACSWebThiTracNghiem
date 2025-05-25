@@ -1,8 +1,28 @@
 @model IEnumerable<CauHoi>
 
 @{
-    ViewData["Title"] = "Danh sách câu hỏi";
+    ViewData["Title"] = "Quản lý câu hỏi";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2 class="mb-4 fw-bold text-center text-primary">Quản Lý Câu Hỏi</h2>
+
+@* Hiển thị thông báo lỗi *@
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>@TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
+@* Hiển thị thông báo thành công *@
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        <i class="bi bi-check-circle-fill me-2"></i>@TempData["SuccessMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
 }
 
 <style>
@@ -10,8 +30,6 @@
         padding-bottom: 20px !important;
     }
 </style>
-
-<h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Câu Hỏi</h2>
 
 <div class="mb-3 d-flex justify-content-between align-items-center flex-wrap gap-2">
     <div class="d-flex gap-2">
@@ -99,8 +117,7 @@
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-info btn-sm">Xem</a>
                 </td>
                 <td class="text-center">
-                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm"
-                       onclick="return confirm('Bạn có chắc chắn muốn xoá câu hỏi này không?');">Xoá</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-danger btn-sm">Xoá</a>
                 </td>
             </tr>
         }
