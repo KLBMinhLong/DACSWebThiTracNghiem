@@ -405,3 +405,6 @@ FodyWeavers.xsd
 
 # Ignore env
 set_smtp_env.bat
+
+# Ignore uploads folder
+wwwroot/uploads/
