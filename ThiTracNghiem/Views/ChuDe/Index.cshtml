@@ -41,7 +41,7 @@
     <thead class="table-light">
         <tr>
             <th>Tên chủ đề</th>
-            <th>Hành động</th>
+            <th colspan="3">Hành động</th>
         </tr>
     </thead>
     <tbody>
@@ -51,7 +51,11 @@
                 <td>@item.TenChuDe</td>
                 <td>
                     <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-sm btn-info me-1">Xem</a>
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-sm btn-warning me-1">Sửa</a>
+                </td>
+                <td>
                     <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-sm btn-danger"
                        onclick="return confirm('Bạn có chắc chắn muốn xoá chủ đề này không?');">Xoá</a>
                 </td>
