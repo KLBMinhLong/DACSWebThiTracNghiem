@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Quản lý người dùng";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    // Tính số thứ tự bắt đầu dựa trên trang hiện tại
+    int startIndex = ((ViewBag.CurrentPage != null ? ViewBag.CurrentPage : 1) - 1) * 10 + 1;
 }
 
 @if (TempData["SuccessMessage"] != null)
@@ -24,7 +26,7 @@
             <!-- Form tìm kiếm -->
             <form asp-action="QuanLyNguoiDung" method="get" class="d-flex" style="max-width: 400px;">
                 <input type="text" name="searchString" class="form-control me-2" 
-                       placeholder="Tìm kiếm theo tên..." value="@ViewBag.CurrentFilter" />
+                       placeholder="Tìm kiếm theo tên tài khoản hoặc email" value="@ViewBag.CurrentFilter" />
                 <button type="submit" class="btn btn-primary">
                     <i class="bi bi-search me-1"></i> Tìm
                 </button>
@@ -34,6 +36,7 @@
         <table class="table table-bordered table-hover text-center align-middle">
             <thead class="table-light">
                 <tr>
+                    <th style="width: 60px;">STT</th>
                     <th>Tên tài khoản</th>
                     <th>Email</th>
                     <th>Vai trò</th>
@@ -45,9 +48,10 @@
                 @foreach (var user in Model)
                 {
                     <tr>
+                        <td>@(startIndex++)</td>
                         <td>@user.TenTaiKhoan</td>
                         <td>@user.Email</td>
-                        <td>@(user.VaiTro == "admin" ? "Admin" : "User")</td> @* Không có badge *@
+                        <td>@(user.VaiTro == "admin" ? "Admin" : "User")</td>
                         <td>
                             @if (user.TrangThaiKhoa)
                             {
@@ -55,7 +59,7 @@
                             }
                             else
                             {
-                                <span class="badge bg-warning text-dark fs-6 px-3 py-1">Hoạt động</span>
+                                <span class="badge bg-success text-white fs-6 px-3 py-1">Hoạt động</span>
                             }
                         </td>
                         <td>

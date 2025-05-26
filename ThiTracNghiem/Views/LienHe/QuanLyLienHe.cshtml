@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Quản lý liên hệ";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+    int startIndex = ((ViewBag.CurrentPage != null ? ViewBag.CurrentPage : 1) - 1) * 10 + 1;
 }
 
 <h2 class="mb-4 fw-bold text-center text-primary">Danh Sách Liên Hệ</nav>
@@ -29,6 +30,7 @@
 <table class="table table-bordered">
     <thead>
         <tr>
+            <th style="width: 60px;">STT</th>
             <th>Người gửi</th>
             <th>Email</th>
             <th>Nội dung</th>
@@ -41,6 +43,7 @@
         @foreach (var item in Model)
         {
             <tr>
+                <td class="text-center">@(startIndex++)</td>
                 <td>@item.HoTen (@item.TenTaiKhoan)</td>
                 <td>@item.Email</td>
                 <td style="max-width:350px;">

@@ -89,6 +89,7 @@
 <table class="table table-bordered align-middle">
     <thead class="table-light">
         <tr>
+            <th class="text-center" style="width:60px;">STT</th>
             <th class="text-center">Nội dung</th>
             <th class="text-center">Đáp án A</th>
             <th class="text-center">Đáp án B</th>
@@ -100,9 +101,14 @@
         </tr>
     </thead>
     <tbody>
+        @{
+            // Lấy thứ tự bắt đầu của dòng đầu tiên
+            int startIndex = ((ViewBag.CurrentPage - 1) * 10) + 1;
+        }
         @foreach (var item in Model)
         {
             <tr>
+                <td class="text-center">@(startIndex++)</td>
                 <td class="text-start">@item.NoiDung</td>
                 <td class="text-center">@item.DapAnA</td>
                 <td class="text-center">@item.DapAnB</td>
