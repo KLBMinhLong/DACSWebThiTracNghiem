@@ -65,8 +65,9 @@
                     <td>@d.ChuDe?.TenChuDe</td>
                     <td class="text-center">@d.ThoiGianLamBai phút</td>
                     <td class="text-center">
-                        <span class="badge @(d.TrangThaiMo ? "bg-success" : "bg-danger")">
-                            @(d.TrangThaiMo ? "Mở" : "Đóng")
+                        <span
+                            class="badge @(d.TrangThaiMo ? "bg-primary text-white" : "bg-warning text-dark") fs-6 px-3 py-2">
+                            @(d.TrangThaiMo ? "Đang mở" : "Tạm đóng")
                         </span>
                     </td>
                     <td class="text-center">@d.NgayTao.ToString("dd/MM/yyyy")</td>

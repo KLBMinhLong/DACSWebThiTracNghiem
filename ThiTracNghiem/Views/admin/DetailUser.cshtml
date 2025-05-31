@@ -14,16 +14,26 @@
                 <div class="row mb-4">
                     <div class="col-md-4 text-center">
                         <div class="mb-3">
-                            <div class="bg-light rounded-circle mx-auto d-flex align-items-center justify-content-center" 
-                                 style="width: 100px; height: 100px;">
-                                <i class="bi bi-person-fill" style="font-size: 3rem;"></i>
+                            <div class="bg-primary bg-gradient rounded-circle mx-auto d-flex align-items-center justify-content-center"
+                                style="width: 100px; height: 100px;">
+                                <i class="bi bi-person-fill text-white" style="font-size: 3rem;"></i>
                             </div>
                         </div>
-                        <h5 class="fw-bold">@Model.TenTaiKhoan</h5>
-                        <span class="badge @(Model.VaiTro == "admin" ? "bg-danger" : "bg-primary")">@Model.VaiTro</span>
-                        <span class="badge @(Model.TrangThaiKhoa ? "bg-warning" : "bg-success")">
-                            @(Model.TrangThaiKhoa ? "Đã khóa" : "Đang hoạt động")
-                        </span>
+                        <h5 class="fw-bold text-dark mb-2">@Model.TenTaiKhoan</h5>
+
+                        <div class="mb-2">
+                            <span
+                                class="badge @(Model.VaiTro == "admin" ? "bg-danger text-white" : "bg-primary text-white") fs-6 px-3 py-2 me-1">
+                                @(Model.VaiTro == "admin" ? "ADMIN" : "USER")
+                            </span>
+                        </div>
+
+                        <div>
+                            <span
+                                class="badge @(Model.TrangThaiKhoa ? "bg-warning text-dark" : "bg-success text-white") fs-6 px-3 py-2">
+                                @(Model.TrangThaiKhoa ? "Đã khóa" : "Đang hoạt động")
+                            </span>
+                        </div>
                     </div>
                     <div class="col-md-8">
                         <dl class="row mb-0">
@@ -34,11 +44,13 @@
                             <dd class="col-sm-8">@Model.GioiTinh</dd>
 
                             <dt class="col-sm-4">Số điện thoại</dt>
-                            <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.SoDienThoai) ? "Chưa cập nhật" : Model.SoDienThoai)</dd>
+                            <dd class="col-sm-8">@(string.IsNullOrEmpty(Model.SoDienThoai) ? "Chưa cập nhật" :
+                                                                Model.SoDienThoai)</dd>
 
                             <dt class="col-sm-4">Ngày tạo</dt>
                             <dd class="col-sm-8">
-                                @(Model.ThoiGianTao.HasValue ? Model.ThoiGianTao.Value.ToString("dd/MM/yyyy HH:mm") : "Chưa cập nhật")
+                                @(Model.ThoiGianTao.HasValue ? Model.ThoiGianTao.Value.ToString("dd/MM/yyyy HH:mm") :
+                                                                "Chưa cập nhật")
                             </dd>
 
                             <dt class="col-sm-4">Số bài thi</dt>
@@ -86,9 +98,8 @@
                         <a asp-action="EditUser" asp-route-id="@Model.TenTaiKhoan" class="btn btn-primary me-2">
                             <i class="bi bi-pencil-square"></i> Sửa
                         </a>
-                        <a asp-action="DeleteUser" asp-route-id="@Model.TenTaiKhoan" 
-                           class="btn btn-danger"
-                           onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">
+                        <a asp-action="DeleteUser" asp-route-id="@Model.TenTaiKhoan" class="btn btn-danger"
+                            onclick="return confirm('Bạn có chắc chắn muốn xóa tài khoản này không?');">
                             <i class="bi bi-trash"></i> Xóa
                         </a>
                     </div>
