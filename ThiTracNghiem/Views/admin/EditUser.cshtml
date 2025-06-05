@@ -10,12 +10,48 @@
 
         <h2 class="mb-4 fw-bold text-center text-primary">Chỉnh sửa người dùng</h2>
 
+        @* Hiển thị thông báo lỗi *@
+        @if (TempData["ErrorMessage"] != null)
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                @TempData["ErrorMessage"]
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        }
+
+        @* Thông báo cảnh báo cho admin *@
+        @if (Model.VaiTro == "admin")
+        {
+            <div class="alert alert-warning" role="alert">
+                <h6 class="alert-heading">
+                    <i class="bi bi-shield-exclamation me-2"></i>
+                    Lưu ý khi sửa tài khoản Admin
+                </h6>
+                <ul class="mb-0">
+                    <li>Hệ thống phải có ít nhất 1 admin</li>
+                    <li>Không thể khóa tất cả admin</li>
+                    @if (Model.TenTaiKhoan == User.Identity.Name)
+                    {
+                        <li class="text-danger fw-bold">Bạn không thể thay đổi vai trò hoặc khóa tài khoản của chính mình</li>
+                    }
+                </ul>
+            </div>
+        }
+
         <form asp-action="EditUser">
             <div asp-validation-summary="ModelOnly" class="text-danger mb-3"></div>
 
             <div class="mb-3">
                 <label asp-for="TenTaiKhoan" class="form-label fw-bold">Tên Tài Khoản</label>
                 <input asp-for="TenTaiKhoan" class="form-control" readonly />
+                @if (Model.TenTaiKhoan == User.Identity.Name)
+                {
+                    <small class="text-info">
+                        <i class="bi bi-info-circle me-1"></i>
+                        Đây là tài khoản bạn đang sử dụng
+                    </small>
+                }
             </div>
 
             <div class="mb-3">
@@ -39,15 +75,27 @@
 
             <div class="mb-3">
                 <label asp-for="VaiTro" class="form-label fw-bold">Vai Trò</label>
-                <select asp-for="VaiTro" class="form-select">
+                <select asp-for="VaiTro" class="form-select" 
+                        disabled="@(Model.TenTaiKhoan == User.Identity.Name)">
                     <option value="user">User</option>
                     <option value="admin">Admin</option>
                 </select>
+                @if (Model.TenTaiKhoan == User.Identity.Name)
+                {
+                    <input type="hidden" asp-for="VaiTro" />
+                    <small class="text-muted">Không thể thay đổi vai trò của chính mình</small>
+                }
             </div>
 
             <div class="form-check mb-3">
-                <input class="form-check-input" asp-for="TrangThaiKhoa" />
+                <input class="form-check-input" asp-for="TrangThaiKhoa" 
+                       disabled="@(Model.TenTaiKhoan == User.Identity.Name)"/>
                 <label class="form-check-label fw-bold" asp-for="TrangThaiKhoa">Trạng Thái Khóa</label>
+                @if (Model.TenTaiKhoan == User.Identity.Name)
+                {
+                    <input type="hidden" asp-for="TrangThaiKhoa" />
+                    <small class="text-muted d-block">Không thể khóa tài khoản của chính mình</small>
+                }
             </div>
 
             <div class="d-grid gap-2 mb-3">
@@ -62,4 +110,48 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const vaiTroSelect = document.querySelector('select[name="VaiTro"]');
+            const trangThaiKhoaCheckbox = document.querySelector('input[name="TrangThaiKhoa"]');
+            const isCurrentUser = @(Model.TenTaiKhoan == User.Identity.Name ? "true" : "false");
+            
+            function showWarning(message) {
+                // Tạo hoặc cập nhật alert cảnh báo
+                let existingAlert = document.querySelector('.alert-warning.dynamic-warning');
+                if (existingAlert) {
+                    existingAlert.remove();
+                }
+                
+                const alertDiv = document.createElement('div');
+                alertDiv.className = 'alert alert-warning alert-dismissible fade show dynamic-warning';
+                alertDiv.innerHTML = `
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    ${message}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                
+                document.querySelector('form').insertBefore(alertDiv, document.querySelector('form').firstChild);
+            }
+            
+            // Kiểm tra khi thay đổi vai trò
+            if (vaiTroSelect && !isCurrentUser) {
+                vaiTroSelect.addEventListener('change', function() {
+                    if (this.value === 'user' && '@Model.VaiTro' === 'admin') {
+                        showWarning('Cảnh báo: Bạn đang thay đổi admin thành user. Đảm bảo hệ thống còn ít nhất 1 admin khác!');
+                    }
+                });
+            }
+            
+            // Kiểm tra khi khóa admin
+            if (trangThaiKhoaCheckbox && !isCurrentUser) {
+                trangThaiKhoaCheckbox.addEventListener('change', function() {
+                    if (this.checked && '@Model.VaiTro' === 'admin') {
+                        showWarning('Cảnh báo: Bạn đang khóa tài khoản admin. Đảm bảo còn ít nhất 1 admin khác đang hoạt động!');
+                    }
+                });
+            }
+        });
+    </script>
 }

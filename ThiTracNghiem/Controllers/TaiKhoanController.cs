@@ -212,33 +212,49 @@ namespace ThiTracNghiem.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DangNhap(string tenTaiKhoan, string matKhau)
         {
+            // Kiểm tra đầu vào
+            if (string.IsNullOrEmpty(tenTaiKhoan) || string.IsNullOrEmpty(matKhau))
+            {
+                ViewBag.Loi = "Vui lòng nhập đầy đủ tên tài khoản và mật khẩu.";
+                return View();
+            }
+
+            // Tìm user trong database
             var user = await _context.TaiKhoans.FindAsync(tenTaiKhoan);
 
-            var claims = new List<Claim>
-                {
-                    new Claim(ClaimTypes.Name, user.TenTaiKhoan),
-                    new Claim(ClaimTypes.Role, user.VaiTro) // ví dụ: "admin" hoặc "user"
-                };
-
-            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
-            var principal = new ClaimsPrincipal(identity);
-
-            await HttpContext.SignInAsync("MyCookieAuth", principal);
-
-            // Mã hóa mật khẩu người dùng nhập
+            // Mã hóa mật khẩu người dùng nhập để so sánh
             string matKhauBam = MaHoaHelper.MaHoaSHA256(matKhau);
 
+            // Kiểm tra thông tin đăng nhập
             if (user == null || user.MatKhau != matKhauBam || user.TrangThaiKhoa)
             {
                 ViewBag.Loi = "Tài khoản không đúng hoặc đã bị khóa.";
                 return View();
             }
 
+            // Chỉ tạo claim và đăng nhập khi user hợp lệ
+            var claims = new List<Claim>
+            {
+                new Claim(ClaimTypes.Name, user.TenTaiKhoan),
+                new Claim(ClaimTypes.Role, user.VaiTro) // ví dụ: "admin" hoặc "user"
+            };
+
+            var identity = new ClaimsIdentity(claims, "MyCookieAuth");
+            var principal = new ClaimsPrincipal(identity);
+
+            await HttpContext.SignInAsync("MyCookieAuth", principal);
+
+            // Lưu thông tin vào Session
             HttpContext.Session.SetString("UserName", user.TenTaiKhoan);
             HttpContext.Session.SetString("VaiTro", user.VaiTro);
             
-            return RedirectToAction("Index", "Home"); // Giao diện người dùng bình thường
+            // Điều hướng sau khi đăng nhập thành công
+            if (user.VaiTro.ToLower() == "admin")
+            {
+                return RedirectToAction("Dashboard", "Admin");
+            }
             
+            return RedirectToAction("Index", "Home");
         }
 
         public async Task<IActionResult> DangXuat()

@@ -13,6 +13,16 @@
         <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 }
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+        @TempData["ErrorMessage"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+}
+
 <h2 class="mb-4 fw-bold text-center text-primary">Quản Lý Người Dùng</h2>
 
 <div class="d-flex justify-content-center mt-4">
@@ -69,9 +79,8 @@
                             <a asp-action="EditUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-warning btn-sm me-1">
                                 <i class="bi bi-pencil-square"></i> Sửa
                             </a>
-                            <a asp-action="DeleteUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-danger btn-sm"
-                                onclick="return confirm('Bạn có chắc chắn muốn xoá tài khoản này không?');">
-                                <i class="bi bi-trash"></i> Xoá
+                            <a asp-action="DeleteUser" asp-route-id="@user.TenTaiKhoan" class="btn btn-danger btn-sm">
+                                <i class="bi bi-trash"></i> Xóa
                             </a>
                         </td>
                     </tr>

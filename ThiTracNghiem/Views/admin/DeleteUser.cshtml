@@ -1,0 +1,114 @@
+@model ThiTracNghiem.Models.TaiKhoan
+@{
+    ViewData["Title"] = "Xác nhận xóa tài khoản";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-danger">
+                <div class="card-header bg-danger text-white">
+                    <h4 class="mb-0">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        Cảnh báo: Xóa tài khoản
+                    </h4>
+                </div>
+                <div class="card-body">
+                    <div class="alert alert-danger" role="alert">
+                        <h5 class="alert-heading">
+                            <i class="bi bi-shield-exclamation me-2"></i>
+                            Hành động này không thể hoàn tác!
+                        </h5>
+                        <p class="mb-0">
+                            Bạn đang chuẩn bị xóa vĩnh viễn tài khoản và tất cả dữ liệu liên quan.
+                        </p>
+                    </div>
+
+                    <!-- Thông tin tài khoản -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <h6 class="fw-bold">Thông tin tài khoản sẽ bị xóa:</h6>
+                            <ul class="list-unstyled">
+                                <li><strong>Tên tài khoản:</strong> @Model.TenTaiKhoan</li>
+                                <li><strong>Email:</strong> @Model.Email</li>
+                                <li><strong>Vai trò:</strong> @(Model.VaiTro == "admin" ? "Admin" : "User")</li>
+                                <li><strong>Ngày tạo:</strong> @(Model.ThoiGianTao != null ? $"{Model.ThoiGianTao:dd/MM/yyyy}" : "Không xác định")</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="fw-bold text-danger">Dữ liệu liên quan sẽ bị xóa:</h6>
+                            <ul class="list-unstyled">
+                                <li>
+                                    <i class="bi bi-file-text me-2"></i>
+                                    <strong>@ViewBag.SoLichSuThi</strong> lịch sử làm bài thi
+                                </li>
+                                <li>
+                                    <i class="bi bi-chat-dots me-2"></i>
+                                    <strong>@ViewBag.SoBinhLuan</strong> bình luận
+                                </li>
+                                <li class="text-danger fw-bold mt-2">
+                                    <i class="bi bi-exclamation-circle me-2"></i>
+                                    Tổng cộng: <strong>@ViewBag.TongDuLieuLienQuan</strong> bản ghi
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    @if (ViewBag.TongDuLieuLienQuan > 0)
+                    {
+                        <div class="alert alert-warning">
+                            <i class="bi bi-info-circle me-2"></i>
+                            <strong>Lưu ý:</strong> Việc xóa tài khoản này sẽ ảnh hưởng đến:
+                            <ul class="mb-0 mt-2">
+                                <li>Thống kê điểm số và bảng xếp hạng</li>
+                                <li>Lịch sử thi của hệ thống</li>
+                                <li>Các bình luận và phản hồi</li>
+                            </ul>
+                        </div>
+                    }
+
+                    <!-- Form xác nhận -->
+                    <div class="mt-4 pt-3 border-top">
+                        <form asp-action="DeleteUserConfirmed" method="post">
+                            <input type="hidden" name="id" value="@Model.TenTaiKhoan" />
+                            <div class="form-check mb-3">
+                                <input class="form-check-input" type="checkbox" id="confirmDelete" required>
+                                <label class="form-check-label fw-bold text-danger" for="confirmDelete">
+                                    Tôi hiểu rằng hành động này không thể hoàn tác và đồng ý xóa tài khoản này cùng tất cả dữ liệu liên quan.
+                                </label>
+                            </div>
+                            
+                            <div class="d-flex gap-2 justify-content-end">
+                                <a asp-action="QuanLyNguoiDung" class="btn btn-secondary">
+                                    <i class="bi bi-arrow-left me-2"></i>Hủy bỏ
+                                </a>
+                                <button type="submit" class="btn btn-danger" id="deleteBtn" disabled>
+                                    <i class="bi bi-trash me-2"></i>Xác nhận xóa
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('confirmDelete');
+    const deleteBtn = document.getElementById('deleteBtn');
+    
+    checkbox.addEventListener('change', function() {
+        deleteBtn.disabled = !this.checked;
+        if (this.checked) {
+            deleteBtn.classList.remove('btn-danger');
+            deleteBtn.classList.add('btn-outline-danger');
+        } else {
+            deleteBtn.classList.remove('btn-outline-danger');
+            deleteBtn.classList.add('btn-danger');
+        }
+    });
+});
+</script>
